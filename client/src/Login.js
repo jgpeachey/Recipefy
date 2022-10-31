@@ -6,9 +6,7 @@ import Header from './Components/header.js';
 
 function Login(){
     return(
-        <div>
-            <Header />
-        </div>
+        <Header/>
     )
 }
 

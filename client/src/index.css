@@ -1,7 +1,7 @@
 .Login-Page{
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
+  width: 1440px;
+  height: 1024px;
 
   background: linear-gradient(180deg, rgba(60, 71, 172, 0) 8.33%, #3705FF 100%);
 }
@@ -38,7 +38,7 @@
   top: 24px;
   text-align: center;
 
-  font-family: 'Chakra Petch';
+  font-family: 'Montserrat';
   font-style: normal;
   font-weight: 400;
   font-size: 40px;
