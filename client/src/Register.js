@@ -1,4 +1,5 @@
 import React from 'react';
+import "./index.css"
 
 import { useState } from 'react';
 
@@ -71,28 +72,28 @@ export default function Register()
 
     return (
         <div className="Register-Form">
-          <div>
+          <div className="Title">
             <h1>Register</h1>
           </div>
      
           {/* Calling to the methods */}
-          <div className="messages">
+          <div className="Messages">
             {errorMessage()}
             {successMessage()}
           </div>
      
-          <form>
+          <form method="post">
             {/* Labels and inputs for form data */}
             <label className="label">Username</label>
-            <input onChange={handleUsername} className="input"
+            <input onChange={handleUsername} className="Input"
               value={username} type="text" />
      
             <label className="label">Email</label>
-            <input onChange={handleEmail} className="input"
+            <input onChange={handleEmail} className="Input"
               value={email} type="email" />
      
             <label className="label">Password</label>
-            <input onChange={handlePassword} className="input"
+            <input onChange={handlePassword} className="Input"
               value={password} type="password" />
      
             <button onClick={handleSubmit} className="btn" type="submit">
