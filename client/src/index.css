@@ -49,3 +49,36 @@
   mix-blend-mode: hard-light;
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
+
+.Register-Form{
+  position:absolute;
+  top:50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width:400px;
+  background:rgb(103, 103, 240);
+  border-radius: 10px;
+
+}
+
+.Title{
+  text-align: center;
+  padding: 0 0 10px 0;
+  border-bottom: 1px solid;
+}
+
+.Messages{
+  text-align: center;
+  padding: 0 0 20px 0;
+}
+
+.Register-Form form{
+  padding: 0 115px;
+  box-sizing: border-box;
+}
+
+.Register-Input{
+  position:relative;
+  border-bottom: 2px solid #adadaa;
+  margin:15px 0;
+}

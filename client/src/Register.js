@@ -84,16 +84,13 @@ export default function Register()
      
           <form method="post">
             {/* Labels and inputs for form data */}
-            <label className="label">Username</label>
-            <input onChange={handleUsername} className="Input"
+            <input placeholder ="Username" onChange={handleUsername} className="Register-Input"
               value={username} type="text" />
      
-            <label className="label">Email</label>
-            <input onChange={handleEmail} className="Input"
+            <input placeholder ="Email" onChange={handleEmail} className="Register-Input"
               value={email} type="email" />
      
-            <label className="label">Password</label>
-            <input onChange={handlePassword} className="Input"
+            <input placeholder="Password" onChange={handlePassword} className="Register-Input"
               value={password} type="password" />
      
             <button onClick={handleSubmit} className="btn" type="submit">
