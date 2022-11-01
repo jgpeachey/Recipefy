@@ -6,26 +6,49 @@ const User = require("../models/user");
 const crypto = require("crypto");
 const sgMail = require('@sendgrid/mail');
 
-const API_KEY = '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';
-sgMail.setApiKey(API_KEY);
+require('dotenv').config();
 
-router.get('/landing', (req, res) => {
-    res.render("Landing")
-});
+sgMail.setApiKey(process.env.SENDGRID_KEY);
+
 
 // register api
 router.post('/register', async function (req, res) {
-    const user = await User.findOne({ Email: req.body.Email }).exec();
+    if(Object.keys(req.body.Username).length === 0 ) {
+        return res.status(409).json({
+            message: "Username required"
+        });
+    }
+    if(Object.keys(req.body.Email).length === 0 ) {
+        return res.status(409).json({
+            message: "Email required"
+        });
+    }
+    if(Object.keys(req.body.Password).length === 0 ) {
+        return res.status(409).json({
+            message: "Password required"
+        });
+    }
+    const user = await User.findOne({ Username: req.body.Username }).exec();
     if(user) {
+        return res.status(409).json({
+            message: "Username exists"
+        });
+    }
+
+    const email = await User.findOne({ Email: req.body.Email }).exec();
+    if(email) {
         return res.status(409).json({
             message: "email exists"
         });
     }
 
+
     const hash = await bcrypt.hash(req.body.Password, 10);
 
     const userInfo = new User({
         _id: new mongoose.Types.ObjectId(),
+        Firstname: req.body.Firstname,
+        Lastname: req.body.Lastname,
         Username: req.body.Username,
         Email: req.body.Email,
         emailToken:crypto.randomBytes(64).toString('hex'),
@@ -47,13 +70,13 @@ router.post('/register', async function (req, res) {
         text: `
             Hey! Thank you for registering!
             Copy and paste the address below to verify your account.
-            http://${req.headers.host}/verifyEmail?token-${user.emailToken}
+            http://${req.headers.host}/verifyEmail?token-${result.emailToken}
         `,
         html: `
             <h1>Hello</h1>
             <p>Thank you for Registering!<p>
             <p>Please click the link below to verify your account<p>
-            <a href= "http://${req.headers.host}/verifyEmail?token-${user.emailToken}">Verify your Account</a>
+            <a href= "http://${req.headers.host}/verifyEmail?token-${result.emailToken}">Verify your Account</a>
         `
     };
 
@@ -107,6 +130,11 @@ router.post('/login',async (req, res, next) =>{
         message: "Auth failed"
     });
 });
+
+// update user
+// router.post('/updateUser', asyc(req, res) => {
+
+// })
 
 
 
