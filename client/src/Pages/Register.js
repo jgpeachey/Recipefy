@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -16,15 +16,18 @@ import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import NewAppBar from "../Components/NewAppBar";
 import { Paper } from "@mui/material";
 import Axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const theme = createTheme();
 
 export default function SignUp() {
-  const[firstError, setFirstError] = useState(false);
-  const[lastError, setLastError] = useState(false);
-  const[userError, setUserError] = useState(false);
-  const[emailError, setEmailError] = useState(false);
-  const[passwordError, setPasswordError] = useState(false);
+  const navigate = useNavigate();
+
+  const [firstError, setFirstError] = useState(false);
+  const [lastError, setLastError] = useState(false);
+  const [userError, setUserError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -35,43 +38,44 @@ export default function SignUp() {
     setPasswordError(false);
     const data = new FormData(event.currentTarget);
 
-    function isValidEmail(email){
+    function isValidEmail(email) {
       return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i.test(email);
     }
 
-    if(!isValidEmail(data.get("email"))){
+    if (!isValidEmail(data.get("email"))) {
       setEmailError(true);
     }
 
-    if(data.get("firstName") == ''){
+    if (data.get("firstName") == "") {
       setFirstError(true);
     }
 
-    if(data.get("lastName") == ''){
+    if (data.get("lastName") == "") {
       setLastError(true);
     }
 
-    if(data.get("username") == ''){
+    if (data.get("username") == "") {
       setUserError(true);
     }
 
-    if(data.get("email") == ''){
+    if (data.get("email") == "") {
       setEmailError(true);
     }
 
-    if(data.get("password") == ''){
+    if (data.get("password") == "") {
       setPasswordError(true);
     }
 
-    Axios.post("http://localhost:3000/user/register", {
+    Axios.post("http://localhost:3001/user/register", {
       Firstname: data.get("firstName"),
       Lastname: data.get("lastName"),
       Username: data.get("username"),
       Email: data.get("email"),
-      Password: data.get("password")}
-    ).then((response) => {
+      Password: data.get("password"),
+    }).then((response) => {
+      navigate("/");
       console.log("User Created");
-    })
+    });
   };
 
   return (
@@ -106,9 +110,9 @@ export default function SignUp() {
             }}
           >
             {/* <Avatar sx={{ m: 1, bgcolor: "secondary.main", marginTop: 10 }}> */}
-              {/* <LockOutlinedIcon /> */}
+            {/* <LockOutlinedIcon /> */}
             {/* </Avatar> */}
-            <Typography 
+            <Typography
               variant="h3"
               marginTop={10}
               marginBottom={2}
