@@ -144,12 +144,10 @@ router.post('/login',async (req, res, next) =>{
 
             //sendRefreshToken(res, refreshToken);
             //sendAccessToken(req, res, accessToken);
-
-            
         } else {
-          return res.status(409).json({
-            error: "Invalid Password",
-        });
+            return res.status(409).json({
+                error: "Invalid Password",
+            });
         }
 
     } catch(e) {
