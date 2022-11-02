@@ -37,14 +37,14 @@ router.post("/register", async function (req, res) {
   const user = await User.findOne({ Username: req.body.Username }).exec();
   if (user) {
     return res.status(409).json({
-      error: "Username exists",
+      error: "Username Exists",
     });
   }
 
   const email = await User.findOne({ Email: req.body.Email }).exec();
   if (email) {
     return res.status(409).json({
-      error: "email exists",
+      error: "Email Exists",
     });
   }
 

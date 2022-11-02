@@ -17,7 +17,7 @@ import NewAppBar from "../Components/NewAppBar";
 import { Paper } from "@mui/material";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
-import FormHelperText from '@mui/material/FormHelperText';
+import FormHelperText from "@mui/material/FormHelperText";
 import { ClassNames } from "@emotion/react";
 
 const theme = createTheme();
@@ -30,8 +30,8 @@ export default function SignUp() {
   const [userError, setUserError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const [usernameHelper, setUsernameHelper] = useState(null);
-  const [emailHelper, setEmailHelper] = useState(null);
+  const [usernameHelper, setUsernameHelper] = useState("");
+  const [emailHelper, setEmailHelper] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -40,8 +40,6 @@ export default function SignUp() {
     setUserError(false);
     setEmailError(false);
     setPasswordError(false);
-    setUsernameHelper(null);
-    setEmailHelper(null);
     const data = new FormData(event.currentTarget);
 
     function isValidEmail(email) {
@@ -84,15 +82,15 @@ export default function SignUp() {
         console.log("User Created");
       })
       .catch((error) => {
-        if(error.response.data.message==="Username exists")
-        {
-          setUsernameHelper(error.response.data.message);
+        setUsernameHelper("");
+        setEmailHelper("");
+        if (error.response.data.error === "Username Exists") {
+          setUsernameHelper(error.response.data.error);
         }
-        if(error.response.data.message==="email exists")
-        {
-          setEmailHelper(error.response.data.message);
+        if (error.response.data.error === "Email Exists") {
+          setEmailHelper(error.response.data.error);
         }
-        console.log(error.response.message);
+        console.log(error.response.data);
       });
   };
 
