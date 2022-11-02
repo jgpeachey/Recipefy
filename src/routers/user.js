@@ -22,30 +22,30 @@ sgMail.setApiKey(process.env.SENDGRID_KEY);
 router.post('/register', async function (req, res) {
     if(Object.keys(req.body.Username).length === 0 ) {
         return res.status(409).json({
-            message: "Username required"
+            error: "Username required"
         });
     }
     if(Object.keys(req.body.Email).length === 0 ) {
         return res.status(409).json({
-            message: "Email required"
+            error: "Email required"
         });
     }
     if(Object.keys(req.body.Password).length === 0 ) {
         return res.status(409).json({
-            message: "Password required"
+            error: "Password required"
         });
     }
     const user = await User.findOne({ Username: req.body.Username }).exec();
     if(user) {
         return res.status(409).json({
-            message: "Username exists"
+            error: "Username exists"
         });
     }
 
     const email = await User.findOne({ Email: req.body.Email }).exec();
     if(email) {
         return res.status(409).json({
-            message: "email exists"
+            error: "email exists"
         });
     }
 
@@ -68,7 +68,7 @@ router.post('/register', async function (req, res) {
 
     console.log(result);
     res.status(201).json({
-        message: 'User create'
+        error: ""
     });
     
     const msg = {
@@ -118,7 +118,7 @@ router.post('/login',async (req, res, next) =>{
     const user = await User.findOne({Email: req.body.Email}).exec();
     if(!user) {
         return res.status(409).json({
-            message: "Auth failed",
+            error: "Auth failed",
         });
     }
 
@@ -128,16 +128,27 @@ router.post('/login',async (req, res, next) =>{
         if (passAuth) {
             const accessToken = createAccessToken(user._id);
             const refreshToken = createRefreshToken(user._id);
-
+            delete user.Password;
+            delete user.emailToken;
+            delete user.isVerified;
+            //console.log(user.Password);
             user.refreshToken = refreshToken;
-            
+            return res.status(201).json({
+                error: "",
+                id: user._id,
+                firstName: user.Firstname,
+                lastName: user.Lastname,
+                email: user.Email,
+                isVerified: user.isVerified
+            });
 
-            sendRefreshToken(res, refreshToken);
-            sendAccessToken(req, res, accessToken);
+            //sendRefreshToken(res, refreshToken);
+            //sendAccessToken(req, res, accessToken);
+
             
         } else {
           return res.status(409).json({
-            message: "Auth failed",
+            error: "Invalid Password",
         });
         }
 
