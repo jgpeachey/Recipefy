@@ -146,6 +146,18 @@ export default function Login() {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             /> */}
+              <Typography
+                component="h1"
+                variant="h6"
+                fullWidth
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                ooga booga
+              </Typography>
               <Button
                 type="submit"
                 fullWidth
