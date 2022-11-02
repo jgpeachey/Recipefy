@@ -72,10 +72,14 @@ export default function SignUp() {
       Username: data.get("username"),
       Email: data.get("email"),
       Password: data.get("password"),
-    }).then((response) => {
-      navigate("/");
-      console.log("User Created");
-    });
+    })
+      .then((response) => {
+        navigate("/");
+        console.log("User Created");
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
   };
 
   return (
