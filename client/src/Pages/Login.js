@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -9,16 +9,17 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import NewAppBar from "../Components/NewAppBar";
 import { Paper } from "@mui/material";
+import Axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const theme = createTheme({
-  
-});
+const theme = createTheme({});
 
 export default function Login() {
+  const navigate = useNavigate();
   // const[email, setEmail] = useState('');
   // const[password, setPassword] = useState('');
-  const[emailError, setEmailError] = useState(false);
-  const[passwordError, setPasswordError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -26,21 +27,33 @@ export default function Login() {
     setPasswordError(false);
     const data = new FormData(e.currentTarget);
 
-    function isValidEmail(email){
+    function isValidEmail(email) {
       return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i.test(email);
     }
 
-    if(!isValidEmail(data.get("email"))){
-      setEmailError(true);
-    }
-    
-    if(data.get("email") == ''){
+    if (!isValidEmail(data.get("email"))) {
       setEmailError(true);
     }
 
-    if(data.get("password") == ''){
+    if (data.get("email") == "") {
+      setEmailError(true);
+    }
+
+    if (data.get("password") == "") {
       setPasswordError(true);
     }
+
+    Axios.post("http://localhost:3001/user/login", {
+      Email: data.get("email"),
+      Password: data.get("password"),
+    })
+      .then((response) => {
+        console.log(response);
+        navigate("/home");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
     console.log({
       email: data.get("email"),
@@ -80,9 +93,9 @@ export default function Login() {
             }}
           >
             {/* <Avatar sx={{ m: 1, bgcolor: "secondary.main", marginTop: 10 }}> */}
-              {/* <LockOutlinedIcon /> */}
+            {/* <LockOutlinedIcon /> */}
             {/* </Avatar> */}
-            <Typography 
+            <Typography
               variant="h3"
               marginTop={10}
               marginBottom={2}
