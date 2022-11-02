@@ -135,6 +135,10 @@ router.post('/login',async (req, res, next) =>{
             sendRefreshToken(res, refreshToken);
             sendAccessToken(req, res, accessToken);
             
+        } else {
+          return res.status(409).json({
+            message: "Auth failed",
+        });
         }
 
     } catch(e) {
