@@ -20,6 +20,8 @@ export default function Login() {
   // const[password, setPassword] = useState('');
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [emailHelper, setEmailHelper] = useState("");
+  const [passwordHelper, setPasswordHelper] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -52,7 +54,13 @@ export default function Login() {
         navigate("/home");
       })
       .catch((error) => {
-        console.log(error.response.data);
+        setEmailHelper("");
+        setPasswordHelper("");
+        console.log(error.response.data.error);
+        if (error.response.data.error === "Invalid Email")
+          setEmailHelper(error.response.data.error);
+        if (error.response.data.error === "Invalid Password")
+          setPasswordHelper(error.response.data.error);
       });
 
     console.log({
@@ -128,6 +136,7 @@ export default function Login() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                helperText={emailHelper}
                 error={emailError}
               />
               <TextField
@@ -140,24 +149,13 @@ export default function Login() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                helperText={passwordHelper}
                 error={passwordError}
               />
               {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             /> */}
-              <Typography
-                component="h1"
-                variant="h6"
-                fullWidth
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                ooga booga
-              </Typography>
               <Button
                 type="submit"
                 fullWidth
