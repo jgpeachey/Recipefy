@@ -35,6 +35,14 @@ export default function SignUp() {
     setPasswordError(false);
     const data = new FormData(event.currentTarget);
 
+    function isValidEmail(email){
+      return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i.test(email);
+    }
+
+    if(!isValidEmail(data.get("email"))){
+      setEmailError(true);
+    }
+
     if(data.get("firstName") == ''){
       setFirstError(true);
     }

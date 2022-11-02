@@ -1,18 +1,12 @@
 import React, {useState} from "react";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { styled } from "@mui/system";
 import NewAppBar from "../Components/NewAppBar";
 import { Paper } from "@mui/material";
 
@@ -31,6 +25,14 @@ export default function Login() {
     setEmailError(false);
     setPasswordError(false);
     const data = new FormData(e.currentTarget);
+
+    function isValidEmail(email){
+      return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i.test(email);
+    }
+
+    if(!isValidEmail(data.get("email"))){
+      setEmailError(true);
+    }
     
     if(data.get("email") == ''){
       setEmailError(true);
