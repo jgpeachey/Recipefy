@@ -51,10 +51,6 @@
   border-radius: 10px;
 }
 
-.MuiTextField-root p {
-  color: red;
-}
-
 .Title {
   text-align: center;
   padding: 0 0 10px 0;
@@ -75,4 +71,8 @@
   position: relative;
   border-bottom: 2px solid #adadaa;
   margin: 15px 0;
+}
+
+.MuiTextField-root p {
+  color: red;
 }

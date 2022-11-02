@@ -17,6 +17,8 @@ import NewAppBar from "../Components/NewAppBar";
 import { Paper } from "@mui/material";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
+import FormHelperText from '@mui/material/FormHelperText';
+import { ClassNames } from "@emotion/react";
 
 const theme = createTheme();
 
@@ -28,6 +30,8 @@ export default function SignUp() {
   const [userError, setUserError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [usernameHelper, setUsernameHelper] = useState(null);
+  const [emailHelper, setEmailHelper] = useState(null);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -36,6 +40,8 @@ export default function SignUp() {
     setUserError(false);
     setEmailError(false);
     setPasswordError(false);
+    setUsernameHelper(null);
+    setEmailHelper(null);
     const data = new FormData(event.currentTarget);
 
     function isValidEmail(email) {
@@ -78,7 +84,15 @@ export default function SignUp() {
         console.log("User Created");
       })
       .catch((error) => {
-        console.log(error.response.data);
+        if(error.response.data.message==="Username exists")
+        {
+          setUsernameHelper(error.response.data.message);
+        }
+        if(error.response.data.message==="email exists")
+        {
+          setEmailHelper(error.response.data.message);
+        }
+        console.log(error.response.message);
       });
   };
 
@@ -172,6 +186,7 @@ export default function SignUp() {
                     name="username"
                     autoComplete="username"
                     error={userError}
+                    helperText={usernameHelper}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -183,6 +198,7 @@ export default function SignUp() {
                     name="email"
                     autoComplete="email"
                     error={emailError}
+                    helperText={emailHelper}
                   />
                 </Grid>
                 <Grid item xs={12}>
