@@ -73,3 +73,7 @@
   border-bottom: 2px solid #adadaa;
   margin:15px 0;
 }
+
+.MuiTextField-root p {
+  color:red;
+}
