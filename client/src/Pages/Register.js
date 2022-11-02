@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, {useState} from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -20,10 +20,49 @@ import Axios from "axios";
 const theme = createTheme();
 
 export default function SignUp() {
+  const[firstError, setFirstError] = useState(false);
+  const[lastError, setLastError] = useState(false);
+  const[userError, setUserError] = useState(false);
+  const[emailError, setEmailError] = useState(false);
+  const[passwordError, setPasswordError] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setFirstError(false);
+    setLastError(false);
+    setUserError(false);
+    setEmailError(false);
+    setPasswordError(false);
     const data = new FormData(event.currentTarget);
+
+    function isValidEmail(email){
+      return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i.test(email);
+    }
+
+    if(!isValidEmail(data.get("email"))){
+      setEmailError(true);
+    }
+
+    if(data.get("firstName") == ''){
+      setFirstError(true);
+    }
+
+    if(data.get("lastName") == ''){
+      setLastError(true);
+    }
+
+    if(data.get("username") == ''){
+      setUserError(true);
+    }
+
+    if(data.get("email") == ''){
+      setEmailError(true);
+    }
+
+    if(data.get("password") == ''){
+      setPasswordError(true);
+    }
+
     Axios.post("http://localhost:3000/user/register", {
       Firstname: data.get("firstName"),
       Lastname: data.get("lastName"),
@@ -102,6 +141,7 @@ export default function SignUp() {
                     id="firstName"
                     label="First Name"
                     autoFocus
+                    error={firstError}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -112,6 +152,7 @@ export default function SignUp() {
                     label="Last Name"
                     name="lastName"
                     autoComplete="family-name"
+                    error={lastError}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -122,6 +163,7 @@ export default function SignUp() {
                     label="UserName"
                     name="username"
                     autoComplete="username"
+                    error={userError}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -132,6 +174,7 @@ export default function SignUp() {
                     label="Email Address"
                     name="email"
                     autoComplete="email"
+                    error={emailError}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -143,6 +186,7 @@ export default function SignUp() {
                     type="password"
                     id="password"
                     autoComplete="new-password"
+                    error={passwordError}
                   />
                 </Grid>
                 <Grid item xs={12}>

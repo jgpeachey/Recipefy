@@ -1,18 +1,12 @@
-import * as React from "react";
-import Avatar from "@mui/material/Avatar";
+import React, {useState} from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { styled } from "@mui/system";
 import NewAppBar from "../Components/NewAppBar";
 import { Paper } from "@mui/material";
 
@@ -21,12 +15,33 @@ const theme = createTheme({
 });
 
 export default function Login() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    if((data.get("email") == "") || (data.get("password") == "")){
-      
+  // const[email, setEmail] = useState('');
+  // const[password, setPassword] = useState('');
+  const[emailError, setEmailError] = useState(false);
+  const[passwordError, setPasswordError] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setEmailError(false);
+    setPasswordError(false);
+    const data = new FormData(e.currentTarget);
+
+    function isValidEmail(email){
+      return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i.test(email);
     }
+
+    if(!isValidEmail(data.get("email"))){
+      setEmailError(true);
+    }
+    
+    if(data.get("email") == ''){
+      setEmailError(true);
+    }
+
+    if(data.get("password") == ''){
+      setPasswordError(true);
+    }
+
     console.log({
       email: data.get("email"),
       password: data.get("password"),
@@ -91,6 +106,7 @@ export default function Login() {
               sx={{ mt: 1 }}
             >
               <TextField
+                // onChange={() => setEmail(e.target.value)}
                 margin="normal"
                 required
                 fullWidth
@@ -99,8 +115,10 @@ export default function Login() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                error={emailError}
               />
               <TextField
+                // onChange={() => setPassword(e.target.value)}
                 margin="normal"
                 required
                 fullWidth
@@ -109,6 +127,7 @@ export default function Login() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                error={passwordError}
               />
               {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
