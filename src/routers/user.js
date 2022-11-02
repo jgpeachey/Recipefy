@@ -88,7 +88,8 @@ router.get("/verifyEmail", async (req, res, next) => {
     const user = await User.findOne({ emailToken: req.query.token });
     if (!user) {
       req.flash("error", "token is invalid. please contact us for assistance");
-      return res.redirect("/");
+      return;
+      //return res.redirect("/");
     }
     user.emailToken = null;
     user.isVerified = true;
@@ -96,7 +97,8 @@ router.get("/verifyEmail", async (req, res, next) => {
   } catch (error) {
     console.log(error);
     req.flash("error", "token is invalid. please contact us for assistance");
-    res.redirect("/");
+    return;
+    //res.redirect("/");
   }
 });
 

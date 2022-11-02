@@ -15,17 +15,24 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import NewAppBar from "../Components/NewAppBar";
 import { Paper } from "@mui/material";
+import Axios from "axios";
 
 const theme = createTheme();
 
 export default function SignUp() {
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    Axios.post("http://localhost:3000/user/register", {
+      Firstname: data.get("firstName"),
+      Lastname: data.get("lastName"),
+      Username: data.get("username"),
+      Email: data.get("email"),
+      Password: data.get("password")}
+    ).then((response) => {
+      console.log("User Created");
+    })
   };
 
   return (
