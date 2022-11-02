@@ -59,6 +59,7 @@ router.post('/register', async function (req, res) {
         Username: req.body.Username,
         Email: req.body.Email,
         emailToken:crypto.randomBytes(64).toString('hex'),
+        refreshToken: "",
         isVerified: false,
         Password: hash
     });
@@ -129,6 +130,7 @@ router.post('/login',async (req, res, next) =>{
             const refreshToken = createRefreshToken(user._id);
 
             user.refreshToken = refreshToken;
+            
 
             sendRefreshToken(res, refreshToken);
             sendAccessToken(req, res, accessToken);

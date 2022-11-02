@@ -11,6 +11,7 @@ const userInfo = mongoose.Schema({
         match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
     },
     emailToken: {type: String},
+    refreshToken: {type: String},
     isVerified: {type: Boolean},
     Password: {type: String, require: true}
 });
