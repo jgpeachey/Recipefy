@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, {useState} from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -21,12 +21,25 @@ const theme = createTheme({
 });
 
 export default function Login() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    if((data.get("email") == "") || (data.get("password") == "")){
-      
+  // const[email, setEmail] = useState('');
+  // const[password, setPassword] = useState('');
+  const[emailError, setEmailError] = useState(false);
+  const[passwordError, setPasswordError] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setEmailError(false);
+    setPasswordError(false);
+    const data = new FormData(e.currentTarget);
+    
+    if(data.get("email") == ''){
+      setEmailError(true);
     }
+
+    if(data.get("password") == ''){
+      setPasswordError(true);
+    }
+
     console.log({
       email: data.get("email"),
       password: data.get("password"),
@@ -91,6 +104,7 @@ export default function Login() {
               sx={{ mt: 1 }}
             >
               <TextField
+                // onChange={() => setEmail(e.target.value)}
                 margin="normal"
                 required
                 fullWidth
@@ -99,8 +113,10 @@ export default function Login() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                error={emailError}
               />
               <TextField
+                // onChange={() => setPassword(e.target.value)}
                 margin="normal"
                 required
                 fullWidth
@@ -109,6 +125,7 @@ export default function Login() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                error={passwordError}
               />
               {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
