@@ -35,9 +35,24 @@ export default function SignUp() {
     setPasswordError(false);
     const data = new FormData(event.currentTarget);
 
-    if(data.get("firstname") == ''){
-      console.log("cheese")
+    if(data.get("firstName") == ''){
       setFirstError(true);
+    }
+
+    if(data.get("lastName") == ''){
+      setLastError(true);
+    }
+
+    if(data.get("username") == ''){
+      setUserError(true);
+    }
+
+    if(data.get("email") == ''){
+      setEmailError(true);
+    }
+
+    if(data.get("password") == ''){
+      setPasswordError(true);
     }
 
     Axios.post("http://localhost:3000/user/register", {
