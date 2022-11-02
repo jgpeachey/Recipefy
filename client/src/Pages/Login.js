@@ -17,15 +17,16 @@ import NewAppBar from "../Components/NewAppBar";
 import { Paper } from "@mui/material";
 
 const theme = createTheme({
-  body: {
-    backgroundImage: "linear - gradient(red, yellow)",
-  },
+  
 });
 
 export default function Login() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    if((data.get("email") == "") || (data.get("password") == "")){
+      
+    }
     console.log({
       email: data.get("email"),
       password: data.get("password"),
@@ -63,9 +64,23 @@ export default function Login() {
               alignItems: "center",
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main", marginTop: 10 }}>
-              <LockOutlinedIcon />
-            </Avatar>
+            {/* <Avatar sx={{ m: 1, bgcolor: "secondary.main", marginTop: 10 }}> */}
+              {/* <LockOutlinedIcon /> */}
+            {/* </Avatar> */}
+            <Typography 
+              variant="h3"
+              marginTop={10}
+              marginBottom={2}
+              sx={{
+                display: { xs: "none", md: "flex" },
+                fontWeight: 700,
+                letterSpacing: ".3rem",
+                textDecoration: "none",
+              }}
+              className="Login-Header"
+            >
+              Recipefy
+            </Typography>
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>

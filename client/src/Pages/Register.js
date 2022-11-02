@@ -66,9 +66,23 @@ export default function SignUp() {
               alignItems: "center",
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main", marginTop: 10 }}>
-              <LockOutlinedIcon />
-            </Avatar>
+            {/* <Avatar sx={{ m: 1, bgcolor: "secondary.main", marginTop: 10 }}> */}
+              {/* <LockOutlinedIcon /> */}
+            {/* </Avatar> */}
+            <Typography 
+              variant="h3"
+              marginTop={10}
+              marginBottom={2}
+              sx={{
+                display: { xs: "none", md: "flex" },
+                fontWeight: 700,
+                letterSpacing: ".3rem",
+                textDecoration: "none",
+              }}
+              className="Login-Header"
+            >
+              Recipefy
+            </Typography>
             <Typography component="h1" variant="h5">
               Sign up
             </Typography>
