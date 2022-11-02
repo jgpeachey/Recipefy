@@ -9,7 +9,7 @@ router.use(express.urlencoded({ limit: '50mb', extended: true }));
 router.post('/newRecipe', async(req, res, next) => {
     const recipeInfo = new Recipe({
         _id: new mongoose.Types.ObjectId(),
-        User_ID: new mongoose.Types.ObjectId(),
+        User_ID: ,
         Title: req.body.Title,
         Ingredients: req.body.Ingredients,
         Instructions: req.body.Instructions,
