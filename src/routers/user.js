@@ -2,9 +2,16 @@ const mongoose = require('mongoose');
 const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 const User = require("../models/user");
 const crypto = require("crypto");
 const sgMail = require('@sendgrid/mail');
+const { 
+    createAccessToken, 
+    createRefreshToken,
+    sendAccessToken,
+    sendRefreshToken
+} = require('../middleware/tokens');
 
 require('dotenv').config();
 
@@ -107,34 +114,46 @@ router.get('/verifyEmail', async(req, res, next) => {
 
 // login api
 router.post('/login',async (req, res, next) =>{
-    const user = await User.findOne({Email: req.body.Email}).exec()
+    const user = await User.findOne({Email: req.body.Email}).exec();
     if(!user) {
         return res.status(409).json({
-            message: "Auth failed"
+            message: "Auth failed",
         });
     }
 
     try {
-        const passAuth = await bcrypt.compare(req.body.Password, user.Password)
+        const passAuth = await bcrypt.compare(req.body.Password, user.Password);
     
         if (passAuth) {
-            return res.status(200).json({
-                message: "Auth successful"
-            });
+            const accessToken = createAccessToken(user._id);
+            const refreshToken = createRefreshToken(user._id);
+
+            user.refreshToken = refreshToken;
+
+            sendRefreshToken(res, refreshToken);
+            sendAccessToken(req, res, accessToken);
+            
         }
+
     } catch(e) {
-        console.log("Error", error);
+        return res.send({
+            error: `${e.message}`,
+        })
     }
 
-    return res.status(401).json({
-        message: "Auth failed"
-    });
 });
 
-// update user
-// router.post('/updateUser', asyc(req, res) => {
+// function authToken(req, res, next) {
+//     const authHeader = req.headers['authorization'];
+//     const token = authHeader && authHeader.split(' ')[1];
+//     if(token === null) return res.sendStatus(401);
 
-// })
+//     jwt.verify(token, process.env.JWT_TOKEN_SECRET, (err, user) => {
+//         if(err) return res.sendStatus(403);
+//         req.user = user;
+//         next();
+//     })
+// }
 
 
 
