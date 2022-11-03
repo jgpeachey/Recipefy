@@ -27,7 +27,7 @@ function NewAppBar() {
 
   function loginorregister(page) {
     if (page === "Login") return "/";
-    else return "register";
+    else return "/register";
   }
 
   return (
