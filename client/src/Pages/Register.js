@@ -23,6 +23,14 @@ import { ClassNames } from "@emotion/react";
 const theme = createTheme();
 
 export default function SignUp() {
+  const app_name = "recipefy-g1";
+  function buildPath(route) {
+    if (process.env.NODE_ENV === "production") {
+      return "https://" + app_name + ".herokuapp.com/" + route;
+    } else {
+      return "http://localhost:3001/" + route;
+    }
+  }
   const navigate = useNavigate();
 
   const [firstError, setFirstError] = useState(false);
@@ -70,7 +78,7 @@ export default function SignUp() {
       setPasswordError(true);
     }
 
-    Axios.post(`http://localhost:${process.env.PORT}/user/register`, {
+    Axios.post(buildPath("user/register"), {
       Firstname: data.get("firstName"),
       Lastname: data.get("lastName"),
       Username: data.get("username"),

@@ -15,6 +15,15 @@ import { useNavigate } from "react-router-dom";
 const theme = createTheme({});
 
 export default function Login() {
+  const app_name = "recipefy-g1";
+  function buildPath(route) {
+    if (process.env.NODE_ENV === "production") {
+      return "https://" + app_name + ".herokuapp.com/" + route;
+    } else {
+      return "http://localhost:3001/" + route;
+    }
+  }
+
   const navigate = useNavigate();
   // const[email, setEmail] = useState('');
   // const[password, setPassword] = useState('');
@@ -45,7 +54,7 @@ export default function Login() {
       setPasswordError(true);
     }
 
-    Axios.post(`http://localhost:${process.env.PORT}/user/login`, {
+    Axios.post(buildPath("user/login"), {
       Email: data.get("email"),
       Password: data.get("password"),
     })

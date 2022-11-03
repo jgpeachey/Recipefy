@@ -10,19 +10,32 @@ require("dotenv").config();
 const connectionString = process.env.API_KEY;
 
 const app = express();
+app.use(cors());
 const port = process.env.PORT || 3001;
-const link = (process.env.NODE_ENV === 'production') ? "https://recipefy-g1.herokuapp.com/" : `https://localhost:${port}`
+app.set("port", process.env.PORT || 3001);
+// const link =
+//   process.env.NODE_ENV === "production"
+//     ? "https://recipefy-g1.herokuapp.com/"
+//     : `https://localhost:${port}`;
 
 app.use(express.static(path.join(__dirname + "/public")));
 
 app.use(cookieParser());
 
-app.use(
-  cors({
-    origin: link,
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: link,
+//     credentials: true,
+//   })
+// );
+if (process.env.NODE_ENV === "production") {
+  // Set static folder
+  app.use(express.static("client/build"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 mongoose.connect(connectionString);
 
