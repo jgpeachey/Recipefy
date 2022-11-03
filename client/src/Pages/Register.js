@@ -38,8 +38,14 @@ export default function Register() {
   const [userError, setUserError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [passwordConfirmError, setPasswordConfirmError] = useState(false);
+
+  const [firstHelper, setFirstHelper] = useState("");
+  const [lastHelper, setLastHelper] = useState("");
   const [usernameHelper, setUsernameHelper] = useState("");
   const [emailHelper, setEmailHelper] = useState("");
+  const [passwordHelper, setPasswordHelper] = useState("");
+  const [passwordConfirmHelper, setPasswordConfirmHelper] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -48,6 +54,14 @@ export default function Register() {
     setUserError(false);
     setEmailError(false);
     setPasswordError(false);
+    setPasswordConfirmError(false);
+
+    setFirstHelper("");
+    setLastHelper("");
+    setUsernameHelper("");
+    setEmailHelper("");
+    setPasswordHelper("");
+    setPasswordConfirmHelper("");
     const data = new FormData(event.currentTarget);
 
     function isValidEmail(email) {
@@ -56,50 +70,70 @@ export default function Register() {
 
     if (!isValidEmail(data.get("email"))) {
       setEmailError(true);
+      setEmailHelper("Invalid email");
     }
 
     if (data.get("firstName") == "") {
       setFirstError(true);
+      setFirstHelper("Enter a first name");
     }
 
     if (data.get("lastName") == "") {
       setLastError(true);
+      setLastHelper("Enter a last name");
     }
 
     if (data.get("username") == "") {
       setUserError(true);
+      setUsernameHelper("Enter an username");
     }
 
     if (data.get("email") == "") {
       setEmailError(true);
+      setEmailHelper("Enter an email");
     }
 
     if (data.get("password") == "") {
       setPasswordError(true);
+      setPasswordHelper("Enter a password");
     }
 
-    Axios.post(buildPath("user/register"), {
-      Firstname: data.get("firstName"),
-      Lastname: data.get("lastName"),
-      Username: data.get("username"),
-      Email: data.get("email"),
-      Password: data.get("password"),
-    })
-      .then((response) => {
-        navigate("/");
-        console.log("User Created");
+    if (data.get("passwordConfirm") == "") {
+      setPasswordConfirmError(true);
+    }
+
+    if(!(data.get("password")==data.get("passwordConfirm")))
+    {
+      setPasswordError(true);
+      setPasswordConfirmError(true);
+      setPasswordConfirmHelper("Passwords do not match");
+    }
+
+    else if(isValidEmail(data.get("email")))
+    {
+      Axios.post(buildPath("user/register"), {
+        Firstname: data.get("firstName"),
+        Lastname: data.get("lastName"),
+        Username: data.get("username"),
+        Email: data.get("email"),
+        Password: data.get("password"),
       })
-      .catch((error) => {
-        setUsernameHelper("");
-        setEmailHelper("");
-        if (error.response.data.error === "Username Exists") {
-          setUsernameHelper(error.response.data.error);
-        }
-        if (error.response.data.error === "Email Exists") {
-          setEmailHelper(error.response.data.error);
-        }
-        console.log(error.response.data);
-      });
+        .then((response) => {
+          navigate("/");
+          console.log("User Created");
+        })
+        .catch((error) => {
+          /*setUsernameHelper("");
+          setEmailHelper("");*/
+          if (error.response.data.error === "Username Exists") {
+            setUsernameHelper(error.response.data.error);
+          }
+          if (error.response.data.error === "Email Exists") {
+            setEmailHelper(error.response.data.error);
+          }
+          console.log(error.response.data);
+        });
+    }
   };
 
   return (
@@ -170,6 +204,7 @@ export default function Register() {
                     label="First Name"
                     autoFocus
                     error={firstError}
+                    helperText={firstHelper}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -181,6 +216,7 @@ export default function Register() {
                     name="lastName"
                     autoComplete="family-name"
                     error={lastError}
+                    helperText={lastHelper}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -217,6 +253,20 @@ export default function Register() {
                     id="password"
                     autoComplete="new-password"
                     error={passwordError}
+                    helperText={passwordHelper}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    name="passwordConfirm"
+                    label="Re-enter Password"
+                    type="password"
+                    id="passwordConfirm"
+                    autoComplete="new-password"
+                    error={passwordConfirmError}
+                    helperText={passwordConfirmHelper}
                   />
                 </Grid>
                 <Grid item xs={12}>
