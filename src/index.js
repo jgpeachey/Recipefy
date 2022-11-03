@@ -11,13 +11,14 @@ const connectionString = process.env.API_KEY;
 
 const app = express();
 const port = process.env.PORT || 3001;
+const link = (process.env.NODE_ENV === 'production') ? "https://recipefy-g1.herokuapp.com/" : `https://localhost:${port}`
 app.use(express.static(path.join(__dirname + "/public")));
 
 app.use(cookieParser());
 
 app.use(
   cors({
-    orgin: "https://localhost:3001",
+    origin: link,
     credentials: true,
   })
 );
