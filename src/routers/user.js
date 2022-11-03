@@ -78,6 +78,7 @@ router.post("/register", async function (req, res) {
             Copy and paste the address below to verify your account.
             http://${req.headers.host}/verifyEmail?token-${result.emailToken}
         `,
+
     html: `
             <h1>Hello</h1>
             <p>Thank you for Registering!<p>
@@ -149,6 +150,7 @@ router.post("/login", async (req, res, next) => {
       error: `${e.message}`,
     });
   }
+
 });
 
 // function authToken(req, res, next) {
@@ -163,4 +165,7 @@ router.post("/login", async (req, res, next) => {
 //     })
 // }
 
+
 module.exports = router;
+
+

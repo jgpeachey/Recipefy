@@ -11,14 +11,15 @@ const connectionString = process.env.API_KEY;
 const app = express();
 const port = process.env.PORT || 3001;
 
+
 app.use(cookieParser());
 
-app.use(
-  cors({
+app.use(cors({
     orgin: "https://localhost:3001",
     credentials: true,
   })
 );
+
 
 mongoose.connect(connectionString);
 
@@ -32,7 +33,9 @@ app.use(async (req, res, next) => {
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
+
 app.use(express.json());
+
 
 app.use("/user", userRouter);
 app.use("/recipe", recipeRouter);
