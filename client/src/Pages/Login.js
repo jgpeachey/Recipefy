@@ -127,7 +127,7 @@ export default function Login() {
               Recipefy
             </Typography>
             <Typography component="h1" variant="h5">
-              Sign in cheese
+              Sign in
             </Typography>
             <Box
               component="form"
