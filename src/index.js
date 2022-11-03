@@ -18,7 +18,7 @@ app.set("port", process.env.PORT || 3001);
 //     ? "https://recipefy-g1.herokuapp.com/"
 //     : `https://localhost:${port}`;
 
-app.use(express.static(path.join(__dirname + "/public")));
+// app.use(express.static(path.join(__dirname + "/public")));
 
 app.use(cookieParser());
 

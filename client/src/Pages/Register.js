@@ -22,7 +22,7 @@ import { ClassNames } from "@emotion/react";
 
 const theme = createTheme();
 
-export default function SignUp() {
+export default function Register() {
   const app_name = "recipefy-g1";
   function buildPath(route) {
     if (process.env.NODE_ENV === "production") {
