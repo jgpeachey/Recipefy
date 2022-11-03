@@ -5,7 +5,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
+// import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -16,7 +16,7 @@ import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import NewAppBar from "../Components/NewAppBar";
 import { Paper } from "@mui/material";
 import Axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import FormHelperText from "@mui/material/FormHelperText";
 import { ClassNames } from "@emotion/react";
 
@@ -238,7 +238,7 @@ export default function Register() {
               </Button>
               <Grid container justifyContent="flex-end">
                 <Grid item>
-                  <Link href="/" variant="body2">
+                  <Link to="/" variant="body2">
                     Already have an account? Sign in
                   </Link>
                 </Grid>
