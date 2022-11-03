@@ -45,7 +45,7 @@ export default function Login() {
       setPasswordError(true);
     }
 
-    Axios.post("https://recipefy-g1.herokuapp.com/user/login", {
+    Axios.post(`http://localhost:${process.env.PORT}/user/login`, {
       Email: data.get("email"),
       Password: data.get("password"),
     })
@@ -171,7 +171,7 @@ export default function Login() {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link to="/register" variant="body2">
+                  <Link href="/register" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
