@@ -70,7 +70,7 @@ export default function SignUp() {
       setPasswordError(true);
     }
 
-    Axios.post("http://localhost:3001/user/register", {
+    Axios.post("https://recipefy-g1.herokuapp.com/user/register", {
       Firstname: data.get("firstName"),
       Lastname: data.get("lastName"),
       Username: data.get("username"),

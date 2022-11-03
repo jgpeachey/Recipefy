@@ -45,7 +45,7 @@ export default function Login() {
       setPasswordError(true);
     }
 
-    Axios.post("http://localhost:3001/user/login", {
+    Axios.post("https://recipefy-g1.herokuapp.com/user/login", {
       Email: data.get("email"),
       Password: data.get("password"),
     })
