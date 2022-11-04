@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
+// import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -10,11 +10,20 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import NewAppBar from "../Components/NewAppBar";
 import { Paper } from "@mui/material";
 import Axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const theme = createTheme({});
 
 export default function Login() {
+  const app_name = "recipefy-g1";
+  function buildPath(route) {
+    if (process.env.NODE_ENV === "production") {
+      return "https://" + app_name + ".herokuapp.com/" + route;
+    } else {
+      return "http://localhost:3001/" + route;
+    }
+  }
+
   const navigate = useNavigate();
   // const[email, setEmail] = useState('');
   // const[password, setPassword] = useState('');
@@ -45,7 +54,7 @@ export default function Login() {
       setPasswordError(true);
     }
 
-    Axios.post("http://localhost:3001/user/login", {
+    Axios.post(buildPath("user/login"), {
       Email: data.get("email"),
       Password: data.get("password"),
     })
@@ -166,12 +175,12 @@ export default function Login() {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2">
+                  <Link to="#" variant="body2">
                     Forgot password?
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="/register" variant="body2">
+                  <Link to="/register" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>

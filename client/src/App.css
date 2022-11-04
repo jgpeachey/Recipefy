@@ -1,78 +1,38 @@
-@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@1,500&display=swap");
-
-.Login-Page {
-  position: relative;
-  width: 1440px;
-  height: 1024px;
-
-  background: linear-gradient(180deg, rgba(60, 71, 172, 0) 8.33%, #3705ff 100%);
-}
-
-.Login-Box {
-  box-sizing: border-box;
-
-  position: absolute;
-  width: 832px;
-  height: 554px;
-  left: 310px;
-  top: 235px;
-
-  background: #ffffff;
-  border: 1px solid #000000;
-  border-radius: 20px;
-}
-
-.Nav-Bar {
-  position: absolute;
-  width: 1440px;
-  height: 100px;
-  left: 0px;
-  top: 0px;
-
-  background: #f1f1f4;
-}
-
-.Login-Header {
-  font-family: "Chakra Petch", sans-serif;
-  color: #0029ff;
-
-  mix-blend-mode: hard-light;
-  -webkit-text-stroke: 2px black;
-  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-
-.Register-Form {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 400px;
-  background: rgb(103, 103, 240);
-  border-radius: 10px;
-}
-
-.Title {
+.App {
   text-align: center;
-  padding: 0 0 10px 0;
-  border-bottom: 1px solid;
 }
 
-.Messages {
-  text-align: center;
-  padding: 0 0 20px 0;
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
 }
 
-.Register-Form form {
-  padding: 0 115px;
-  box-sizing: border-box;
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
 }
 
-.Register-Input {
-  position: relative;
-  border-bottom: 2px solid #adadaa;
-  margin: 15px 0;
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
 }
 
-.MuiTextField-root p {
-  color: red;
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

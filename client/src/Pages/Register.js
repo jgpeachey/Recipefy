@@ -5,7 +5,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
+// import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -16,13 +16,21 @@ import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import NewAppBar from "../Components/NewAppBar";
 import { Paper } from "@mui/material";
 import Axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import FormHelperText from "@mui/material/FormHelperText";
 import { ClassNames } from "@emotion/react";
 
 const theme = createTheme();
 
-export default function SignUp() {
+export default function Register() {
+  const app_name = "recipefy-g1";
+  function buildPath(route) {
+    if (process.env.NODE_ENV === "production") {
+      return "https://" + app_name + ".herokuapp.com/" + route;
+    } else {
+      return "http://localhost:3001/" + route;
+    }
+  }
   const navigate = useNavigate();
 
   const [firstError, setFirstError] = useState(false);
@@ -30,8 +38,14 @@ export default function SignUp() {
   const [userError, setUserError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [passwordConfirmError, setPasswordConfirmError] = useState(false);
+
+  const [firstHelper, setFirstHelper] = useState("");
+  const [lastHelper, setLastHelper] = useState("");
   const [usernameHelper, setUsernameHelper] = useState("");
   const [emailHelper, setEmailHelper] = useState("");
+  const [passwordHelper, setPasswordHelper] = useState("");
+  const [passwordConfirmHelper, setPasswordConfirmHelper] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -40,6 +54,14 @@ export default function SignUp() {
     setUserError(false);
     setEmailError(false);
     setPasswordError(false);
+    setPasswordConfirmError(false);
+
+    setFirstHelper("");
+    setLastHelper("");
+    setUsernameHelper("");
+    setEmailHelper("");
+    setPasswordHelper("");
+    setPasswordConfirmHelper("");
     const data = new FormData(event.currentTarget);
 
     function isValidEmail(email) {
@@ -48,50 +70,70 @@ export default function SignUp() {
 
     if (!isValidEmail(data.get("email"))) {
       setEmailError(true);
+      setEmailHelper("Invalid email");
     }
 
     if (data.get("firstName") == "") {
       setFirstError(true);
+      setFirstHelper("Enter a first name");
     }
 
     if (data.get("lastName") == "") {
       setLastError(true);
+      setLastHelper("Enter a last name");
     }
 
     if (data.get("username") == "") {
       setUserError(true);
+      setUsernameHelper("Enter an username");
     }
 
     if (data.get("email") == "") {
       setEmailError(true);
+      setEmailHelper("Enter an email");
     }
 
     if (data.get("password") == "") {
       setPasswordError(true);
+      setPasswordHelper("Enter a password");
     }
 
-    Axios.post("http://localhost:3001/user/register", {
-      Firstname: data.get("firstName"),
-      Lastname: data.get("lastName"),
-      Username: data.get("username"),
-      Email: data.get("email"),
-      Password: data.get("password"),
-    })
-      .then((response) => {
-        navigate("/");
-        console.log("User Created");
+    if (data.get("passwordConfirm") == "") {
+      setPasswordConfirmError(true);
+    }
+
+    if(!(data.get("password")==data.get("passwordConfirm")))
+    {
+      setPasswordError(true);
+      setPasswordConfirmError(true);
+      setPasswordConfirmHelper("Passwords do not match");
+    }
+
+    else if(isValidEmail(data.get("email")))
+    {
+      Axios.post(buildPath("user/register"), {
+        Firstname: data.get("firstName"),
+        Lastname: data.get("lastName"),
+        Username: data.get("username"),
+        Email: data.get("email"),
+        Password: data.get("password"),
       })
-      .catch((error) => {
-        setUsernameHelper("");
-        setEmailHelper("");
-        if (error.response.data.error === "Username Exists") {
-          setUsernameHelper(error.response.data.error);
-        }
-        if (error.response.data.error === "Email Exists") {
-          setEmailHelper(error.response.data.error);
-        }
-        console.log(error.response.data);
-      });
+        .then((response) => {
+          navigate("/");
+          console.log("User Created");
+        })
+        .catch((error) => {
+          /*setUsernameHelper("");
+          setEmailHelper("");*/
+          if (error.response.data.error === "Username Exists") {
+            setUsernameHelper(error.response.data.error);
+          }
+          if (error.response.data.error === "Email Exists") {
+            setEmailHelper(error.response.data.error);
+          }
+          console.log(error.response.data);
+        });
+    }
   };
 
   return (
@@ -162,6 +204,7 @@ export default function SignUp() {
                     label="First Name"
                     autoFocus
                     error={firstError}
+                    helperText={firstHelper}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -173,6 +216,7 @@ export default function SignUp() {
                     name="lastName"
                     autoComplete="family-name"
                     error={lastError}
+                    helperText={lastHelper}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -209,6 +253,20 @@ export default function SignUp() {
                     id="password"
                     autoComplete="new-password"
                     error={passwordError}
+                    helperText={passwordHelper}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    name="passwordConfirm"
+                    label="Re-enter Password"
+                    type="password"
+                    id="passwordConfirm"
+                    autoComplete="new-password"
+                    error={passwordConfirmError}
+                    helperText={passwordConfirmHelper}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -230,7 +288,7 @@ export default function SignUp() {
               </Button>
               <Grid container justifyContent="flex-end">
                 <Grid item>
-                  <Link href="/" variant="body2">
+                  <Link to="/" variant="body2">
                     Already have an account? Sign in
                   </Link>
                 </Grid>
