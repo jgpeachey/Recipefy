@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const crypto = require("crypto");
 const sgMail = require("@sendgrid/mail");
+const cloudinary = require('../utils/cloudinary');
 const {
   createAccessToken,
   createRefreshToken,
@@ -48,13 +49,25 @@ router.post("/register", async function (req, res) {
     });
   }
 
+  
   const hash = await bcrypt.hash(req.body.Password, 10);
-
+  let picurl = 'https://res.cloudinary.com/dnkvi73mv/image/upload/v1667587410/user_jrsnx1.png'
+  console.log(picurl)
+  if(req.body.pic != ""){
+    console.log(req.body.pic)
+    try{
+      picurl = cloudinary.uploader.upload(req.body.pic).secure_url
+    } catch(error){
+      return res.status(409).json({error: "Image uploading error.", message: error});
+    }
+  }
+  console.log(picurl);
   const userInfo = new User({
     _id: new mongoose.Types.ObjectId(),
     Firstname: req.body.Firstname,
     Lastname: req.body.Lastname,
     Username: req.body.Username,
+    Pic: (picurl == undefined) ? 'https://res.cloudinary.com/dnkvi73mv/image/upload/v1667587410/user_jrsnx1.png' : picurl,
     Email: req.body.Email,
     emailToken: crypto.randomBytes(64).toString("hex"),
     refreshToken: "",
