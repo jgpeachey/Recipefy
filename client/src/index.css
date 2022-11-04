@@ -77,7 +77,20 @@
   color: red;
 }
 
-img{
-  width: 1000px;
-  height: 300px;
+.Carousel{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 64px;
+  gap: 24px;
+
+  position: absolute;
+  width: 1111px;
+  height: 458px;
+  left: 165px;
+  top: 125px;
+}
+
+.Card{
+  margin-left: 300px;
 }
