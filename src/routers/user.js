@@ -56,7 +56,7 @@ router.post("/register", async function (req, res) {
   if(req.body.pic != ""){
     console.log(req.body.pic)
     try{
-      picurl = cloudinary.uploader.upload(req.body.pic).secure_url
+      picurl = await (cloudinary.uploader.upload(req.body.pic)).secure_url
     } catch(error){
       return res.status(409).json({error: "Image uploading error.", message: error});
     }
@@ -136,10 +136,7 @@ router.post("/login", async (req, res, next) => {
     if (passAuth) {
       const accessToken = createAccessToken(user._id);
       const refreshToken = createRefreshToken(user._id);
-      delete user.Password;
-      delete user.emailToken;
-      delete user.isVerified;
-      //console.log(user.Password);
+      
       user.refreshToken = refreshToken;
       return res.status(201).json({
         error: "",
@@ -148,6 +145,7 @@ router.post("/login", async (req, res, next) => {
         lastName: user.Lastname,
         email: user.Email,
         isVerified: user.isVerified,
+        pic: user.Pic
       });
 
       //sendRefreshToken(res, refreshToken);
