@@ -94,3 +94,8 @@
 .Card{
   margin-left: 300px;
 }
+
+.img{
+  width:100%;
+  height: 10rem;
+}

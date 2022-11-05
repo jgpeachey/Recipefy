@@ -7,6 +7,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { fontFamily } from "@mui/system";
 import Carousel from "react-material-ui-carousel";
 import { Grid } from "@mui/material";
+import { Container } from "@mui/material";
 
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
@@ -14,6 +15,7 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
+import RecipeCard from "../Components/RecipeCard";
 //import "react-responsive-carousel/lib/styles/carousel.min.css"; 
 
 const theme = createTheme({});
@@ -94,6 +96,15 @@ export default function Home() {
           </Card>
         </div>
         </Carousel>
+        <Container>
+          <Grid container spacing={3}>
+            <RecipeCard/>
+            <RecipeCard/>
+            <RecipeCard/>
+            <RecipeCard/>
+            <RecipeCard/>
+          </Grid>
+        </Container>
     </ThemeProvider>
     
   );
