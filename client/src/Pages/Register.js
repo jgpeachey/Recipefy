@@ -209,7 +209,7 @@ export default function Register() {
             <Box marginTop={2} alignItems="left">
                 <Button variant="outlined" component="label">
                   Upload Profile Picture
-                  <input id="profilePic" type="file"  accept="image/png, image/jpeg" onChange={handlePicture}/>
+                  <input id="profilePic" type="file"  hidden accept="image/png, image/jpeg" onChange={handlePicture}/>
                 </Button>
             </Box>
             <Box
