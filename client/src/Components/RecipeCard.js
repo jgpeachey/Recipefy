@@ -36,7 +36,7 @@ const theme = createTheme({
 export default function RecipeCard()
 {
     return(
-        <Grid item xs={3}>
+        <Grid item xs={4}>
             <ThemeProvider theme={theme}>
                 <Paper elevation={10}>
                     <Box padding={1}>

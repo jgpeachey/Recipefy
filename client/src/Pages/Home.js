@@ -27,7 +27,7 @@ export default function Home() {
       <HomeAppBar/>
       
       <Carousel className="Carousel"
-      sx={{ mt:0, mb: 0 , ml: 40, mr: 50}}
+      sx={{ mt:0, mb: 0 , ml: 3.5, mr: 0}}
       navButtonsAlwaysVisible={true}
       animation="slide"
       autoPlay={false}
@@ -97,7 +97,7 @@ export default function Home() {
         </div>
         </Carousel>
         <Container>
-          <Grid container spacing={3}>
+          <Grid container spacing={11} marginTop={-8.5}>
             <RecipeCard/>
             <RecipeCard/>
             <RecipeCard/>
