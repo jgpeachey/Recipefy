@@ -3,6 +3,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
+const { verifyAccessToken } = require('../middleware/tokens');
 const User = require("../models/user");
 const crypto = require("crypto");
 const sgMail = require("@sendgrid/mail");
@@ -167,5 +168,44 @@ router.post("/login", async (req, res, next) => {
     });
   }
 });
+
+router.get('/users', verifyAccessToken, async (req, res, next) => {
+    const page = parseInt(req.query.page);
+    const count = parseInt(req.query.count);
+    const search = req.query.search;
+    const filter = {User_ID: req.auth.userId};
+
+    if(search?.length) {
+        filter.Username = {
+            $regex : new RegExp(search, "i")
+        }
+    }
+
+    const startIndex = (page - 1) * count;
+    const endIndex = page * count;
+
+    const results = {};
+
+    if (endIndex < await User.countDocuments(filter).exec()) {
+        results.next = {
+            page: page + 1,
+            count: count
+        }
+    }
+
+    if (startIndex > 0) {
+        results.previous = {
+            page: page - 1,
+            count: count
+        }
+    }
+
+    try {
+        results.results = await User.find(filter).limit(count).skip(startIndex).exec();
+        res.json(results);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+})
 
 module.exports = router;
