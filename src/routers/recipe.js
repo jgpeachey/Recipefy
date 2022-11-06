@@ -8,7 +8,7 @@ const { json } = require('body-parser');
 router.use(express.json({ limit: '50mb' }));
 router.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-router.post('/recipes', verifyAccessToken, async (req, res, next) => {
+router.post('/addrecipe', verifyAccessToken, async (req, res, next) => {
     const recipeInfo = new Recipe({
         _id: new mongoose.Types.ObjectId(),
         User_ID: req.auth.userId,
@@ -30,14 +30,14 @@ router.post('/recipes', verifyAccessToken, async (req, res, next) => {
     });
 })
 
-router.delete('/recipes', verifyAccessToken, async(req, res, next) => {
+router.delete('/removerecipe', verifyAccessToken, async(req, res, next) => {
 
     await Recipe.deleteOne({ _id: req.body._id, User_ID: req.auth.userId});
     return res.status(200).end();
 
 })
 
-router.get('/recipes', verifyAccessToken, async (req, res, next) => {
+router.get('/findRecipe', verifyAccessToken, async (req, res, next) => {
     const page = parseInt(req.query.page);
     const count = parseInt(req.query.count);
     const search = req.query.search;
