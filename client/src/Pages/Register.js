@@ -31,6 +31,23 @@ export default function Register() {
       return "http://localhost:3001/" + route;
     }
   }
+
+  var img="";
+
+  const handlePicture = (event) => {
+    const fileInput = document.getElementById("profilePic");
+    if(fileInput)
+    {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+          img=reader.result;
+        });
+
+      reader.readAsDataURL(file);
+    }
+  }
+
   const navigate = useNavigate();
 
   const [firstError, setFirstError] = useState(false);
@@ -111,11 +128,13 @@ export default function Register() {
 
     else if(isValidEmail(data.get("email")))
     {
+      console.log(img);
       Axios.post(buildPath("user/register"), {
         Firstname: data.get("firstName"),
         Lastname: data.get("lastName"),
         Username: data.get("username"),
         Email: data.get("email"),
+        Pic: img,
         Password: data.get("password"),
       })
         .then((response) => {
@@ -187,6 +206,12 @@ export default function Register() {
             <Typography component="h1" variant="h5">
               Sign up
             </Typography>
+            <Box marginTop={2} alignItems="left">
+                <Button variant="outlined" component="label">
+                  Upload Profile Picture
+                  <input id="profilePic" type="file"  hidden accept="image/png, image/jpeg" onChange={handlePicture}/>
+                </Button>
+            </Box>
             <Box
               component="form"
               noValidate

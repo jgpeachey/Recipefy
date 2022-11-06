@@ -13,7 +13,6 @@ const userInfo = mongoose.Schema({
         match: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i
     },
     emailToken: {type: String},
-    refreshToken: {type: String},
     isVerified: {type: Boolean},
     Password: {type: String, require: true}
 });

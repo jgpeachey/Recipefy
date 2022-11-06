@@ -20,6 +20,8 @@ app.set("port", process.env.PORT || 3001);
 
 // app.use(express.static(path.join(__dirname + "/public")));
 
+app.use(express.json({limit: '25mb'}));
+
 app.use(cookieParser());
 
 // app.use(
