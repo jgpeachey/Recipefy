@@ -3,6 +3,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
+const { verifyAccessToken } = require('../middleware/tokens');
 const User = require("../models/user");
 const crypto = require("crypto");
 const sgMail = require("@sendgrid/mail");
@@ -18,23 +19,29 @@ require("dotenv").config();
 
 sgMail.setApiKey(process.env.SENDGRID_KEY);
 
-// register api
+// register apis
 router.post("/register", async function (req, res) {
-  if (Object.keys(req.body.Username).length === 0) {
+  if(
+    typeof req.body?.Username !== 'string' ||
+    !req.body?.Username?.length
+  ) {
     return res.status(409).json({
       error: "Username required",
     });
   }
-  if (Object.keys(req.body.Email).length === 0) {
+
+  if (!req.body.Email?.length) {
     return res.status(409).json({
       error: "Email required",
     });
   }
+
   if (Object.keys(req.body.Password).length === 0) {
     return res.status(409).json({
       error: "Password required",
     });
   }
+
   const user = await User.findOne({ Username: req.body.Username }).exec();
   if (user) {
     return res.status(409).json({
@@ -49,19 +56,17 @@ router.post("/register", async function (req, res) {
     });
   }
 
-  
   const hash = await bcrypt.hash(req.body.Password, 10);
   let picurl = 'https://res.cloudinary.com/dnkvi73mv/image/upload/v1667587410/user_jrsnx1.png'
-  console.log(picurl)
+  
   if(req.body.pic != ""){
-    console.log(req.body.pic)
     try{
       picurl = await (cloudinary.uploader.upload(req.body.pic)).secure_url
     } catch(error){
       return res.status(409).json({error: "Image uploading error.", message: error});
     }
   }
-  console.log(picurl);
+
   const userInfo = new User({
     _id: new mongoose.Types.ObjectId(),
     Firstname: req.body.Firstname,
@@ -70,17 +75,11 @@ router.post("/register", async function (req, res) {
     Pic: (picurl == undefined) ? 'https://res.cloudinary.com/dnkvi73mv/image/upload/v1667587410/user_jrsnx1.png' : picurl,
     Email: req.body.Email,
     emailToken: crypto.randomBytes(64).toString("hex"),
-    refreshToken: "",
     isVerified: false,
     Password: hash,
   });
 
   const result = await userInfo.save();
-
-  console.log(result);
-  res.status(201).json({
-    error: "",
-  });
 
   const msg = {
     from: "omarashry125@gmail.com",
@@ -99,25 +98,26 @@ router.post("/register", async function (req, res) {
         `,
   };
 
-  await sgMail.send(msg);
+  void sgMail.send(msg);
 
-  console.log("email sent");
+  return res.status(201).json({
+    error: "",
+  });
 });
 
 router.get("/verifyEmail", async (req, res, next) => {
   try {
     const user = await User.findOne({ emailToken: req.query.token });
     if (!user) {
-      req.flash("error", "token is invalid. please contact us for assistance");
-      return res.redirect("/");
+      return res.redirect('{your_frontend_url}/login?error=Email verification failed');
     }
     user.emailToken = null;
     user.isVerified = true;
     await user.save();
+    return res.redirect('{your_frontend_url}/login')
   } catch (error) {
     console.log(error);
-    req.flash("error", "token is invalid. please contact us for assistance");
-    res.redirect("/");
+    return res.redirect('{your_frontend_url}/login?error=Email verification failed');
   }
 });
 
@@ -126,7 +126,7 @@ router.post("/login", async (req, res, next) => {
   const user = await User.findOne({ Email: req.body.Email }).exec();
   if (!user) {
     return res.status(409).json({
-      error: "Invalid Email",
+      error: "Invalid email or password",
     });
   }
 
@@ -135,24 +135,31 @@ router.post("/login", async (req, res, next) => {
 
     if (passAuth) {
       const accessToken = createAccessToken(user._id);
-      const refreshToken = createRefreshToken(user._id);
       
-      user.refreshToken = refreshToken;
+    //   if(user.isVerified === false) {
+    //     return res.status(400).json({
+    //       error: "Please verify your email first",
+    //     }).end();
+    //   }
+
       return res.status(201).json({
         error: "",
-        id: user._id,
-        firstName: user.Firstname,
-        lastName: user.Lastname,
-        email: user.Email,
-        isVerified: user.isVerified,
-        pic: user.Pic
+        user: {
+          id: user._id,
+          firstName: user.Firstname,
+          lastName: user.Lastname,
+          email: user.Email,
+          isVerified: user.isVerified,
+          pic: user.Pic,
+        },
+        auth: {
+          accessToken: accessToken,
+        },
       });
 
-      //sendRefreshToken(res, refreshToken);
-      //sendAccessToken(req, res, accessToken);
     } else {
       return res.status(409).json({
-        error: "Invalid Password",
+        error: "Invalid email or password",
       });
     }
   } catch (e) {
@@ -162,16 +169,43 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-// function authToken(req, res, next) {
-//     const authHeader = req.headers['authorization'];
-//     const token = authHeader && authHeader.split(' ')[1];
-//     if(token === null) return res.sendStatus(401);
+router.get('/users', verifyAccessToken, async (req, res, next) => {
+    const page = parseInt(req.query.page);
+    const count = parseInt(req.query.count);
+    const search = req.query.search;
+    const filter = {User_ID: req.auth.userId};
 
-//     jwt.verify(token, process.env.JWT_TOKEN_SECRET, (err, user) => {
-//         if(err) return res.sendStatus(403);
-//         req.user = user;
-//         next();
-//     })
-// }
+    if(search?.length) {
+        filter.Username = {
+            $regex : new RegExp(search, "i")
+        }
+    }
+
+    const startIndex = (page - 1) * count;
+    const endIndex = page * count;
+
+    const results = {};
+
+    if (endIndex < await User.countDocuments(filter).exec()) {
+        results.next = {
+            page: page + 1,
+            count: count
+        }
+    }
+
+    if (startIndex > 0) {
+        results.previous = {
+            page: page - 1,
+            count: count
+        }
+    }
+
+    try {
+        results.results = await User.find(filter).limit(count).skip(startIndex).exec();
+        res.json(results);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+})
 
 module.exports = router;
