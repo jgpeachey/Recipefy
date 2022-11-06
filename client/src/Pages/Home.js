@@ -7,6 +7,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { fontFamily } from "@mui/system";
 import Carousel from "react-material-ui-carousel";
 import { Grid } from "@mui/material";
+import Box from "@mui/material/Box"
 
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
@@ -23,9 +24,9 @@ export default function Home() {
   return (
     <ThemeProvider theme={theme}>
       <HomeAppBar/>
-      
+    
       <Carousel className="Carousel"
-      sx={{ mt:0, mb: 0 , ml: 40, mr: 50}}
+      sx={{ mt:0, mb: 0 , ml: 6, mr: 0}}
       navButtonsAlwaysVisible={true}
       animation="slide"
       autoPlay={false}
@@ -93,7 +94,7 @@ export default function Home() {
             </CardActions>
           </Card>
         </div>
-        </Carousel>
+      </Carousel>
     </ThemeProvider>
     
   );

@@ -30,13 +30,8 @@ export default function HomeAppBar(){
     setAnchorElNav(null);
     };
 
-    function loginorregister(page) {
-    if (page === "Login") return "/";
-    else return "register";
-    }
-
     return (
-    <AppBar position="fixed">
+    <AppBar position="fixed" >
         <Container maxWidth="xl">
         <Toolbar disableGutters>
             <Typography
@@ -123,7 +118,6 @@ export default function HomeAppBar(){
             <Button
             key={page}
             onClick={handleCloseNavMenu}
-            href={loginorregister(page)}
             sx={{ my: 2, color: "white", display: "block" }}
             >
             {page}
