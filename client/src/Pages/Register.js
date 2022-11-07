@@ -145,7 +145,7 @@ export default function Register() {
         Lastname: data.get("lastName"),
         Username: data.get("username"),
         Email: data.get("email"),
-        Pic: base64Picture,
+        pic: base64Picture,
         Password: data.get("password"),
       })
         .then((response) => {
