@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const ImageCarousel = ({slides}) => {
 const[current, setCurrent] = useState(0)
 const length = slides.length
+const navigate = useNavigate();
 
 const nextSlide = () => {
   setCurrent(current === length - 1 ? 0 : current + 1)
@@ -17,7 +18,7 @@ const prevSlide = () => {
 }
 
 const navigateToRecipe = () =>{
-  
+  navigate("/recipe")
 }
 
 console.log(current)
