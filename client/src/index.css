@@ -77,20 +77,6 @@
   color: red;
 }
 
-.Carousel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px 64px;
-  gap: 24px;
-
-  position: absolute;
-  width: 1000px;
-  height: 458px;
-  left: 165px;
-  top: 125px;  
-}
-
 .Card {
   margin-left: 300px;
 }
@@ -98,4 +84,53 @@
 .img {
   width: 100%;
   height: 11rem;
+}
+
+.slider{
+  position: relative;
+  height: '100vh';
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 150px;
+  margin-bottom: 50px;
+}
+
+.image{
+  width: 650px;
+  height: 380px;
+  border-radius: 10px;
+}
+
+.right-arrow{
+  position:absolute;
+  top: 50%;
+  right:32px;
+  font-size: 3rem;
+  color:#000000;
+  z-index: 10;
+  cursor: pointer;
+  user-select: none;
+}
+
+.left-arrow{
+  position:absolute;
+  top: 50%;
+  left:32px;
+  font-size: 3rem;
+  color:#000000;
+  z-index: 10;
+  cursor: pointer;
+  user-select: none;
+}
+
+.slide{
+  opacity: 0;
+  transition-duration: 1s ease;
+}
+
+.slide.active{
+  opacity: 1;
+  transition-duration: 1s;
+  transform: scale(1.08);
 }
