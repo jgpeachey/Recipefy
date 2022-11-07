@@ -37,18 +37,29 @@ export default function Register() {
     setCaptcha(true);
   };
 
-  var img = "";
+  const [base64Picture, setBase64Picture] = useState("");
+  const [pictureError, setPictureError] = useState("");
+  const [pictureSuccess, setPictureSuccess] = useState("Default selected");
 
   const handlePicture = (event) => {
+    setPictureError("");
+    setPictureSuccess("Default selected");
+    setBase64Picture("");
     const fileInput = document.getElementById("profilePic");
-    if (fileInput) {
+    if (fileInput.files[0]) {
+      if (fileInput.files[0].size > 200000) {
+        console.log("File is too large");
+        setPictureError("File is too large");
+        return;
+      }
       const file = fileInput.files[0];
       const reader = new FileReader();
       reader.addEventListener("load", () => {
-        img = reader.result;
+        setBase64Picture(reader.result);
       });
-
       reader.readAsDataURL(file);
+      setPictureSuccess("File uploaded");
+      console.log("File uploaded");
     }
   };
 
@@ -128,13 +139,13 @@ export default function Register() {
       setPasswordConfirmError(true);
       setPasswordConfirmHelper("Passwords do not match");
     } else if (isValidEmail(data.get("email"))) {
-      console.log(img);
+      console.log(base64Picture);
       Axios.post(buildPath("user/register"), {
         Firstname: data.get("firstName"),
         Lastname: data.get("lastName"),
         Username: data.get("username"),
         Email: data.get("email"),
-        Pic: img,
+        Pic: base64Picture,
         Password: data.get("password"),
       })
         .then((response) => {
@@ -217,6 +228,14 @@ export default function Register() {
                   onChange={handlePicture}
                 />
               </Button>
+              <Box>
+                <Typography color="red" component="h1" variant="subtitle2">
+                  {pictureError}
+                </Typography>
+                <Typography color="green" component="h1" variant="subtitle2">
+                  {pictureSuccess}
+                </Typography>
+              </Box>
             </Box>
             <Box
               component="form"

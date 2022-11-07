@@ -58,10 +58,10 @@ router.post("/register", async function (req, res) {
   const hash = await bcrypt.hash(req.body.Password, 10);
   let picurl =
     "https://res.cloudinary.com/dnkvi73mv/image/upload/v1667587410/user_jrsnx1.png";
-
+  //console.log(req.body.pic);
   if (req.body.pic != "") {
     try {
-      picurl = await cloudinary.uploader.upload(req.body.pic).secure_url;
+      picurl = (await cloudinary.uploader.upload(req.body.pic)).secure_url;
     } catch (error) {
       return res
         .status(409)
@@ -74,10 +74,7 @@ router.post("/register", async function (req, res) {
     Firstname: req.body.Firstname,
     Lastname: req.body.Lastname,
     Username: req.body.Username,
-    Pic:
-      picurl == undefined
-        ? "https://res.cloudinary.com/dnkvi73mv/image/upload/v1667587410/user_jrsnx1.png"
-        : picurl,
+    Pic: picurl,
     Email: req.body.Email,
     emailToken: crypto.randomBytes(64).toString("hex"),
     isVerified: false,
