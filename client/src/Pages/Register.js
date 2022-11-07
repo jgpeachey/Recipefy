@@ -47,7 +47,7 @@ export default function Register() {
     setBase64Picture("");
     const fileInput = document.getElementById("profilePic");
     if (fileInput.files[0]) {
-      if (fileInput.files[0].size > 200000) {
+      if (fileInput.files[0].size > 8388608) {
         console.log("File is too large");
         setPictureError("File is too large");
         return;
