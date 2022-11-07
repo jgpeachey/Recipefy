@@ -8,31 +8,31 @@ import { fontFamily } from "@mui/system";
 import Carousel from "react-material-ui-carousel";
 import { Grid } from "@mui/material";
 import { Container } from "@mui/material";
-import Box from "@mui/material/Box"
+import Box from "@mui/material/Box";
 
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
 import RecipeCard from "../Components/RecipeCard";
-//import "react-responsive-carousel/lib/styles/carousel.min.css"; 
+//import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const theme = createTheme({});
 
 export default function Home() {
-
   return (
     <ThemeProvider theme={theme}>
-      <HomeAppBar/>
-    
-      <Carousel className="Carousel"
-      sx={{ mt:0, mb: 0 , ml: 40, mr: 50}}
-      navButtonsAlwaysVisible={true}
-      animation="slide"
-      autoPlay={false}
-      >  
+      <HomeAppBar />
+
+      <Carousel
+        className="Carousel"
+        sx={{ mt: 0, mb: 0, ml: 40, mr: 50 }}
+        navButtonsAlwaysVisible={true}
+        animation="slide"
+        autoPlay={false}
+      >
         <div>
           <Card sx={{ maxWidth: 500 }} className="Card">
             <CardMedia
@@ -96,9 +96,16 @@ export default function Home() {
             </CardActions>
           </Card>
         </div>
-        </Carousel>
+      </Carousel>
+      <Container>
+        <Grid container spacing={11} marginTop={-8.5}>
+          <RecipeCard />
+          <RecipeCard />
+          <RecipeCard />
+          <RecipeCard />
+          <RecipeCard />
+        </Grid>
+      </Container>
     </ThemeProvider>
-    
   );
-
 }

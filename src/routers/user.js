@@ -3,17 +3,19 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const { verifyAccessToken } = require('../middleware/tokens');
+const { verifyAccessToken } = require("../middleware/tokens");
 const User = require("../models/user");
 const crypto = require("crypto");
 const sgMail = require("@sendgrid/mail");
-const cloudinary = require('../utils/cloudinary');
+const cloudinary = require("../utils/cloudinary");
+const axios = require("axios");
 const {
   createAccessToken,
   createRefreshToken,
   sendAccessToken,
   sendRefreshToken,
 } = require("../middleware/tokens");
+const { appendFile } = require("fs");
 
 require("dotenv").config();
 
@@ -21,10 +23,7 @@ sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 // register apis
 router.post("/register", async function (req, res) {
-  if(
-    typeof req.body?.Username !== 'string' ||
-    !req.body?.Username?.length
-  ) {
+  if (typeof req.body?.Username !== "string" || !req.body?.Username?.length) {
     return res.status(409).json({
       error: "Username required",
     });
@@ -57,13 +56,16 @@ router.post("/register", async function (req, res) {
   }
 
   const hash = await bcrypt.hash(req.body.Password, 10);
-  let picurl = 'https://res.cloudinary.com/dnkvi73mv/image/upload/v1667587410/user_jrsnx1.png'
-  
-  if(req.body.pic != ""){
-    try{
-      picurl = await (cloudinary.uploader.upload(req.body.pic)).secure_url
-    } catch(error){
-      return res.status(409).json({error: "Image uploading error.", message: error});
+  let picurl =
+    "https://res.cloudinary.com/dnkvi73mv/image/upload/v1667587410/user_jrsnx1.png";
+
+  if (req.body.pic != "") {
+    try {
+      picurl = await cloudinary.uploader.upload(req.body.pic).secure_url;
+    } catch (error) {
+      return res
+        .status(409)
+        .json({ error: "Image uploading error.", message: error });
     }
   }
 
@@ -72,7 +74,10 @@ router.post("/register", async function (req, res) {
     Firstname: req.body.Firstname,
     Lastname: req.body.Lastname,
     Username: req.body.Username,
-    Pic: (picurl == undefined) ? 'https://res.cloudinary.com/dnkvi73mv/image/upload/v1667587410/user_jrsnx1.png' : picurl,
+    Pic:
+      picurl == undefined
+        ? "https://res.cloudinary.com/dnkvi73mv/image/upload/v1667587410/user_jrsnx1.png"
+        : picurl,
     Email: req.body.Email,
     emailToken: crypto.randomBytes(64).toString("hex"),
     isVerified: false,
@@ -109,15 +114,19 @@ router.get("/verifyEmail", async (req, res, next) => {
   try {
     const user = await User.findOne({ emailToken: req.query.token });
     if (!user) {
-      return res.redirect('{your_frontend_url}/login?error=Email verification failed');
+      return res.redirect(
+        "{your_frontend_url}/login?error=Email verification failed"
+      );
     }
     user.emailToken = null;
     user.isVerified = true;
     await user.save();
-    return res.redirect('{your_frontend_url}/login')
+    return res.redirect("{your_frontend_url}/login");
   } catch (error) {
     console.log(error);
-    return res.redirect('{your_frontend_url}/login?error=Email verification failed');
+    return res.redirect(
+      "{your_frontend_url}/login?error=Email verification failed"
+    );
   }
 });
 
@@ -126,7 +135,7 @@ router.post("/login", async (req, res, next) => {
   const user = await User.findOne({ Email: req.body.Email }).exec();
   if (!user) {
     return res.status(409).json({
-      error: "Invalid email or password",
+      error: "Invalid Email",
     });
   }
 
@@ -135,12 +144,12 @@ router.post("/login", async (req, res, next) => {
 
     if (passAuth) {
       const accessToken = createAccessToken(user._id);
-      
-    //   if(user.isVerified === false) {
-    //     return res.status(400).json({
-    //       error: "Please verify your email first",
-    //     }).end();
-    //   }
+
+      //   if(user.isVerified === false) {
+      //     return res.status(400).json({
+      //       error: "Please verify your email first",
+      //     }).end();
+      //   }
 
       return res.status(201).json({
         error: "",
@@ -156,10 +165,9 @@ router.post("/login", async (req, res, next) => {
           accessToken: accessToken,
         },
       });
-
     } else {
       return res.status(409).json({
-        error: "Invalid email or password",
+        error: "Invalid Password",
       });
     }
   } catch (e) {
@@ -169,43 +177,62 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.get('/users', verifyAccessToken, async (req, res, next) => {
-    const page = parseInt(req.query.page);
-    const count = parseInt(req.query.count);
-    const search = req.query.search;
-    const filter = {User_ID: req.auth.userId};
+router.get("/users", verifyAccessToken, async (req, res, next) => {
+  const page = parseInt(req.query.page);
+  const count = parseInt(req.query.count);
+  const search = req.query.search;
+  const filter = { User_ID: req.auth.userId };
 
-    if(search?.length) {
-        filter.Username = {
-            $regex : new RegExp(search, "i")
-        }
-    }
+  if (search?.length) {
+    filter.Username = {
+      $regex: new RegExp(search, "i"),
+    };
+  }
 
-    const startIndex = (page - 1) * count;
-    const endIndex = page * count;
+  const startIndex = (page - 1) * count;
+  const endIndex = page * count;
 
-    const results = {};
+  const results = {};
 
-    if (endIndex < await User.countDocuments(filter).exec()) {
-        results.next = {
-            page: page + 1,
-            count: count
-        }
-    }
+  if (endIndex < (await User.countDocuments(filter).exec())) {
+    results.next = {
+      page: page + 1,
+      count: count,
+    };
+  }
 
-    if (startIndex > 0) {
-        results.previous = {
-            page: page - 1,
-            count: count
-        }
-    }
+  if (startIndex > 0) {
+    results.previous = {
+      page: page - 1,
+      count: count,
+    };
+  }
 
-    try {
-        results.results = await User.find(filter).limit(count).skip(startIndex).exec();
-        res.json(results);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-})
+  try {
+    results.results = await User.find(filter)
+      .limit(count)
+      .skip(startIndex)
+      .exec();
+    res.json(results);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// router.post("/catch", async (req, res, next) => {
+//   const { token } = req.body;
+//   await axios.post(
+//     `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.REACT_APP_SECRET_KEY}&response=${token}`
+//   );
+//   if (res.status(200)) {
+//     return res.status(200).json({
+//       pass: "Human",
+//     });
+//   } else {
+//     return res.status(200).json({
+//       pass: "Robot",
+//     });
+//   }
+// });
 
 module.exports = router;
