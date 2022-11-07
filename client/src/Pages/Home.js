@@ -41,14 +41,6 @@ export default function Home() {
               image="https://www.starfrit.com/media/contentmanager/content/cache/1070x1070/recipes/e1_r1_spaghetti.jpg"
               alt="spag"
             />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                Spaghet
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Spaghetti is fire. Lemme show you how.
-              </Typography>
-            </CardContent>
             <CardActions>
               <Button size="small">View Recipe</Button>
             </CardActions>
@@ -62,14 +54,6 @@ export default function Home() {
               image="https://www.melskitchencafe.com/wp-content/uploads/french-bread2.jpg"
               alt="brad"
             />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                Bred
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Bread tastes yummy and carbs
-              </Typography>
-            </CardContent>
             <CardActions>
               <Button size="small">View Recipe</Button>
             </CardActions>
@@ -83,14 +67,6 @@ export default function Home() {
               image="https://www.acouplecooks.com/wp-content/uploads/2021/09/Tomato-Soup-002s.jpg"
               alt="soup"
             />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                Zoop
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Slurp
-              </Typography>
-            </CardContent>
             <CardActions>
               <Button size="small">View Recipe</Button>
             </CardActions>
