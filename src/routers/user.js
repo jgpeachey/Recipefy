@@ -8,12 +8,7 @@ const User = require("../models/user");
 const crypto = require("crypto");
 const sgMail = require("@sendgrid/mail");
 const cloudinary = require('../utils/cloudinary');
-const {
-  createAccessToken,
-  createRefreshToken,
-  sendAccessToken,
-  sendRefreshToken,
-} = require("../middleware/tokens");
+const {createAccessToken} = require("../middleware/tokens");
 
 require("dotenv").config();
 
@@ -21,22 +16,22 @@ sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 // register apis
 router.post("/register", async function (req, res) {
-  if(
-    typeof req.body?.Username !== 'string' ||
-    !req.body?.Username?.length
-  ) {
+  if(typeof req.body?.Username !== 'string' ||
+    !req.body?.Username?.length ) {
     return res.status(409).json({
       error: "Username required",
     });
   }
 
-  if (!req.body.Email?.length) {
+  if(typeof req.body?.Email !== 'string' ||
+    !req.body?.Email?.length ) {
     return res.status(409).json({
       error: "Email required",
     });
   }
 
-  if (Object.keys(req.body.Password).length === 0) {
+  if(typeof req.body?.Password !== 'string' ||
+    !req.body?.Password?.length ) {
     return res.status(409).json({
       error: "Password required",
     });
@@ -82,7 +77,7 @@ router.post("/register", async function (req, res) {
   const result = await userInfo.save();
 
   const msg = {
-    from: "omarashry125@gmail.com",
+    from: "recipefyservices@gmail.com",
     to: req.body.Email,
     subject: "Recipefy - Verify your Email",
     text: `
