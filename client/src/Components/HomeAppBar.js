@@ -10,122 +10,142 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
+import { Link } from "react-router-dom";
 
-import SearchIcon from '@mui/icons-material/Search';
-import GroupIcon from '@mui/icons-material/Group';
-import SendIcon from '@mui/icons-material/Send';
-import PostAddOutlinedIcon from '@mui/icons-material/PostAddOutlined';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import SearchIcon from "@mui/icons-material/Search";
+import GroupIcon from "@mui/icons-material/Group";
+import SendIcon from "@mui/icons-material/Send";
+import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
-const pages = [<SearchIcon/>, <GroupIcon/>, <SendIcon/>, <PostAddOutlinedIcon/>, <AccountCircleIcon/>, "Trending", "Categories"];
+const pages = [
+  <SearchIcon />,
+  <GroupIcon />,
+  <SendIcon />,
+  <PostAddOutlinedIcon />,
+  <AccountCircleIcon />,
+  "Trending",
+  "Categories",
+];
 
-export default function HomeAppBar(){
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
+export default function HomeAppBar() {
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
 
-    const handleOpenNavMenu = (event) => {
+  const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
-    };
+  };
 
-    const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = () => {
     setAnchorElNav(null);
-    };
+  };
 
-    return (
-    <AppBar position="fixed" >
-        <Container maxWidth="xl">
+  function loginorregister(page) {
+    if (page === "Login") return "/";
+    else return "/register";
+  }
+
+  return (
+    <AppBar position="fixed">
+      <Container maxWidth="xl">
         <Toolbar disableGutters>
-            <Typography
+          <Typography
             variant="h6"
             noWrap
             component="a"
             href="/"
             sx={{
-                mr: 2,
-                display: { xs: "none", md: "flex" },
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
+              mr: 2,
+              display: { xs: "none", md: "flex" },
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
             }}
-            >
+          >
             {/* <Logo /> */}
             Recipefy
-            </Typography>
+          </Typography>
 
-            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleOpenNavMenu}
-                color="inherit"
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
             >
-                <MenuIcon />
+              <MenuIcon />
             </IconButton>
             <Menu
-                id="menu-appbar"
-                anchorEl={anchorElNav}
-                anchorOrigin={{
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
                 vertical: "bottom",
                 horizontal: "left",
-                }}
-                keepMounted
-                transformOrigin={{
+              }}
+              keepMounted
+              transformOrigin={{
                 vertical: "top",
                 horizontal: "left",
-                }}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
-                sx={{
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
                 display: { xs: "block", md: "none" },
-                }}
+              }}
             >
-                {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page}</Typography>
+              {pages.map((page) => (
+                <MenuItem
+                  key={page}
+                  component={Link}
+                  to={loginorregister(page)}
+                  onClick={handleCloseNavMenu}
+                >
+                  <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
-                ))}
+              ))}
             </Menu>
-            </Box>
-            <Typography
+          </Box>
+          <Typography
             variant="h5"
             noWrap
             component="a"
             href=""
             sx={{
-                mr: 2,
-                display: { xs: "flex", md: "none" },
-                flexGrow: 1,
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
+              mr: 2,
+              display: { xs: "flex", md: "none" },
+              flexGrow: 1,
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
             }}
-            >
+          >
             Recipefy
-            </Typography>
-            <Box
+          </Typography>
+          <Box
             sx={{
-                flexGrow: 1,
-                display: { xs: "none", md: "flex" },
-                justifyContent: "right",
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+              justifyContent: "right",
             }}
-            >
+          >
             {pages.map((page) => (
-            <Button
-            key={page}
-            onClick={handleCloseNavMenu}
-            sx={{ my: 2, color: "white", display: "block" }}
-            >
-            {page}
-            </Button>
+              <Button
+                key={page}
+                onClick={handleCloseNavMenu}
+                href={loginorregister(page)}
+                sx={{ my: 2, color: "white", display: "block" }}
+              >
+                {page}
+              </Button>
             ))}
-            </Box>
+          </Box>
         </Toolbar>
-        </Container>
+      </Container>
     </AppBar>
-    );
+  );
 }
