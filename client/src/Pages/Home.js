@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import HomeAppBar from "../Components/HomeAppBar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Grid } from "@mui/material";
@@ -12,6 +12,7 @@ import { SliderData } from '../Components/SliderData';
 const theme = createTheme({});
 
 export default function Home() {
+
   return (
     <ThemeProvider theme={theme}>
       <HomeAppBar />
