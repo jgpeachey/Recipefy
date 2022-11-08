@@ -10,6 +10,7 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
+import { Link } from "react-router-dom";
 
 const pages = ["Login", "Register"];
 
@@ -26,7 +27,7 @@ function NewAppBar() {
 
   function loginorregister(page) {
     if (page === "Login") return "/";
-    else return "register";
+    else return "/register";
   }
 
   return (
@@ -82,7 +83,12 @@ function NewAppBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem
+                  key={page}
+                  component={Link}
+                  to={loginorregister(page)}
+                  onClick={handleCloseNavMenu}
+                >
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -116,8 +122,9 @@ function NewAppBar() {
             {pages.map((page) => (
               <Button
                 key={page}
+                component={Link}
+                to={loginorregister(page)}
                 onClick={handleCloseNavMenu}
-                href={loginorregister(page)}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
                 {page}

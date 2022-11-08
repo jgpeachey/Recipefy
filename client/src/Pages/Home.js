@@ -1,14 +1,32 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
-import Typography from "@mui/material/Typography";
-import Axios from "axios";
-import NewAppBar from "../Components/NewAppBar";
 import HomeAppBar from "../Components/HomeAppBar";
-import { ThemeProvider } from "@emotion/react";
-import { fontFamily } from "@mui/system";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { Grid } from "@mui/material";
+import { Container } from "@mui/material";
+
+import RecipeCard from "../Components/RecipeCard";
+import ImageCarousel from '../Components/ImageCarousel'
+
+import { SliderData } from '../Components/SliderData';
+
+const theme = createTheme({});
 
 export default function Home() {
   return (
-    <HomeAppBar/>
+    <ThemeProvider theme={theme}>
+      <HomeAppBar />
+
+      <ImageCarousel slides={SliderData}/>
+
+      <Container>
+        <Grid container spacing={11} marginTop={-8.5}>
+          <RecipeCard />
+          <RecipeCard />
+          <RecipeCard />
+          <RecipeCard />
+          <RecipeCard />
+        </Grid>
+      </Container>
+    </ThemeProvider>
   );
 }
