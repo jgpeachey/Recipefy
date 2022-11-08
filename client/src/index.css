@@ -76,3 +76,82 @@
 .MuiTextField-root p {
   color: red;
 }
+
+.Card {
+  margin-left: 300px;
+}
+
+.img {
+  width: 100%;
+  height: 11rem;
+}
+
+.slider{
+  position: relative;
+  height: '100vh';
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 150px;
+  margin-bottom: 50px;
+}
+
+.image{
+  width: 650px;
+  height: 380px;
+  border-radius: 10px;
+}
+
+.right-arrow{
+  position:absolute;
+  top: 50%;
+  right:32px;
+  font-size: 3rem;
+  color:#000000;
+  z-index: 10;
+  cursor: pointer;
+  user-select: none;
+}
+
+.left-arrow{
+  position:absolute;
+  top: 50%;
+  left:32px;
+  font-size: 3rem;
+  color:#000000;
+  z-index: 10;
+  cursor: pointer;
+  user-select: none;
+}
+
+.slide{
+  opacity: 0;
+  transition-duration: 1s ease;
+}
+
+.slide.active{
+  opacity: 1;
+  transition-duration: 1s;
+  transform: scale(1.08);
+}
+
+.homeLogo{
+  font-family: "Chakra Petch", sans-serif;
+  color: #ffffff;
+
+  font-weight: 200;
+  font-size: 40px;
+  line-height: 52px;
+
+  mix-blend-mode: hard-light;
+  -webkit-text-stroke: 2px black;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.navButton{
+  
+}
