@@ -61,9 +61,9 @@ router.post("/register", async function (req, res) {
   let picurl =
     "https://res.cloudinary.com/dnkvi73mv/image/upload/v1667587410/user_jrsnx1.png";
   //console.log(req.body.pic);
-  if (req.body.pic != "") {
+  if (req.body.Pic != "") {
     try {
-      picurl = (await cloudinary.uploader.upload(req.body.pic)).secure_url;
+      picurl = (await cloudinary.uploader.upload(req.body.Pic)).secure_url;
     } catch (error) {
       return res
         .status(409)

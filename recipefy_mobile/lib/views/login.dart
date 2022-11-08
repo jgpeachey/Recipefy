@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'register.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
-  static const String _title = 'Recipefy';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text(_title),
+        title: const Text("Recipefy"),
+        centerTitle: true,
       ),
       body: Center(
           child: Container(
@@ -21,13 +22,21 @@ class LoginPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SizedBox(
-                  height: 155.0,
+                  height: 180.0,
                   child: Image.asset(
                     "assets/images/temp_login_image.jpg",
                     fit: BoxFit.contain,
                   ),
                 ),
-                const SizedBox(height: 40.0),
+                const SizedBox(height: 60.0),
+                const Text(
+                  "Sign In",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 36,
+                  ),
+                ),
+                const SizedBox(height: 30.0),
                 TextField(
                   obscureText: false,
                   decoration: InputDecoration(
@@ -59,10 +68,10 @@ class LoginPage extends StatelessWidget {
                       onPressed: () {}, // Check validity and log in
                       child: const Text("Login", textAlign: TextAlign.center)),
                 ),
-                const SizedBox(height: 35.0),
+                const SizedBox(height: 40.0),
                 const Text("Don't Have an Account?",
                     textAlign: TextAlign.center),
-                const SizedBox(height: 35.0),
+                const SizedBox(height: 15.0),
                 Material(
                   elevation: 5.0,
                   borderRadius: BorderRadius.circular(30.0),
@@ -71,7 +80,10 @@ class LoginPage extends StatelessWidget {
                       minWidth: MediaQuery.of(context).size.width,
                       padding:
                           const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                      onPressed: () {}, // Check validity and log in
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const RegisterPage()));
+                      }, // Navigate to Register
                       child:
                           const Text("Sign Up", textAlign: TextAlign.center)),
                 ),

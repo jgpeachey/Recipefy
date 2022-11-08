@@ -32,8 +32,8 @@ export default function HomeAppBar() {
           <div className="homeLogo"  sx={{ flexGrow: 1}}>
             Recipefy
           </div>
-          <Button color="inherit">Categories</Button>
-          <Button color="inherit" sx={{ml:2}}>Trending</Button>
+          <Button className="navButton" color="inherit">Categories</Button>
+          <Button className="navButton" color="inherit" sx={{ml:2}}>Trending</Button>
           <SearchIcon sx={{ml:2}}></SearchIcon>
         </Toolbar>
       </AppBar>

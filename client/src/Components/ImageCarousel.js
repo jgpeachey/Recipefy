@@ -3,29 +3,29 @@ import { SliderData } from './SliderData';
 import {FaArrowAltCircleRight, FaArrowAltCircleLeft} from 'react-icons/fa'
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import Modal from './Modal';
 
 const ImageCarousel = ({slides}) => {
-const[current, setCurrent] = useState(0)
-const length = slides.length
-const navigate = useNavigate();
+  const[current, setCurrent] = useState(0)
+  const length = slides.length
+  const navigate = useNavigate();
+  const[openModal, setOpenModal] = useState(false);
 
-const nextSlide = () => {
-  setCurrent(current === length - 1 ? 0 : current + 1)
-}
+  const nextSlide = () => {
+    setCurrent(current === length - 1 ? 0 : current + 1)
+  }
 
-const prevSlide = () => {
-  setCurrent(current === 0 ? length - 1 : current - 1)
-}
+  const prevSlide = () => {
+    setCurrent(current === 0 ? length - 1 : current - 1)
+  }
 
-const navigateToRecipe = () =>{
-  navigate("/recipe")
-}
+  const navigateToRecipe = () =>{
+    
+  }
 
-console.log(current)
-
-if(!Array.isArray(slides) || slides.length <= 0){
-  return
-}
+  if(!Array.isArray(slides) || slides.length <= 0){
+    return
+  }
 
   return (
     <section className="slider">
@@ -34,7 +34,8 @@ if(!Array.isArray(slides) || slides.length <= 0){
       {SliderData.map((slide, index) => {
         return(
           <div className={index === current ? 'slide active' : 'slide'} key={index}>
-            {index === current && (<img src={slide.image} alt='food' className='image' onClick={navigateToRecipe}/>)}
+            {index === current && (<img src={slide.image} alt='food' className='image' onClick={() => {setOpenModal(true)}}/>)}
+            {openModal && <Modal closeModal={setOpenModal}/>}
           </div>
         )
 
