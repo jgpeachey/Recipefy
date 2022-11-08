@@ -19,10 +19,12 @@ import Axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import FormHelperText from "@mui/material/FormHelperText";
 import { ClassNames } from "@emotion/react";
+import ReCaptchaV2 from "react-google-recaptcha";
 
 const theme = createTheme();
 
 export default function Register() {
+  const [captcha, setCaptcha] = useState(false);
   const app_name = "recipefy-g1";
   function buildPath(route) {
     if (process.env.NODE_ENV === "production") {
@@ -31,22 +33,35 @@ export default function Register() {
       return "http://localhost:3001/" + route;
     }
   }
+  const verify = (recaptchaResponse) => {
+    setCaptcha(true);
+  };
 
-  var img="";
+  const [base64Picture, setBase64Picture] = useState("");
+  const [pictureError, setPictureError] = useState("");
+  const [pictureSuccess, setPictureSuccess] = useState("Default selected");
 
   const handlePicture = (event) => {
+    setPictureError("");
+    setPictureSuccess("Default selected");
+    setBase64Picture("");
     const fileInput = document.getElementById("profilePic");
-    if(fileInput)
-    {
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-        reader.addEventListener("load", () => {
-          img=reader.result;
-        });
-
+    if (fileInput.files[0]) {
+      if (fileInput.files[0].size > 200000) {
+        console.log("File is too large");
+        setPictureError("File is too large");
+        return;
+      }
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        setBase64Picture(reader.result);
+      });
       reader.readAsDataURL(file);
+      setPictureSuccess("File uploaded");
+      console.log("File uploaded");
     }
-  }
+  };
 
   const navigate = useNavigate();
 
@@ -119,22 +134,18 @@ export default function Register() {
       setPasswordConfirmError(true);
     }
 
-    if(!(data.get("password")==data.get("passwordConfirm")))
-    {
+    if (!(data.get("password") == data.get("passwordConfirm"))) {
       setPasswordError(true);
       setPasswordConfirmError(true);
       setPasswordConfirmHelper("Passwords do not match");
-    }
-
-    else if(isValidEmail(data.get("email")))
-    {
-      console.log(img);
+    } else if (isValidEmail(data.get("email"))) {
+      console.log(base64Picture);
       Axios.post(buildPath("user/register"), {
         Firstname: data.get("firstName"),
         Lastname: data.get("lastName"),
         Username: data.get("username"),
         Email: data.get("email"),
-        Pic: img,
+        Pic: base64Picture,
         Password: data.get("password"),
       })
         .then((response) => {
@@ -207,10 +218,24 @@ export default function Register() {
               Sign up
             </Typography>
             <Box marginTop={2} alignItems="left">
-                <Button variant="outlined" component="label">
-                  Upload Profile Picture
-                  <input id="profilePic" type="file"  hidden accept="image/png, image/jpeg" onChange={handlePicture}/>
-                </Button>
+              <Button variant="outlined" component="label">
+                Upload Profile Picture
+                <input
+                  id="profilePic"
+                  type="file"
+                  hidden
+                  accept="image/png, image/jpeg"
+                  onChange={handlePicture}
+                />
+              </Button>
+              <Box>
+                <Typography color="red" component="h1" variant="subtitle2">
+                  {pictureError}
+                </Typography>
+                <Typography color="green" component="h1" variant="subtitle2">
+                  {pictureSuccess}
+                </Typography>
+              </Box>
             </Box>
             <Box
               component="form"
@@ -295,19 +320,30 @@ export default function Register() {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  {/* <FormControlLabel
-                  control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
-                  }
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                /> */}
+                  <FormControlLabel
+                    control={<Checkbox value="allowEmails" color="primary" />}
+                    label="You consent to receiving emails from us for verification. You must check this."
+                  />
                 </Grid>
               </Grid>
+              <div
+                style={{
+                  marginTop: 1,
+                  display: "flex",
+                  placeContent: "center",
+                }}
+              >
+                <ReCaptchaV2
+                  sitekey={process.env.REACT_APP_SITE_KEY}
+                  onChange={verify}
+                />
+              </div>
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                disabled={!captcha}
               >
                 Sign Up
               </Button>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -11,6 +11,7 @@ import NewAppBar from "../Components/NewAppBar";
 import { Paper } from "@mui/material";
 import Axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import ReCaptchaV2 from "react-google-recaptcha";
 
 const theme = createTheme({});
 
@@ -29,10 +30,18 @@ export default function Login() {
   // const[password, setPassword] = useState('');
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [captcha, setCaptcha] = useState(false);
   const [emailHelper, setEmailHelper] = useState("");
   const [passwordHelper, setPasswordHelper] = useState("");
 
+  const verify = (recaptchaResponse) => {
+    setCaptcha(true);
+  };
+
   const handleSubmit = (e) => {
+    // const token = captchaRef.current.getValue();
+    // console.log(token);
+    // captchaRef.current.reset();
     e.preventDefault();
     setEmailError(false);
     setPasswordError(false);
@@ -53,7 +62,6 @@ export default function Login() {
     if (data.get("password") == "") {
       setPasswordError(true);
     }
-
     Axios.post(buildPath("user/login"), {
       Email: data.get("email"),
       Password: data.get("password"),
@@ -165,11 +173,29 @@ export default function Login() {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             /> */}
+              <div
+                style={{
+                  marginTop: 1,
+                  display: "flex",
+                  placeContent: "center",
+                }}
+              >
+                <ReCaptchaV2
+                  sitekey={process.env.REACT_APP_SITE_KEY}
+                  onChange={verify}
+                />
+                {/* <Reaptcha
+                  sitekey={process.env.REACT_APP_SITE_KEY}
+                  explicit
+                  onVerify={verify}
+                /> */}
+              </div>
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                disabled={!captcha}
               >
                 Sign In
               </Button>
