@@ -11,10 +11,8 @@ const cloudinary = require("../utils/cloudinary");
 const axios = require("axios");
 const {
   createAccessToken,
-  createRefreshToken,
-  sendAccessToken,
-  sendRefreshToken,
 } = require("../middleware/tokens");
+
 const { appendFile } = require("fs");
 
 require("dotenv").config();
@@ -92,13 +90,13 @@ router.post("/register", async function (req, res) {
     text: `
             Hey! Thank you for registering!
             Copy and paste the address below to verify your account.
-            http://${req.headers.host}/verifyEmail?token-${result.emailToken}
+            http://localhost:3001/user/verify?token-${result.emailToken}
         `,
     html: `
             <h1>Hello</h1>
             <p>Thank you for Registering!<p>
             <p>Please click the link below to verify your account<p>
-            <a href= "http://${req.headers.host}/verifyEmail?token-${result.emailToken}">Verify your Account</a>
+            <a href= "http://localhost:3001/user/verify?token-${result.emailToken}">Verify your Account</a>
         `,
   };
 
@@ -109,25 +107,26 @@ router.post("/register", async function (req, res) {
   });
 });
 
-router.get("/verifyEmail", async (req, res, next) => {
+router.get("/verify", async (req, res, next) => {
   try {
     const user = await User.findOne({ emailToken: req.query.token });
     if (!user) {
-      return res.redirect(
-        "{your_frontend_url}/login?error=Email verification failed"
-      );
+        return res.status(201).json({
+            error: "user DNE",
+          });
     }
     user.emailToken = null;
     user.isVerified = true;
     await user.save();
-    return res.redirect("{your_frontend_url}/login");
+    return res.redirect("http://localhost:3000");
   } catch (error) {
     console.log(error);
-    return res.redirect(
-      "{your_frontend_url}/login?error=Email verification failed"
-    );
+    return res.status(201).json({
+        error: error,
+      });
   }
 });
+
 
 // login api
 router.post("/login", async (req, res, next) => {
@@ -144,11 +143,29 @@ router.post("/login", async (req, res, next) => {
     if (passAuth) {
       const accessToken = createAccessToken(user._id);
 
-      //   if(user.isVerified === false) {
-      //     return res.status(400).json({
-      //       error: "Please verify your email first",
-      //     }).end();
-      //   }
+        if(user.isVerified === false) {
+            const msg = {
+                from: "recipefyservices@gmail.com",
+                to: req.body.Email,
+                subject: "Recipefy - Verify your Email",
+                text: `
+                        Hey! Thank you for registering!
+                        Copy and paste the address below to verify your account.
+                        http://localhost:3001/user/verify?token-${user.emailToken}
+                    `,
+                html: `
+                        <h1>Hello</h1>
+                        <p>Thank you for Registering!<p>
+                        <p>Please click the link below to verify your account<p>
+                        <a href= "http://localhost:3001/user/verify?token-${user.emailToken}">Verify your Account</a>
+                    `,
+              };
+            
+            void sgMail.send(msg);
+            return res.status(400).json({
+            error: "Please verify your email first",
+            }).end();
+        }
 
       return res.status(201).json({
         error: "",
