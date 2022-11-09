@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -12,10 +12,31 @@ import { Paper } from "@mui/material";
 import Axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import ReCaptchaV2 from "react-google-recaptcha";
+import { useCookies } from "react-cookie";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
 
 const theme = createTheme({});
 
 export default function Login() {
+  const [cookies, setCookie] = useCookies(["user"]);
+  const [open, setOpen] = useState(false);
+
+  const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const app_name = "recipefy-g1";
   function buildPath(route) {
     if (process.env.NODE_ENV === "production") {
@@ -34,7 +55,7 @@ export default function Login() {
   const [emailHelper, setEmailHelper] = useState("");
   const [passwordHelper, setPasswordHelper] = useState("");
 
-  const verify = (recaptchaResponse) => {
+  const verify = () => {
     setCaptcha(true);
   };
 
@@ -55,11 +76,11 @@ export default function Login() {
       setEmailError(true);
     }
 
-    if (data.get("email") == "") {
+    if (data.get("email") === "") {
       setEmailError(true);
     }
 
-    if (data.get("password") == "") {
+    if (data.get("password") === "") {
       setPasswordError(true);
     }
     Axios.post(buildPath("user/login"), {
@@ -68,6 +89,10 @@ export default function Login() {
     })
       .then((response) => {
         console.log(response);
+        setCookie("token", response.data.auth.accessToken, { path: "/" });
+        setCookie("id", response.data.user.id, { path: "/" });
+        setCookie("first", response.data.user.firstName, { path: "/" });
+        setCookie("last", response.data.user.lastName, { path: "/" });
         navigate("/home");
       })
       .catch((error) => {
@@ -78,6 +103,8 @@ export default function Login() {
           setEmailHelper(error.response.data.error);
         if (error.response.data.error === "Invalid Password")
           setPasswordHelper(error.response.data.error);
+        if (error.response.data.error === "Please verify your email first")
+          setOpen(true);
       });
 
     console.log({
@@ -189,6 +216,22 @@ export default function Login() {
                   explicit
                   onVerify={verify}
                 /> */}
+                <Dialog
+                  open={open}
+                  TransitionComponent={Transition}
+                  keepMounted
+                  onClose={handleClose}
+                  aria-describedby="alert-dialog-slide-description"
+                >
+                  <DialogTitle>{"Email Verification"}</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                      Please check your email to finish registration. You can
+                      safely close this window now.
+                    </DialogContentText>
+                  </DialogContent>
+                </Dialog>
+                ;
               </div>
               <Button
                 type="submit"
