@@ -193,7 +193,7 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.get("/users", verifyAccessToken, async (req, res, next) => {
+router.get("/searchUsers", verifyAccessToken, async (req, res, next) => {
   const page = parseInt(req.query.page);
   const count = parseInt(req.query.count);
   const search = req.query.search;
