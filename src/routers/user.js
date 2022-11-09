@@ -151,13 +151,13 @@ router.post("/login", async (req, res, next) => {
                 text: `
                         Hey! Thank you for registering!
                         Copy and paste the address below to verify your account.
-                        http://localhost:3001/user/verify?token-${user.emailToken}
+                        http://localhost:3001/user/verify?token=${user.emailToken}
                     `,
                 html: `
                         <h1>Hello</h1>
                         <p>Thank you for Registering!<p>
                         <p>Please click the link below to verify your account<p>
-                        <a href= "http://localhost:3001/user/verify?token-${user.emailToken}">Verify your Account</a>
+                        <a href= "http://localhost:3001/user/verify?token=${user.emailToken}">Verify your Account</a>
                     `,
               };
             

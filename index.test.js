@@ -13,7 +13,7 @@ describe('POST Testing login ', () =>{
         expect(response.body.error).toEqual("")
     })
     test("This should have an invalid email", async() =>{
-        const response = await request(app).post("/user/login/").send({
+        const response = await request(app).post("/user/login").send({
             Email: "robert@gmail.com",
             Password: "1234153"
         })
