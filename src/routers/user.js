@@ -19,6 +19,8 @@ require("dotenv").config();
 
 sgMail.setApiKey(process.env.SENDGRID_KEY);
 
+const link = (process.env.NODE_ENV === "production") ? "https://recipefy.herokuapp.com/" : "http://localhost:3000/"
+
 // register apis
 router.post("/register", async function (req, res) {
   if (typeof req.body?.Username !== "string" || !req.body?.Username?.length) {
@@ -118,7 +120,7 @@ router.get("/verify", async (req, res, next) => {
     user.emailToken = null;
     user.isVerified = true;
     await user.save();
-    return res.redirect("http://localhost:3000");
+    return res.redirect(link);
   } catch (error) {
     console.log(error);
     return res.status(201).json({
