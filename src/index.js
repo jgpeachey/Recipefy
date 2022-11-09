@@ -69,3 +69,5 @@ app.use("/recipe", recipeRouter);
 app.listen(port, () => {
   console.log(`Server running at port ${port}`);
 });
+
+module.exports = app;
