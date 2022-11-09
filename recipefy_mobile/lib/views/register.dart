@@ -1,7 +1,21 @@
+import 'package:recipefy_mobile/services/remote_services.dart';
 import 'package:flutter/material.dart';
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  String firstNameInput = "";
+  String lastNameInput = "";
+  String emailInput = "";
+  String usernameInput = "";
+  String passwordInput = "";
+  String repPasswordInput = "";
+  String errorText = "";
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +47,25 @@ class RegisterPage extends StatelessWidget {
                         decoration: InputDecoration(
                             contentPadding: const EdgeInsets.fromLTRB(
                                 20.0, 15.0, 20.0, 15.0),
-                            hintText: "Email Address",
+                            hintText: "First Name",
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(32.0))),
+                        onChanged: (text) {
+                          firstNameInput = text;
+                        },
+                      ),
+                      const SizedBox(height: 20.0),
+                      TextField(
+                        obscureText: false,
+                        decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.fromLTRB(
+                                20.0, 15.0, 20.0, 15.0),
+                            hintText: "Last Name",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32.0))),
+                        onChanged: (text) {
+                          lastNameInput = text;
+                        },
                       ),
                       const SizedBox(height: 20.0),
                       TextField(
@@ -46,6 +76,22 @@ class RegisterPage extends StatelessWidget {
                             hintText: "Username",
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(32.0))),
+                        onChanged: (text) {
+                          usernameInput = text;
+                        },
+                      ),
+                      const SizedBox(height: 20.0),
+                      TextField(
+                        obscureText: false,
+                        decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.fromLTRB(
+                                20.0, 15.0, 20.0, 15.0),
+                            hintText: "Email Address",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32.0))),
+                        onChanged: (text) {
+                          emailInput = text;
+                        },
                       ),
                       const SizedBox(height: 20.0),
                       TextField(
@@ -56,6 +102,9 @@ class RegisterPage extends StatelessWidget {
                             hintText: "Password",
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(32.0))),
+                        onChanged: (text) {
+                          passwordInput = text;
+                        },
                       ),
                       const SizedBox(height: 20.0),
                       TextField(
@@ -66,10 +115,13 @@ class RegisterPage extends StatelessWidget {
                             hintText: "Retype Password",
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(32.0))),
+                        onChanged: (text) {
+                          repPasswordInput = text;
+                        },
                       ),
                       const SizedBox(height: 20.0),
-                      const Text(
-                        "Error Text", // Change to non constant later
+                      Text(
+                        errorText, // Change to non constant later
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.red,
@@ -85,7 +137,22 @@ class RegisterPage extends StatelessWidget {
                             minWidth: MediaQuery.of(context).size.width,
                             padding: const EdgeInsets.fromLTRB(
                                 20.0, 15.0, 20.0, 15.0),
-                            onPressed: () {}, // Attempt to register user
+                            onPressed: () async {
+                              // Make sure all inputs are valid
+
+                              // Call API to attempt to register user
+                              var response = await RemoteService()
+                                  .register(
+                                      firstNameInput,
+                                      lastNameInput,
+                                      usernameInput,
+                                      emailInput,
+                                      "",
+                                      passwordInput)
+                                  .catchError((error) {
+                                debugPrint(error.toString());
+                              });
+                            },
                             child: const Text("Register",
                                 textAlign: TextAlign.center)),
                       ),
@@ -100,7 +167,7 @@ class RegisterPage extends StatelessWidget {
                                 20.0, 15.0, 20.0, 15.0),
                             onPressed: () {
                               Navigator.pop(context);
-                            }, // Attempt to register user
+                            },
                             child: const Text("Return to Login",
                                 textAlign: TextAlign.center)),
                       ),

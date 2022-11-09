@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
           // CHANGE LATER
           primarySwatch: Colors.blue),
       debugShowCheckedModeBanner: false,
-      home: const LoginPage(),
+      home: LoginPage(),
     );
   }
 }
