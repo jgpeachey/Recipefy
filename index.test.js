@@ -25,7 +25,33 @@ describe('POST Testing login ', () =>{
             Email: "rith@gmail.com",
             Password: "12345"
         })
-        expect(response.statusCode).toEqual(409)
+        expect(response.statusCode).toEqual(409);
         expect(response.body.error).toEqual("Invalid Password");
+    })
+})
+describe('POST Testing registration', () => {
+    test("This should return Username Exists", async () => {
+        const response = await request(app).post("/user/register").send({
+            Firstname: "afedasfaf",
+            Lastname: "adfafdasfas",
+            Username: "afdafafaf",
+            Email: "hello@gmail.com",
+            Pic: "",
+            Password: "12345"
+        })
+        expect(response.statusCode).toEqual(409);
+        expect(response.body.error).toEqual("Username Exists");
+    })
+    test("This should return Email Exists", async () => {
+        const response = await request(app).post("/user/register").send({
+            Firstname: "Barack",
+            Lastname: "Obama",
+            Username: "obama",
+            Email: "rith@gmail.com",
+            Pic: "",
+            Password: "12345"
+        })
+        expect(response.statusCode).toEqual(409);
+        expect(response.body.error).toEqual("Email Exists");
     })
 })
