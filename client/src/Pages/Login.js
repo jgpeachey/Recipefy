@@ -93,7 +93,7 @@ export default function Login() {
         setCookie("id", response.data.user.id, { path: "/" });
         setCookie("first", response.data.user.firstName, { path: "/" });
         setCookie("last", response.data.user.lastName, { path: "/" });
-        // navigate("/home");
+        navigate("/home");
       })
       .catch((error) => {
         setEmailHelper("");
@@ -103,7 +103,7 @@ export default function Login() {
           setEmailHelper(error.response.data.error);
         if (error.response.data.error === "Invalid Password")
           setPasswordHelper(error.response.data.error);
-        if (error.response.data.error == "Please verify your email first")
+        if (error.response.data.error === "Please verify your email first")
           setOpen(true);
       });
 
