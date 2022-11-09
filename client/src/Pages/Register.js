@@ -8,11 +8,9 @@ import Checkbox from "@mui/material/Checkbox";
 // import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import NewAppBar from "../Components/NewAppBar";
 import { Paper } from "@mui/material";
 import Axios from "axios";
@@ -20,12 +18,34 @@ import { useNavigate, Link } from "react-router-dom";
 import FormHelperText from "@mui/material/FormHelperText";
 import { ClassNames } from "@emotion/react";
 import ReCaptchaV2 from "react-google-recaptcha";
+import { useCookies } from "react-cookie";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
 
 const theme = createTheme();
 
 export default function Register() {
+  const [cookies, setCookie] = useCookies(["user"]);
   const [captcha, setCaptcha] = useState(false);
+  const [checkbox, setCheckBox] = useState(false);
   const app_name = "recipefy-g1";
+  const [open, setOpen] = useState(false);
+
+  const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   function buildPath(route) {
     if (process.env.NODE_ENV === "production") {
       return "https://" + app_name + ".herokuapp.com/" + route;
@@ -33,7 +53,11 @@ export default function Register() {
       return "http://localhost:3001/" + route;
     }
   }
-  const verify = (recaptchaResponse) => {
+  const verifyCheckBox = () => {
+    setCheckBox(true);
+  };
+
+  const verifyCaptcha = () => {
     setCaptcha(true);
   };
 
@@ -149,7 +173,8 @@ export default function Register() {
         Password: data.get("password"),
       })
         .then((response) => {
-          navigate("/");
+          handleClickOpen();
+
           console.log("User Created");
         })
         .catch((error) => {
@@ -321,8 +346,11 @@ export default function Register() {
                 </Grid>
                 <Grid item xs={12}>
                   <FormControlLabel
+                    required
                     control={<Checkbox value="allowEmails" color="primary" />}
-                    label="You consent to receiving emails from us for verification. You must check this."
+                    label="You consent to receiving emails from us for verification."
+                    onChange={verifyCheckBox}
+                    sx={{ mt: 1, mb: 1 }}
                   />
                 </Grid>
               </Grid>
@@ -335,15 +363,31 @@ export default function Register() {
               >
                 <ReCaptchaV2
                   sitekey={process.env.REACT_APP_SITE_KEY}
-                  onChange={verify}
+                  onChange={verifyCaptcha}
                 />
+                <Dialog
+                  open={open}
+                  TransitionComponent={Transition}
+                  keepMounted
+                  onClose={handleClose}
+                  aria-describedby="alert-dialog-slide-description"
+                >
+                  <DialogTitle>{"Email Verification"}</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                      Please check your email to finish registration. You can
+                      safely close this window now.
+                    </DialogContentText>
+                  </DialogContent>
+                </Dialog>
+                ;
               </div>
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
-                disabled={!captcha}
+                disabled={!captcha || !checkbox}
               >
                 Sign Up
               </Button>

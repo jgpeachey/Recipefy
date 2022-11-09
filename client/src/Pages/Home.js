@@ -3,18 +3,19 @@ import HomeAppBar from "../Components/HomeAppBar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Grid } from "@mui/material";
 import { Container } from "@mui/material";
-
+import { useCookies } from "react-cookie";
 import RecipeCard from "../Components/RecipeCard";
-import ImageCarousel from '../Components/ImageCarousel'
+import ImageCarousel from "../Components/ImageCarousel";
 
-import { SliderData } from '../Components/SliderData';
+import { SliderData } from "../Components/SliderData";
 
 import Axios from "axios";
 
 const theme = createTheme({});
 
 export default function Home() {
-
+  const [cookies, setCookie] = useCookies(["user"]);
+  console.log(cookies.token);
   const [recipeCardsArray, setRecipeCardsArray] = useState([]);
   const app_name = "recipefy-g1";
 
@@ -26,18 +27,18 @@ export default function Home() {
     }
   }
 
-  useEffect(()=> {
-      Axios.get(buildPath("recipe/findRecipe"), {
-        //page: 0,
-        //count: 9,
-        //search: "",
-        //userId: "63628284bf236aae197aee81"
-      })
-      .then((response)=> {
+  useEffect(() => {
+    Axios.get(buildPath("recipe/findRecipe"), {
+      //page: 0,
+      //count: 9,
+      //search: "",
+      //userId: "63628284bf236aae197aee81"
+    })
+      .then((response) => {
         setRecipeCardsArray(response.data);
         console.log(response.data);
       })
-      .catch((error)=> {
+      .catch((error) => {
         console.log(error.response.data.error);
       });
   }, []);
@@ -46,7 +47,7 @@ export default function Home() {
     <ThemeProvider theme={theme}>
       <HomeAppBar />
 
-      <ImageCarousel slides={SliderData}/>
+      <ImageCarousel slides={SliderData} />
 
       <Container>
         <Grid container spacing={11} marginTop={-8.5}>
