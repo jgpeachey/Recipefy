@@ -108,7 +108,27 @@ router.post("/register", async function (req, res) {
     error: "",
   });
 });
+/*
+// test
+router.get('/test', async (req, res) => {
+  try{
+    const user = await User.findOne({ _id: new mongoose.Types.ObjectId(req.body.userId)})
+    if(!user){
+      return res.status(201).json({
+        error: "Could not find User",
+      })
+    }
+    return res.status(201).json({
+      user: user
+    })
+  }catch(error){
+    return res.status(201).json({
+      error: error
+    })
+  }
 
+})
+*/ 
 router.get("/verify", async (req, res, next) => {
   try {
     const user = await User.findOne({ emailToken: req.query.token });
