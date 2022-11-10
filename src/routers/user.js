@@ -259,7 +259,7 @@ router.get("/searchUsers", verifyAccessToken, async (req, res, next) => {
   const page = parseInt(req.query.page);
   const count = parseInt(req.query.count);
   const search = req.query.search;
-  const filter = { User_ID: req.auth.userId };
+  const filter = {};
 
   if (search?.length) {
     filter.Username = {
