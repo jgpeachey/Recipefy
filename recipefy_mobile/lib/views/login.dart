@@ -1,8 +1,18 @@
-import 'package:flutter/material.dart';
+import 'package:recipefy_mobile/services/remote_services.dart';
 import 'register.dart';
 
-class LoginPage extends StatelessWidget {
+import 'package:flutter/material.dart';
+
+class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  String emailInput = "";
+  String passwordInput = "";
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +55,9 @@ class LoginPage extends StatelessWidget {
                       hintText: "Email Address",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(32.0))),
+                  onChanged: (text) {
+                    emailInput = text;
+                  },
                 ),
                 const SizedBox(height: 25.0),
                 TextField(
@@ -55,6 +68,9 @@ class LoginPage extends StatelessWidget {
                       hintText: "Password",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(32.0))),
+                  onChanged: (text) {
+                    passwordInput = text;
+                  },
                 ),
                 const SizedBox(height: 35.0),
                 Material(
@@ -65,7 +81,13 @@ class LoginPage extends StatelessWidget {
                       minWidth: MediaQuery.of(context).size.width,
                       padding:
                           const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                      onPressed: () {}, // Check validity and log in
+                      onPressed: () async {
+                        var response = await RemoteService()
+                            .login(emailInput, passwordInput)
+                            .catchError((error) {
+                          debugPrint(error.toString());
+                        });
+                      },
                       child: const Text("Login", textAlign: TextAlign.center)),
                 ),
                 const SizedBox(height: 40.0),
@@ -83,7 +105,7 @@ class LoginPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => const RegisterPage()));
-                      }, // Navigate to Register
+                      },
                       child:
                           const Text("Sign Up", textAlign: TextAlign.center)),
                 ),
