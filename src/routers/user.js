@@ -215,6 +215,46 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
+// Delete user function
+router.delete('/deleteuser', verifyAccessToken, async (req, res, next) => {
+  
+  // Verifies user exists in database
+  const user = await User.findOne({ Email: req.body.Email }).exec();
+  if (!user){
+    return res.status(409).json({
+      error: "Invalid email",
+    });
+  }
+
+  try {
+    // Verifies passwords match, if so deletes
+    const passAuth = await bcrypt.compare(req.body.Password, user.Password);
+    if(passAuth){
+      await User.deleteOne({Email: req.body.Email});
+      //console.log("Deleted\n");
+      return res.status(200).end();
+    }
+
+    else {
+      return res.status(409).json({
+        error: "Invalid password",
+      });
+    }
+
+  } catch(e) {
+    return res.send({
+      error: `${e.message}`,
+    });
+  }
+
+
+  
+
+
+});
+
+
+// Search Users API
 router.get("/searchUsers", verifyAccessToken, async (req, res, next) => {
   const page = parseInt(req.query.page);
   const count = parseInt(req.query.count);
