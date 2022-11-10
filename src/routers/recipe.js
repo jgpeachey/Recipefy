@@ -15,10 +15,8 @@ router.post('/addrecipe', verifyAccessToken, async (req, res, next) => {
         Title: req.body.Title,
         Ingredients: req.body.Ingredients,
         Instructions: req.body.Instructions,
-        Nutritional_Value: {
-            Calories: req.body.Calories,
-            Sodium: req.body.Sodium
-        },
+        Calories: req.body.Calories,
+        Sodium: req.body.Sodium,
         Likes: 0
     });
 
