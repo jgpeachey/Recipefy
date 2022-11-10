@@ -108,7 +108,27 @@ router.post("/register", async function (req, res) {
     error: "",
   });
 });
+/*
+// test
+router.get('/test', async (req, res) => {
+  try{
+    const user = await User.findOne({ _id: new mongoose.Types.ObjectId(req.body.userId)})
+    if(!user){
+      return res.status(201).json({
+        error: "Could not find User",
+      })
+    }
+    return res.status(201).json({
+      user: user
+    })
+  }catch(error){
+    return res.status(201).json({
+      error: error
+    })
+  }
 
+})
+*/ 
 router.get("/verify", async (req, res, next) => {
   try {
     const user = await User.findOne({ emailToken: req.query.token });
@@ -195,11 +215,51 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
+// Delete user function
+router.delete('/deleteuser', verifyAccessToken, async (req, res, next) => {
+  
+  // Verifies user exists in database
+  const user = await User.findOne({ Email: req.body.Email }).exec();
+  if (!user){
+    return res.status(409).json({
+      error: "Invalid email",
+    });
+  }
+
+  try {
+    // Verifies passwords match, if so deletes
+    const passAuth = await bcrypt.compare(req.body.Password, user.Password);
+    if(passAuth){
+      await User.deleteOne({Email: req.body.Email});
+      //console.log("Deleted\n");
+      return res.status(200).end();
+    }
+
+    else {
+      return res.status(409).json({
+        error: "Invalid password",
+      });
+    }
+
+  } catch(e) {
+    return res.send({
+      error: `${e.message}`,
+    });
+  }
+
+
+  
+
+
+});
+
+
+// Search Users API
 router.get("/searchUsers", verifyAccessToken, async (req, res, next) => {
   const page = parseInt(req.query.page);
   const count = parseInt(req.query.count);
   const search = req.query.search;
-  const filter = { User_ID: req.auth.userId };
+  const filter = {};
 
   if (search?.length) {
     filter.Username = {
