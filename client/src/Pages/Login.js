@@ -84,7 +84,7 @@ export default function Login() {
       setPasswordError(true);
     }
     Axios.post(buildPath("user/login"), {
-      Email: data.get("email"),
+      Email: data.get("email").toLowerCase(),
       Password: data.get("password"),
     })
       .then((response) => {
@@ -93,16 +93,23 @@ export default function Login() {
         setCookie("id", response.data.user.id, { path: "/" });
         setCookie("first", response.data.user.firstName, { path: "/" });
         setCookie("last", response.data.user.lastName, { path: "/" });
+        setCookie("picture", response.data.user.pic, { path: "/" });
+        setCookie("email", response.data.user.email, { path: "/" });
+        setCookie("username", response.data.user.userName, { path: "/" });
         navigate("/home");
       })
       .catch((error) => {
         setEmailHelper("");
         setPasswordHelper("");
+        setEmailError(false);
+        setPasswordError(false);
         console.log(error.response.data.error);
         if (error.response.data.error === "Invalid Email")
           setEmailHelper(error.response.data.error);
+        setEmailError(true);
         if (error.response.data.error === "Invalid Password")
           setPasswordHelper(error.response.data.error);
+        setPasswordError(true);
         if (error.response.data.error === "Please verify your email first")
           setOpen(true);
       });
@@ -196,10 +203,6 @@ export default function Login() {
                 helperText={passwordHelper}
                 error={passwordError}
               />
-              {/* <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            /> */}
               <div
                 style={{
                   marginTop: 1,
