@@ -9,17 +9,18 @@ const crypto = require("crypto");
 const sgMail = require("@sendgrid/mail");
 const cloudinary = require("../utils/cloudinary");
 const axios = require("axios");
-const {
-  createAccessToken,
-  createRefreshToken,
-  sendAccessToken,
-  sendRefreshToken,
-} = require("../middleware/tokens");
+const { createAccessToken } = require("../middleware/tokens");
+
 const { appendFile } = require("fs");
 
 require("dotenv").config();
 
 sgMail.setApiKey(process.env.SENDGRID_KEY);
+
+const link =
+  process.env.NODE_ENV === "production"
+    ? "https://recipefy.herokuapp.com/"
+    : "http://localhost:3000/";
 
 // register apis
 router.post("/register", async function (req, res) {
@@ -29,13 +30,13 @@ router.post("/register", async function (req, res) {
     });
   }
 
-  if (!req.body.Email?.length) {
+  if (typeof req.body?.Email !== "string" || !req.body?.Email?.length) {
     return res.status(409).json({
       error: "Email required",
     });
   }
 
-  if (Object.keys(req.body.Password).length === 0) {
+  if (typeof req.body?.Password !== "string" || !req.body?.Password?.length) {
     return res.status(409).json({
       error: "Password required",
     });
@@ -84,19 +85,19 @@ router.post("/register", async function (req, res) {
   const result = await userInfo.save();
 
   const msg = {
-    from: "omarashry125@gmail.com",
+    from: "recipefyservices@gmail.com",
     to: req.body.Email,
     subject: "Recipefy - Verify your Email",
     text: `
             Hey! Thank you for registering!
             Copy and paste the address below to verify your account.
-            http://${req.headers.host}/verifyEmail?token-${result.emailToken}
+            http://localhost:3001/user/verify?token=${result.emailToken}
         `,
     html: `
             <h1>Hello</h1>
             <p>Thank you for Registering!<p>
             <p>Please click the link below to verify your account<p>
-            <a href= "http://${req.headers.host}/verifyEmail?token-${result.emailToken}">Verify your Account</a>
+            <a href= "http://localhost:3001/user/verify?token=${result.emailToken}">Verify your Account</a>
         `,
   };
 
@@ -106,24 +107,44 @@ router.post("/register", async function (req, res) {
     error: "",
   });
 });
+/*
+// test
+router.get('/test', async (req, res) => {
+  try{
+    const user = await User.findOne({ _id: new mongoose.Types.ObjectId(req.body.userId)})
+    if(!user){
+      return res.status(201).json({
+        error: "Could not find User",
+      })
+    }
+    return res.status(201).json({
+      user: user
+    })
+  }catch(error){
+    return res.status(201).json({
+      error: error
+    })
+  }
 
-router.get("/verifyEmail", async (req, res, next) => {
+})
+*/
+router.get("/verify", async (req, res, next) => {
   try {
     const user = await User.findOne({ emailToken: req.query.token });
     if (!user) {
-      return res.redirect(
-        "{your_frontend_url}/login?error=Email verification failed"
-      );
+      return res.status(201).json({
+        error: "user DNE",
+      });
     }
     user.emailToken = null;
     user.isVerified = true;
     await user.save();
-    return res.redirect("{your_frontend_url}/login");
+    return res.redirect(link);
   } catch (error) {
     console.log(error);
-    return res.redirect(
-      "{your_frontend_url}/login?error=Email verification failed"
-    );
+    return res.status(201).json({
+      error: error,
+    });
   }
 });
 
@@ -142,16 +163,38 @@ router.post("/login", async (req, res, next) => {
     if (passAuth) {
       const accessToken = createAccessToken(user._id);
 
-      //   if(user.isVerified === false) {
-      //     return res.status(400).json({
-      //       error: "Please verify your email first",
-      //     }).end();
-      //   }
+      if (user.isVerified === false) {
+        const msg = {
+          from: "recipefyservices@gmail.com",
+          to: req.body.Email,
+          subject: "Recipefy - Verify your Email",
+          text: `
+                        Hey! Thank you for registering!
+                        Copy and paste the address below to verify your account.
+                        http://localhost:3001/user/verify?token=${user.emailToken}
+                    `,
+          html: `
+                        <h1>Hello</h1>
+                        <p>Thank you for Registering!<p>
+                        <p>Please click the link below to verify your account<p>
+                        <a href= "http://localhost:3001/user/verify?token=${user.emailToken}">Verify your Account</a>
+                    `,
+        };
+
+        void sgMail.send(msg);
+        return res
+          .status(400)
+          .json({
+            error: "Please verify your email first",
+          })
+          .end();
+      }
 
       return res.status(201).json({
         error: "",
         user: {
           id: user._id,
+          userName: user.Username,
           firstName: user.Firstname,
           lastName: user.Lastname,
           email: user.Email,
@@ -174,11 +217,41 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.get("/users", verifyAccessToken, async (req, res, next) => {
+// Delete user function
+router.delete("/deleteuser", verifyAccessToken, async (req, res, next) => {
+  // Verifies user exists in database
+  const user = await User.findOne({ Email: req.body.Email }).exec();
+  if (!user) {
+    return res.status(409).json({
+      error: "Invalid email",
+    });
+  }
+
+  try {
+    // Verifies passwords match, if so deletes
+    const passAuth = await bcrypt.compare(req.body.Password, user.Password);
+    if (passAuth) {
+      await User.deleteOne({ Email: req.body.Email });
+      //console.log("Deleted\n");
+      return res.status(200).end();
+    } else {
+      return res.status(409).json({
+        error: "Invalid password",
+      });
+    }
+  } catch (e) {
+    return res.send({
+      error: `${e.message}`,
+    });
+  }
+});
+
+// Search Users API
+router.get("/searchUsers", verifyAccessToken, async (req, res, next) => {
   const page = parseInt(req.query.page);
   const count = parseInt(req.query.count);
   const search = req.query.search;
-  const filter = { User_ID: req.auth.userId };
+  const filter = {};
 
   if (search?.length) {
     filter.Username = {

@@ -152,6 +152,33 @@
   margin-right: auto;
 }
 
-.navButton{
-  
+.modalImg{
+  width: 700px;
+  height: auto;
+}
+
+.modalContainer{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalContainerTop{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2196f3;
+}
+
+.recipeText{
+  padding-left: 23px;
+  max-width: 350px;
+}
+
+.modalPFP{
+  padding-left: 15px;
+}
+
+.ingredientHeader{
+  padding-left: -10px;
 }

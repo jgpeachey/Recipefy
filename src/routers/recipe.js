@@ -15,10 +15,8 @@ router.post('/addrecipe', verifyAccessToken, async (req, res, next) => {
         Title: req.body.Title,
         Ingredients: req.body.Ingredients,
         Instructions: req.body.Instructions,
-        Nutritional_Value: {
-            Calories: req.body.Calories,
-            Sodium: req.body.Sodium
-        },
+        Calories: req.body.Calories,
+        Sodium: req.body.Sodium,
         Likes: 0
     });
 
@@ -37,11 +35,52 @@ router.delete('/removerecipe', verifyAccessToken, async(req, res, next) => {
 
 })
 
+// searchs for recipe for a specific user
 router.get('/findRecipe', verifyAccessToken, async (req, res, next) => {
     const page = parseInt(req.query.page);
     const count = parseInt(req.query.count);
     const search = req.query.search;
     const filter = {User_ID: req.auth.userId};
+
+    if(search?.length) {
+        filter.Title = {
+            $regex : new RegExp(search, "i")
+        }
+    }
+
+    const startIndex = (page - 1) * count;
+    const endIndex = page * count;
+
+    const results = {};
+
+    if (endIndex < await Recipe.countDocuments(filter).exec()) {
+        results.next = {
+            page: page + 1,
+            count: count
+        }
+    }
+
+    if (startIndex > 0) {
+        results.previous = {
+            page: page - 1,
+            count: count
+        }
+    }
+
+    try {
+        results.results = await Recipe.find(filter).limit(count).skip(startIndex).exec();
+        res.json(results);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// searchs all recipes
+router.get('/findAllRecipe', verifyAccessToken, async (req, res, next) => {
+    const page = parseInt(req.query.page);
+    const count = parseInt(req.query.count);
+    const search = req.query.search;
+    const filter = {};
 
     if(search?.length) {
         filter.Title = {
