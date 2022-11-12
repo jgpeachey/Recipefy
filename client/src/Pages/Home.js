@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import HomeAppBar from "../Components/HomeAppBar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Grid } from "@mui/material";
@@ -8,14 +8,26 @@ import RecipeCard from "../Components/RecipeCard";
 import ImageCarousel from "../Components/ImageCarousel";
 
 import { SliderData } from "../Components/SliderData";
-
+// import { RecipeCardData } from "../Components/RecipeCardData";
 import Axios from "axios";
 
 const theme = createTheme({});
 
 export default function Home() {
+  const [reachedBottom, setReachedBottom] = useState(false);
+  const listInnerRef = useRef();
+  const onScroll = () => {
+    if (listInnerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = listInnerRef.current;
+      if (scrollTop + clientHeight === scrollHeight) {
+        console.log("reached bottom");
+      }
+    }
+  };
+
   const [cookies, setCookie] = useCookies(["user"]);
   console.log(cookies.token);
+
   const [recipeCardsArray, setRecipeCardsArray] = useState([]);
   const app_name = "recipefy-g1";
 
@@ -28,15 +40,23 @@ export default function Home() {
   }
 
   useEffect(() => {
-    Axios.get(buildPath("recipe/findRecipe"), {
-      //page: 0,
-      //count: 9,
-      //search: "",
-      //userId: "63628284bf236aae197aee81"
-    })
+    const config = {
+      headers: {
+        authorization: cookies.token,
+      },
+      params: {
+        page: 1,
+        count: 9,
+        search: "",
+      },
+    };
+    Axios.get(buildPath("recipe/findAllRecipe"), config)
       .then((response) => {
-        setRecipeCardsArray(response.data);
-        console.log(response.data);
+        var res = [];
+        for (let q = 0; q < response.data.results.length; q++) {
+          res.push(response.data.results[q]);
+        }
+        setRecipeCardsArray(res);
       })
       .catch((error) => {
         console.log(error.response.data.error);
@@ -50,12 +70,10 @@ export default function Home() {
       <ImageCarousel slides={SliderData} />
 
       <Container>
-        <Grid container spacing={11} marginTop={-8.5}>
-          <RecipeCard />
-          <RecipeCard />
-          <RecipeCard />
-          <RecipeCard />
-          <RecipeCard />
+        <Grid container spacing={11} marginTop={-8.5} onScroll={onScroll}>
+          {recipeCardsArray.map((recipe) => (
+            <RecipeCard recipe={recipe} />
+          ))}
         </Grid>
       </Container>
     </ThemeProvider>
