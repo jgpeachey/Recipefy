@@ -218,6 +218,39 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
+// Update User
+router.put("/updateuser", verifyAccessToken, async(req, res, next) =>{
+  const user = await User.findOne({Email: req.body.Email }).exec();
+  if(!user){
+    return res.status(409).json({
+      error: "Invalid email",
+    });
+  }
+
+  try{
+    const passAuth = await bcrypt.compare(req.body.Password, user.Password);
+    if(passAuth) {
+      if(req.body.Info.Password){
+        const hash = await bcrypt.hash(req.body.Info.Password, 10);
+        req.body.Info.Password = hash;
+      }
+      const result = await User.updateOne({Email: req.body.Email}, {$set: req.body.Info});
+
+      return res.status(200).end();
+    } else {
+      return res.status(409).json({
+        error: "Invalid Password",
+      });
+    }
+
+  } catch(e) {
+    return res.send({
+      error: `${e.message}`,
+    });
+  }
+});
+
+
 // Delete user function
 router.delete("/deleteuser", verifyAccessToken, async (req, res, next) => {
   const user = await User.findOne({ Email: req.body.Email }).exec();
