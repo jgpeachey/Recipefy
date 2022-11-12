@@ -13,14 +13,25 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 import { useCookies } from "react-cookie";
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function HomeAppBar() {
   const [cookies, setCookie] = useCookies(["user"]);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const navigateToProfile = () => {
-    navigate('/Profile');
+  const navigateToProfile = (e) => {
+    e.preventDefault();
+    if(!(location.pathname==='/profile')){
+      navigate("/profile");
+    }
+  }
+
+  const navigateToAddRecipe = (e) => {
+    e.preventDefault();
+    if(!(location.pathname==='/addrecipe')){
+      navigate("/addrecipe");
+    }
   }
 
   return (
@@ -37,7 +48,11 @@ export default function HomeAppBar() {
               onMouseDown={event => event.stopPropagation()}
               onClick={navigateToProfile}
             />
-            <PostAddOutlinedIcon sx={{ ml: 5 }}></PostAddOutlinedIcon>
+            <PostAddOutlinedIcon 
+              sx={{ ml: 5 }}
+              onMouseDown={event => event.stopPropagation()}
+              onClick={navigateToAddRecipe}>
+            </PostAddOutlinedIcon>
             <GroupIcon sx={{ ml: 5 }}></GroupIcon>
           </IconButton>
 

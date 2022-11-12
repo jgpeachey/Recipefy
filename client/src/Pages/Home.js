@@ -127,13 +127,10 @@ export default function Home() {
         </DialogContentText>
 
         <Container>
-          <Grid container spacing={11} marginTop={-8.5}>
-            <RecipeCard />
-            <RecipeCard />
-            <RecipeCard />
-            <RecipeCard />
-            <RecipeCard />
-            <RecipeCard />
+          <Grid container spacing={11} marginTop={-8.5} onScroll={onScroll}>
+            {recipeCardsArray.map((recipe) => (
+              <RecipeCard recipe={recipe}/>
+            ))}
           </Grid>
         </Container>
       </Dialog>
