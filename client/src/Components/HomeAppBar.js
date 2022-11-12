@@ -13,9 +13,15 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 import { useCookies } from "react-cookie";
+import { useNavigate } from 'react-router-dom';
 
 export default function HomeAppBar() {
   const [cookies, setCookie] = useCookies(["user"]);
+  const navigate = useNavigate();
+
+  const navigateToProfile = () => {
+    navigate('/Profile');
+  }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -28,6 +34,8 @@ export default function HomeAppBar() {
                 width: 24,
                 height: 24,
               }}
+              onMouseDown={event => event.stopPropagation()}
+              onClick={navigateToProfile}
             />
             <PostAddOutlinedIcon sx={{ ml: 5 }}></PostAddOutlinedIcon>
             <GroupIcon sx={{ ml: 5 }}></GroupIcon>
