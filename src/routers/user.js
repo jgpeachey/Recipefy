@@ -388,7 +388,9 @@ router.post('/resetPassword', async (req, res, next) => {
     })
   }
   // otherwise its valid
-  const check = bcrypt.compare((await User.findOne({ _id: req.body.userId })).Password, req.body.newPassword)
+  const userCheck = await User.findOne({ _id: req.body.userId })
+  //console.log(userCheck.Password)
+  const check = await bcrypt.compare(req.body.newPassword, userCheck.Password);
   if(check){
     return res.status(409).json({
       error: "This is the same as the previous password, please change to a new password."
