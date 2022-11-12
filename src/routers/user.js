@@ -402,7 +402,7 @@ router.post('/resetPassword', async (req, res, next) => {
     { $set: { Password: hash } },
     { new: true} 
   )
-
+  await resetToken.deleteOne();
   const user = await User.findById({ _id: req.body.userId });
   const msg = {
     from: "recipefyservices@gmail.com",
