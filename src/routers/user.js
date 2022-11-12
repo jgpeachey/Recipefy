@@ -5,6 +5,7 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const { verifyAccessToken } = require("../middleware/tokens");
 const User = require("../models/user");
+const Recipe = require("../models/recipe");
 const crypto = require("crypto");
 const sgMail = require("@sendgrid/mail");
 const cloudinary = require("../utils/cloudinary");
@@ -219,7 +220,6 @@ router.post("/login", async (req, res, next) => {
 
 // Delete user function
 router.delete("/deleteuser", verifyAccessToken, async (req, res, next) => {
-  // Verifies user exists in database
   const user = await User.findOne({ Email: req.body.Email }).exec();
   if (!user) {
     return res.status(409).json({
@@ -228,11 +228,12 @@ router.delete("/deleteuser", verifyAccessToken, async (req, res, next) => {
   }
 
   try {
-    // Verifies passwords match, if so deletes
     const passAuth = await bcrypt.compare(req.body.Password, user.Password);
     if (passAuth) {
+      await Recipe.deleteMany({ User_ID: user._id });
       await User.deleteOne({ Email: req.body.Email });
-      //console.log("Deleted\n");
+     
+      
       return res.status(200).end();
     } else {
       return res.status(409).json({
