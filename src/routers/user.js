@@ -11,6 +11,7 @@ const sgMail = require("@sendgrid/mail");
 const cloudinary = require("../utils/cloudinary");
 const axios = require("axios");
 const { createAccessToken } = require("../middleware/tokens");
+const Token = require("../models/token");
 
 const { appendFile } = require("fs");
 
@@ -18,7 +19,7 @@ require("dotenv").config();
 
 sgMail.setApiKey(process.env.SENDGRID_KEY);
 
-const link =
+const clientUrl =
   process.env.NODE_ENV === "production"
     ? "https://recipefy.herokuapp.com/"
     : "http://localhost:3000/";
@@ -140,7 +141,7 @@ router.get("/verify", async (req, res, next) => {
     user.emailToken = null;
     user.isVerified = true;
     await user.save();
-    return res.redirect(link);
+    return res.redirect(clientUrl);
   } catch (error) {
     console.log(error);
     return res.status(201).json({
@@ -290,6 +291,101 @@ router.get("/searchUsers", verifyAccessToken, async (req, res, next) => {
   }
 });
 
+
+router.post('/resetPasswordRequest', async (req, res, next) => {
+  // in this just send email
+  const user = await User.findOne({ Email: req.body.Email });
+
+  if(!user){
+    return res.status(409).json({
+      error: "Invalid Email"
+    })
+  }
+  
+  let token = await Token.findOne({ userId: user._id });
+  if(token){
+    await token.deleteOne();
+  }
+
+  let resetToken = crypto.randomBytes(32).toString("hex");
+
+  const hash = await bcrypt.hash(resetToken, 10);
+
+  await new Token({
+    userId: user._id,
+    token: hash,
+    createdAt: Date.now()
+  }).save();
+  const emailLink = `${clientUrl}forgotpassword?token=${resetToken}&id=${user._id}`;
+  const msg = {
+    from: "recipefyservices@gmail.com",
+    to: req.body.Email,
+    subject: "Recipefy - Password Reset Request",
+    text: `
+            Hey! Thank you for using Recipefy,
+            you can reset your password by clicking this link or copy and pasting.
+            The link will expire in an hour
+            ${emailLink}
+        `,
+    html: `
+            <h1>Hello</h1>
+            <p>Thank you for using Recipefy<p>
+            <p>Please click the link below to reset your password<p>
+            <p>If you did not request to reset your password just ignore this email<p>
+            <a href= "${emailLink}">Reset your password (expires in 1 hour)</a>
+        `,
+  }
+  sgMail.send(msg).catch((error) => { console.error(error); });
+  return res.status(201).json({
+    error: ""
+  })
+})
+// required fields will be userId, token, and then newPassword
+router.post('/resetPassword', async (req, res, next) => {
+  let resetToken = await Token.findOne({userId: mongoose.Types.ObjectId(req.body.userId)});
+  if(!resetToken){
+    return res.status(409).json({
+      error: "Invalid or expired password reset token"
+    })
+  }
+  const valid = await bcrypt.compare(req.body.token, resetToken.token)
+  if(!valid){
+    return res.status(409).json({
+      error: "Invalid or expired password reset token"
+    })
+  }
+  // otherwise its valid
+  const check = bcrypt.compare((await User.findOne({ _id: req.body.userId })).Password, req.body.newPassword)
+  if(check){
+    return res.status(409).json({
+      error: "This is the same as the previous password, please change to a new password."
+    })
+  }
+  const hash = await bcrypt.hash(req.body.newPassword, 10);
+  await User.updateOne(
+    { _id: req.body.userId },
+    { $set: { Password: hash } },
+    { new: true} 
+  )
+
+  const user = await User.findById({ _id: req.body.userId });
+  const msg = {
+    from: "recipefyservices@gmail.com",
+    to: user.Email,
+    subject: "Recipefy - Password Reset Successful",
+    text: `
+            ${user.Email}'s password was successfully changed. 
+        `,
+    html: `
+            <h1>Hello</h1>
+            <p>${user.Email}'s password was successfully changed<p>
+        `,
+  }
+  sgMail.send(msg).catch((error) => { console.error(error); });
+  return res.status(201).json({
+    error: ""
+  })
+})
 // router.post("/catch", async (req, res, next) => {
 //   const { token } = req.body;
 //   await axios.post(
