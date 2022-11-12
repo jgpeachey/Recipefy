@@ -1,9 +1,8 @@
 import React, {useState} from 'react'
 import { SliderData } from './SliderData';
 import {FaArrowAltCircleRight, FaArrowAltCircleLeft} from 'react-icons/fa'
-import { Button, Box } from '@mui/material';
+import { Button, Box, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import Modal from './Modal';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import Dialog from "@mui/material/Dialog";
