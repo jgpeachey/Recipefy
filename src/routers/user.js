@@ -108,6 +108,7 @@ router.post("/register", async function (req, res) {
     error: "",
   });
 });
+
 /*
 // test
 router.get('/test', async (req, res) => {
@@ -128,6 +129,8 @@ router.get('/test', async (req, res) => {
   }
 
 })
+
+
 */ 
 router.get("/verify", async (req, res, next) => {
   try {
@@ -135,7 +138,7 @@ router.get("/verify", async (req, res, next) => {
     if (!user) {
         return res.status(201).json({
             error: "user DNE",
-          });
+        });
     }
     user.emailToken = null;
     user.isVerified = true;
@@ -217,7 +220,6 @@ router.post("/login", async (req, res, next) => {
 
 // Delete user function
 router.delete('/deleteuser', verifyAccessToken, async (req, res, next) => {
-  
   // Verifies user exists in database
   const user = await User.findOne({ Email: req.body.Email }).exec();
   if (!user){
@@ -246,11 +248,6 @@ router.delete('/deleteuser', verifyAccessToken, async (req, res, next) => {
       error: `${e.message}`,
     });
   }
-
-
-  
-
-
 });
 
 
