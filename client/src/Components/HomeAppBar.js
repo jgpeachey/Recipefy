@@ -34,6 +34,13 @@ export default function HomeAppBar() {
     }
   }
 
+  const navigateToHome = (e) => {
+    e.preventDefault();
+    if(!(location.pathname==='/home')){
+      navigate("/home");
+    }
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar color="primary">
@@ -56,9 +63,12 @@ export default function HomeAppBar() {
             <GroupIcon sx={{ ml: 5 }}></GroupIcon>
           </IconButton>
 
-          <div className="homeLogo" sx={{ flexGrow: 1 }}>
-            Recipefy
-          </div>
+          <Button className="homeLogo" sx={{ flexGrow: 1 }} onClick={navigateToHome}>
+            <div className="homeLogo" sx={{ flexGrow: 1 }}>
+              Recipefy
+            </div>
+          </Button>
+          
           <Button className="navButton" color="inherit">
             Categories
           </Button>
