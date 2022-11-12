@@ -189,3 +189,9 @@
   padding-left: 15px;
   padding-top: 10px;
 }
+
+.addRecipeImg {
+  width: 110%;
+  height: 50%;
+  opacity: 20%;
+}

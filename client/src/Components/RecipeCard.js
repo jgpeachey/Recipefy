@@ -33,99 +33,103 @@ const theme = createTheme({
     },
 });
 
-export default function RecipeCard()
+export default function RecipeCard({recipe})
 {
-    return(
-        <Grid item xs={4}>
-            <ThemeProvider theme={theme}>
-                <Paper elevation={10}>
-                    <Box padding={1}>
-                        <CardActionArea>
-                            <Box
-                                sx={{
-                                display: "flex",
-                                alignItem: "center",
-                                }}
-                                marginTop={.5}
-                                marginBottom={1}
-                            >
-                                <Button
-                                onMouseDown={event => event.stopPropagation()}
-                                onClick={event => {
-                                event.stopPropagation();
-                                event.preventDefault();
-                                }}>
-                                    <Avatar
-                                        alt="Remy Sharp"
-                                        src="https://www.melskitchencafe.com/wp-content/uploads/french-bread2.jpg"
-                                        sx={{ width: 32, height: 32 }}
-                                    >
-                                    
-                                    </Avatar>
-                                    <Typography
-                                        variant="body2"
-                                        component="h2"
-                                        color="blue"
-                                        marginTop={0.3}
-                                        marginLeft={1}
-                                    >
-                                        Username
-                                    </Typography>
-                                </Button>                        
-                            </Box>
-                            <img 
-                                src="https://www.acouplecooks.com/wp-content/uploads/2021/09/Tomato-Soup-002s.jpg"
-                                alt=""
-                                className="img"
-                            />
-                            <Box
-                                sx={{
-                                display: "flex",
-                                alignItem: "center",
-                                }}
-                                marginTop={.5}
-                                marginBottom={.5}
-                            >
-                                <RestaurantMenuOutlinedIcon 
+    
+        return(
+            
+            <Grid item xs={4}>
+                <ThemeProvider theme={theme}>
+                    <Paper elevation={10}>
+                        <Box padding={1}>
+                            <CardActionArea>
+                                <Box
                                     sx={{
-                                        width: 18, m:'.45rem'
+                                    display: "flex",
+                                    alignItem: "center",
                                     }}
-                                />
-                                <Typography
-                                    variant="h6"
-                                    component="h2"
                                     marginTop={.5}
-                                    noWrap="false"
+                                    marginBottom={1}
                                 >
-                                    Zoop
-                                </Typography>
-                            </Box>
-                            <Box
-                                sx={{
-                                display: "flex",
-                                alignItem: "center",
-                                }}
-                                marginTop={3}
-                                marginBottom={.5}
-                            >
-                                <Rating
-                                    name="read-only"
-                                    value={4.5}
-                                    precision={0.5}
-                                    size="small"
-                                    readOnly
+                                    <Button
+                                    onMouseDown={event => event.stopPropagation()}
+                                    onClick={event => {
+                                    event.stopPropagation();
+                                    event.preventDefault();
+                                    }}>
+                                        <Avatar
+                                            alt="Remy Sharp"
+                                            src="https://www.melskitchencafe.com/wp-content/uploads/french-bread2.jpg"
+                                            sx={{ width: 32, height: 32 }}
+                                        >
+                                        
+                                        </Avatar>
+                                        <Typography
+                                            variant="body2"
+                                            component="h2"
+                                            color="blue"
+                                            marginTop={0.3}
+                                            marginLeft={1}
+                                        >
+                                            Username
+                                        </Typography>
+                                    </Button>                        
+                                </Box>
+                                <img 
+                                    src="https://www.acouplecooks.com/wp-content/uploads/2021/09/Tomato-Soup-002s.jpg"
+                                    alt=""
+                                    className="img"
                                 />
-                                <Typography variant="body2" component="p" marginTop={.2} marginLeft={0.5}>
-                                    4.5
-                                </Typography>
-                                <Typography variant="body2" component="p" marginTop={.2} marginLeft={1.5}>
-                                    (655 reviews)
-                                </Typography>
-                            </Box>
-                        </CardActionArea>
-                    </Box>
-                </Paper>
-            </ThemeProvider>
-        </Grid>
-    );
+                                <Box
+                                    sx={{
+                                    display: "flex",
+                                    alignItem: "center",
+                                    }}
+                                    marginTop={.5}
+                                    marginBottom={.5}
+                                >
+                                    <RestaurantMenuOutlinedIcon 
+                                        sx={{
+                                            width: 18, m:'.45rem'
+                                        }}
+                                    />
+                                    <Typography
+                                        variant="h6"
+                                        component="h2"
+                                        marginTop={.5}
+                                        noWrap="false"
+                                    >
+                                        {recipe.Title}
+                                    </Typography>
+                                </Box>
+                                <Box
+                                    sx={{
+                                    display: "flex",
+                                    alignItem: "center",
+                                    }}
+                                    marginTop={3}
+                                    marginBottom={.5}
+                                >
+                                    <Rating
+                                        name="read-only"
+                                        value={4.5}
+                                        precision={0.5}
+                                        size="small"
+                                        readOnly
+                                    />
+                                    <Typography variant="body2" component="p" marginTop={.2} marginLeft={0.5}>
+                                        4.5
+                                    </Typography>
+                                    <Typography variant="body2" component="p" marginTop={.2} marginLeft={1.5}>
+                                        (655 reviews)
+                                    </Typography>
+                                </Box>
+                            </CardActionArea>
+                        </Box>
+                    </Paper>
+                </ThemeProvider>
+            </Grid>
+            
+        )
+    
 }

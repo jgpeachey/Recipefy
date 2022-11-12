@@ -9,6 +9,7 @@ import Home from "./Pages/Home";
 import { CookiesProvider } from "react-cookie";
 import Profile from "./Pages/Profile";
 import Forgot from "./Pages/Forgot";
+import AddRecipe from "./Pages/AddRecipe";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -21,6 +22,7 @@ root.render(
           <Route path="/home" index element={<Home />} />
           <Route path="/profile" index element={<Profile />} />
           <Route path="/forgotpassword" index element={<Forgot />} />
+          <Route path="/addrecipe" index element={<AddRecipe />} />
         </Routes>
       </BrowserRouter>
     </CookiesProvider>
