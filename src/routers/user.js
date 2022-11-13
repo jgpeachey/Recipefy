@@ -21,7 +21,7 @@ sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 const clientUrl =
   process.env.NODE_ENV === "production"
-    ? "https://recipefy.herokuapp.com"
+    ? "https://recipefy-g1.herokuapp.com"
     : "http://localhost:3000";
 
 // register apis
