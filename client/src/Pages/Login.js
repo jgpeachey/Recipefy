@@ -264,9 +264,6 @@ export default function Login() {
                   </DialogContent>
                 </Dialog>
               </div>
-              <Link to="/forgotpassword" variant="body2">
-                cheesepizza
-              </Link>
               <Button
                 type="submit"
                 fullWidth
