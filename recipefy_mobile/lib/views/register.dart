@@ -1,4 +1,5 @@
 import 'package:recipefy_mobile/services/remote_services.dart';
+import 'package:recipefy_mobile/views/register_confirm.dart';
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -16,6 +17,12 @@ class _RegisterPageState extends State<RegisterPage> {
   String passwordInput = "";
   String repPasswordInput = "";
   String errorText = "";
+
+  bool isValidEmail(String email) {
+    return RegExp(
+            r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
+        .hasMatch(email);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +128,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       const SizedBox(height: 20.0),
                       Text(
-                        errorText, // Change to non constant later
+                        errorText,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.red,
@@ -139,19 +146,67 @@ class _RegisterPageState extends State<RegisterPage> {
                                 20.0, 15.0, 20.0, 15.0),
                             onPressed: () async {
                               // Make sure all inputs are valid
-
+                              if (firstNameInput == "") {
+                                debugPrint("Enter first name");
+                                errorText = "Enter first name";
+                                setState(() {});
+                                return;
+                              }
+                              if (lastNameInput == "") {
+                                debugPrint("Enter last name");
+                                errorText = "Enter last name";
+                                setState(() {});
+                                return;
+                              }
+                              if (usernameInput == "") {
+                                debugPrint("Enter username");
+                                errorText = "Enter username";
+                                setState(() {});
+                                return;
+                              }
+                              if (emailInput == "") {
+                                debugPrint("Enter email");
+                                errorText = "Enter email";
+                                setState(() {});
+                                return;
+                              }
+                              if (passwordInput == "") {
+                                debugPrint("Enter password");
+                                errorText = "Enter password";
+                                setState(() {});
+                                return;
+                              }
+                              if (!isValidEmail(emailInput)) {
+                                debugPrint("Invalid Email");
+                                errorText = "Invalid Email";
+                                setState(() {});
+                                return;
+                              }
+                              if (passwordInput != repPasswordInput) {
+                                debugPrint("Passwords do not match");
+                                errorText = "Passwords do not match";
+                                setState(() {});
+                                return;
+                              }
                               // Call API to attempt to register user
-                              var response = await RemoteService()
-                                  .register(
-                                      firstNameInput,
-                                      lastNameInput,
-                                      usernameInput,
-                                      emailInput,
-                                      "",
-                                      passwordInput)
-                                  .catchError((error) {
+                              try {
+                                var response = await RemoteService().register(
+                                    firstNameInput,
+                                    lastNameInput,
+                                    usernameInput,
+                                    emailInput,
+                                    "",
+                                    passwordInput);
+
+                                debugPrint("$usernameInput registered.");
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        const RegisterConfirmPage()));
+                              } catch (error) {
                                 debugPrint(error.toString());
-                              });
+                                errorText = error.toString();
+                                setState(() {});
+                              }
                             },
                             child: const Text("Register",
                                 textAlign: TextAlign.center)),
