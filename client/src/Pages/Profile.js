@@ -185,30 +185,28 @@ export default function Profile() {
       setPasswordConfirmHelper("Passwords do not match");
     } else if (isValidEmail(data.get("email"))) {
       console.log(base64Picture);
-      //   Axios.post(buildPath("user/register"), {
-      //     Firstname: data.get("firstName"),
-      //     Lastname: data.get("lastName"),
-      //     Username: data.get("username"),
-      //     Email: data.get("email"),
-      //     Pic: base64Picture,
-      //     Password: data.get("password"),
-      //   })
-      //     .then((response) => {
-      //       handleClickOpen();
+      Axios.post(buildPath("user/updateuser"), {
+        Firstname: data.get("firstName"),
+        Lastname: data.get("lastName"),
+        Username: data.get("username"),
+        Email: data.get("email"),
+        Pic: base64Picture,
+        Password: data.get("password"),
+      })
+        .then((response) => {
+          handleClickOpen();
 
-      //       console.log("User Created");
-      //     })
-      //     .catch((error) => {
-      //       /*setUsernameHelper("");
-      //       setEmailHelper("");*/
-      //       if (error.response.data.error === "Username Exists") {
-      //         setUsernameHelper(error.response.data.error);
-      //       }
-      //       if (error.response.data.error === "Email Exists") {
-      //         setEmailHelper(error.response.data.error);
-      //       }
-      //       console.log(error.response.data);
-      //     });
+          console.log("User Updated");
+        })
+        .catch((error) => {
+          if (error.response.data.error === "Username Exists") {
+            setUsernameHelper(error.response.data.error);
+          }
+          if (error.response.data.error === "Email Exists") {
+            setEmailHelper(error.response.data.error);
+          }
+          console.log(error.response.data);
+        });
     }
   };
 
