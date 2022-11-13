@@ -13,8 +13,18 @@ import Axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import ReCaptchaV2 from "react-google-recaptcha";
 import { useSearchParams } from "react-router-dom";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
+import DialogActions from "@mui/material/DialogActions";
 
 const theme = createTheme({});
+
+const forgotTransition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export default function Forgot() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -22,6 +32,8 @@ export default function Forgot() {
   const [passwordConfirmError, setPasswordConfirmError] = useState(false);
   const [passwordHelper, setPasswordHelper] = useState("");
   const [passwordConfirmHelper, setPasswordConfirmHelper] = useState("");
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotEmail, setforgotEmail] = useState("");
 
   const app_name = "recipefy-g1";
   function buildPath(route) {
@@ -37,8 +49,29 @@ export default function Forgot() {
   // const[password, setPassword] = useState('');
   const [captcha, setCaptcha] = useState(false);
 
+  const handleForgotOpen = () => {
+    setForgotOpen(true);
+  };
+
+  const handleForgotClose = () => {
+    setForgotOpen(false);
+  };
+
   const verify = () => {
     setCaptcha(true);
+  };
+
+  const confirmSubmit = (event) => {
+    Axios.post(buildPath("user/resetPasswordRequest"), {
+      Email: forgotEmail,
+    })
+      .then((response) => {
+        console.log("Email Sent");
+        handleForgotClose();
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
   };
 
   const handleSubmit = (e) => {
@@ -70,10 +103,12 @@ export default function Forgot() {
         newPassword: data.get("password"),
       })
         .then((response) => {
-          console.log(response);
+          if (response) console.log(response);
           navigate("/");
         })
         .catch((error) => {
+          console.log("cheese");
+          handleForgotOpen();
           console.log(error.response.data.error);
         });
     }
@@ -110,9 +145,38 @@ export default function Forgot() {
               alignItems: "center",
             }}
           >
-            {/* <Avatar sx={{ m: 1, bgcolor: "secondary.main", marginTop: 10 }}> */}
-            {/* <LockOutlinedIcon /> */}
-            {/* </Avatar> */}
+            <Dialog
+              open={forgotOpen}
+              TransitionComponent={forgotTransition}
+              keepMounted
+              onClose={handleForgotClose}
+              aria-describedby="alert-dialog-slide-description"
+            >
+              <DialogTitle>{"Expired Token"}</DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-slide-description">
+                  Your token is expired please reenter your email for a new
+                  token. If there is an account associated with that email you
+                  will receive an email soon.
+                </DialogContentText>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="Email"
+                  type="email"
+                  fullWidth
+                  variant="standard"
+                  onChange={(newValue) => setforgotEmail(newValue.target.value)}
+                  // error={modalError}
+                  // helperText={modalHelper}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleForgotClose}>Cancel</Button>
+                <Button onClick={confirmSubmit}>Confirm</Button>
+              </DialogActions>
+            </Dialog>
             <Typography
               variant="h3"
               marginTop={10}
