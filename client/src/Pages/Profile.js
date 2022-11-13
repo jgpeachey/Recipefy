@@ -1,42 +1,42 @@
-import React, { useState } from "react";
-import Avatar from "@mui/material/Avatar";
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
 import Button from "@mui/material/Button";
+import CameraIcon from "@mui/icons-material/PhotoCamera";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
 import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-// import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import Link from "@mui/material/Link";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import NewAppBar from "../Components/NewAppBar";
-import { Paper } from "@mui/material";
-import Axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
-import FormHelperText from "@mui/material/FormHelperText";
-import { ClassNames } from "@emotion/react";
-import ReCaptchaV2 from "react-google-recaptcha";
+import HomeAppBar from "../Components/HomeAppBar";
 import { useCookies } from "react-cookie";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Axios from "axios";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
+import TextField from "@mui/material/TextField";
+import { Avatar, DialogActions } from "@mui/material";
 
 const theme = createTheme();
-
-export default function Register() {
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+export default function Profile() {
   const [cookies, setCookie] = useCookies(["user"]);
-  const [captcha, setCaptcha] = useState(false);
-  const [checkbox, setCheckBox] = useState(false);
   const app_name = "recipefy-g1";
   const [open, setOpen] = useState(false);
-
-  const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  });
+  const [password, setPassword] = useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -53,21 +53,14 @@ export default function Register() {
       return "http://localhost:3001/" + route;
     }
   }
-  const verifyCheckBox = () => {
-    setCheckBox(true);
-  };
-
-  const verifyCaptcha = () => {
-    setCaptcha(true);
-  };
 
   const [base64Picture, setBase64Picture] = useState("");
   const [pictureError, setPictureError] = useState("");
-  const [pictureSuccess, setPictureSuccess] = useState("Default selected");
+  const [pictureSuccess, setPictureSuccess] = useState("");
 
   const handlePicture = (event) => {
     setPictureError("");
-    setPictureSuccess("Default selected");
+    // setPictureSuccess("Default selected");
     setBase64Picture("");
     const fileInput = document.getElementById("profilePic");
     if (fileInput.files[0]) {
@@ -95,6 +88,7 @@ export default function Register() {
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [passwordConfirmError, setPasswordConfirmError] = useState(false);
+  const [modalError, setModalError] = useState(false);
 
   const [firstHelper, setFirstHelper] = useState("");
   const [lastHelper, setLastHelper] = useState("");
@@ -102,6 +96,33 @@ export default function Register() {
   const [emailHelper, setEmailHelper] = useState("");
   const [passwordHelper, setPasswordHelper] = useState("");
   const [passwordConfirmHelper, setPasswordConfirmHelper] = useState("");
+  const [modalHelper, setModalHelper] = useState("");
+
+  const deleteSubmit = (event) => {
+    Axios.delete(buildPath("user/deleteuser"), {
+      headers: {
+        authorization: cookies.token,
+      },
+      data: {
+        Email: cookies.email,
+        Password: password,
+      },
+    })
+      .then((response) => {
+        console.log("User Deleted");
+        navigate("/");
+      })
+      .catch((error) => {
+        if (error.response.data.error === "Invalid password") {
+          setModalError(true);
+          setModalHelper(error.response.data.error);
+        }
+        if (error.response.data.error === "Email Exists") {
+          setEmailHelper(error.response.data.error);
+        }
+        console.log(error.response.data);
+      });
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -129,57 +150,55 @@ export default function Register() {
       setEmailHelper("Invalid email");
     }
 
-    if (data.get("firstName") == "") {
+    if (data.get("firstName") === "") {
       setFirstError(true);
       setFirstHelper("Enter a first name");
     }
 
-    if (data.get("lastName") == "") {
+    if (data.get("lastName") === "") {
       setLastError(true);
       setLastHelper("Enter a last name");
     }
 
-    if (data.get("username") == "") {
+    if (data.get("username") === "") {
       setUserError(true);
       setUsernameHelper("Enter an username");
     }
 
-    if (data.get("email") == "") {
+    if (data.get("email") === "") {
       setEmailError(true);
       setEmailHelper("Enter an email");
     }
 
-    if (data.get("password") == "") {
+    if (data.get("password") === "") {
       setPasswordError(true);
       setPasswordHelper("Enter a password");
     }
 
-    if (data.get("passwordConfirm") == "") {
+    if (data.get("passwordConfirm") === "") {
       setPasswordConfirmError(true);
     }
 
-    if (!(data.get("password") == data.get("passwordConfirm"))) {
+    if (!(data.get("password") === data.get("passwordConfirm"))) {
       setPasswordError(true);
       setPasswordConfirmError(true);
       setPasswordConfirmHelper("Passwords do not match");
     } else if (isValidEmail(data.get("email"))) {
       console.log(base64Picture);
-      Axios.post(buildPath("user/register"), {
+      Axios.post(buildPath("user/updateuser"), {
         Firstname: data.get("firstName"),
         Lastname: data.get("lastName"),
         Username: data.get("username"),
-        Email: data.get("email").toLowerCase(),
+        Email: data.get("email"),
         Pic: base64Picture,
         Password: data.get("password"),
       })
         .then((response) => {
           handleClickOpen();
 
-          console.log("User Created");
+          console.log("User Updated");
         })
         .catch((error) => {
-          /*setUsernameHelper("");
-          setEmailHelper("");*/
           if (error.response.data.error === "Username Exists") {
             setUsernameHelper(error.response.data.error);
           }
@@ -193,58 +212,54 @@ export default function Register() {
 
   return (
     <ThemeProvider theme={theme}>
-      <NewAppBar />
-      <Grid container component="main" sx={{ height: "100vh" }}>
-        <CssBaseline />
-        <Grid
-          item
-          xs={false}
-          sm={4}
-          md={7}
+      <CssBaseline />
+      <HomeAppBar />
+      <main>
+        <Box
           sx={{
-            backgroundImage: "url(https://source.unsplash.com/random/?food)",
-            backgroundRepeat: "no-repeat",
-            backgroundColor: (t) =>
-              t.palette.mode === "light"
-                ? t.palette.grey[50]
-                : t.palette.grey[900],
-            backgroundSize: "cover",
-            backgroundPosition: "center",
+            bgcolor: "background.paper",
+            pt: 8,
+            pb: 6,
           }}
-        />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-          <Box
-            sx={{
-              my: 8,
-              mx: 4,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            {/* <Avatar sx={{ m: 1, bgcolor: "secondary.main", marginTop: 10 }}> */}
-            {/* <LockOutlinedIcon /> */}
-            {/* </Avatar> */}
+        >
+          <Container maxWidth="sm">
             <Typography
-              variant="h3"
-              marginTop={10}
-              marginBottom={2}
-              sx={{
-                display: { xs: "none", md: "flex" },
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                textDecoration: "none",
-              }}
-              className="Login-Header"
+              marginTop={5}
+              component="h1"
+              variant="h2"
+              align="center"
+              color="text.primary"
+              gutterBottom
             >
-              Recipefy
+              Profile
             </Typography>
-            <Typography component="h1" variant="h5">
-              Sign up
+            <Box
+              marginBottom={1}
+              textAlign="center"
+              align="center"
+              justifyContent="center"
+              display="flex"
+            >
+              <Avatar
+                src={cookies.picture}
+                sx={{
+                  width: 72,
+                  height: 72,
+                }}
+              />
+            </Box>
+            <Typography
+              variant="h5"
+              align="center"
+              color="text.secondary"
+              paragraph
+            >
+              Welcome, {cookies.first} {cookies.last}
             </Typography>
-            <Box marginTop={2} alignItems="left" textAlign="center">
+
+            <Box marginTop={2} textAlign="center">
               <Button variant="outlined" component="label">
-                Upload Profile Picture
+                Change Profile Picture
                 <input
                   id="profilePic"
                   type="file"
@@ -280,6 +295,7 @@ export default function Register() {
                     autoFocus
                     error={firstError}
                     helperText={firstHelper}
+                    defaultValue={cookies.first}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -292,6 +308,7 @@ export default function Register() {
                     autoComplete="family-name"
                     error={lastError}
                     helperText={lastHelper}
+                    defaultValue={cookies.last}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -304,6 +321,7 @@ export default function Register() {
                     autoComplete="username"
                     error={userError}
                     helperText={usernameHelper}
+                    defaultValue={cookies.username}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -316,6 +334,7 @@ export default function Register() {
                     autoComplete="email"
                     error={emailError}
                     helperText={emailHelper}
+                    defaultValue={cookies.email}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -344,15 +363,6 @@ export default function Register() {
                     helperText={passwordConfirmHelper}
                   />
                 </Grid>
-                <Grid item xs={12}>
-                  <FormControlLabel
-                    required
-                    control={<Checkbox value="allowEmails" color="primary" />}
-                    label="You consent to receiving emails from us for verification."
-                    onChange={verifyCheckBox}
-                    sx={{ mt: 1, mb: 1 }}
-                  />
-                </Grid>
               </Grid>
               <div
                 style={{
@@ -361,10 +371,6 @@ export default function Register() {
                   placeContent: "center",
                 }}
               >
-                <ReCaptchaV2
-                  sitekey={process.env.REACT_APP_SITE_KEY}
-                  onChange={verifyCaptcha}
-                />
                 <Dialog
                   open={open}
                   TransitionComponent={Transition}
@@ -372,139 +378,63 @@ export default function Register() {
                   onClose={handleClose}
                   aria-describedby="alert-dialog-slide-description"
                 >
-                  <DialogTitle>{"Email Verification"}</DialogTitle>
+                  <DialogTitle>{"Delete Account"}</DialogTitle>
                   <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
-                      Please check your email to finish registration. You can
-                      safely close this window now.
+                      Are you sure you want to delete your account?
                     </DialogContentText>
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Password"
+                      type="password"
+                      fullWidth
+                      variant="standard"
+                      onChange={(newValue) =>
+                        setPassword(newValue.target.value)
+                      }
+                      error={modalError}
+                      helperText={modalHelper}
+                    />
                   </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={deleteSubmit}>Yes</Button>
+                  </DialogActions>
                 </Dialog>
-                ;
               </div>
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
-                disabled={!captcha || !checkbox}
               >
-                Sign Up
+                Update
               </Button>
               <Grid container justifyContent="flex-end">
                 <Grid item>
-                  <Link to="/" variant="body2">
-                    Already have an account? Sign in
-                  </Link>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    size="medium"
+                    onClick={handleClickOpen}
+                  >
+                    Delete Account?
+                  </Button>
                 </Grid>
               </Grid>
             </Box>
-          </Box>
-        </Grid>
-      </Grid>
+          </Container>
+        </Box>
+        <Container sx={{ py: 8 }} maxWidth="md">
+          {/* <Grid container spacing={4}>
+            {cards.map((card) => (
+              <Grid item key={card} xs={12} sm={6} md={4}></Grid>
+            ))}
+          </Grid> */}
+        </Container>
+      </main>
     </ThemeProvider>
   );
 }
-
-// import React from 'react';
-// import "./index.css"
-
-// import { useState } from 'react';
-
-// export default function Register()
-// {
-//     //States for registration
-//     const [username, setUsername] = useState('');
-//     const [email, setEmail] = useState('');
-//     const [password, setPassword] = useState('');
-
-//     //States for checking the errors
-//     const [submitted, setSubmitted] = useState(false);
-//     const [error, setError] = useState(false);
-
-//     //Handle event for name
-//     const handleUsername = (e) => {
-//         setUsername(e.target.value);
-//         setSubmitted(false);
-//     };
-
-//     //Handle event for email
-//     const handleEmail = (e) => {
-//         setEmail(e.target.value);
-//         setSubmitted(false);
-//     };
-
-//     //Handle event for password
-//     const handlePassword = (e) => {
-//         setPassword(e.target.value);
-//         setSubmitted(false);
-//     };
-
-//     //Handle submission of the form
-//     const handleSubmit = (e) => {
-//         e.preventDefault();
-//         if (username === '' || email === '' || password === '') {
-//          setError(true);
-//         }
-//         else {
-//             setSubmitted(true);
-//             setError(false);
-//         }
-//     };
-
-//     //Show success message
-//     const successMessage = () => {
-//         return (
-//         <div
-//             className="success"
-//             style={{
-//             display: submitted ? '' : 'none',
-//             }}>
-//             <h1>User {username} successfully registered!!</h1>
-//         </div>
-//         );
-//     };
-
-//     //Show error message if error is true
-//     const errorMessage = () => {
-//         return (
-//         <div
-//             className="error"
-//             style={{
-//             display: error ? '' : 'none',
-//             }}>
-//             <h1>Please enter all the fields</h1>
-//         </div>
-//         );
-//     };
-
-//     return (
-//         <div className="Register-Form">
-//           <div className="Title">
-//             <h1>Register</h1>
-//           </div>
-
-//           {/* Calling to the methods */}
-//           <div className="Messages">
-//             {errorMessage()}
-//             {successMessage()}
-//           </div>
-
-//           <form method="post">
-//             {/* Labels and inputs for form data */}
-//             <input placeholder ="Username" onChange={handleUsername} className="Register-Input"
-//               value={username} type="text" />
-
-//             <input placeholder ="Email" onChange={handleEmail} className="Register-Input"
-//               value={email} type="email" />
-
-//             <input placeholder="Password" onChange={handlePassword} className="Register-Input"
-//               value={password} type="password" />
-
-//             <button onClick={handleSubmit} className="btn" type="submit">
-//               Submit
-//             </button>
-//           </form>
-//         </div>
-//     );
-// }

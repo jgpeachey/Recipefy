@@ -152,6 +152,46 @@
   margin-right: auto;
 }
 
-.navButton{
-  
+.modalImg{
+  width: 700px;
+  height: auto;
+}
+
+.modalContainer{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalContainerTop{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2196f3;
+}
+
+.recipeText{
+  padding-left: 23px;
+  max-width: 350px;
+}
+
+.modalPFP{
+  padding-left: 15px;
+}
+
+.ingredientHeader{
+  padding-left: -10px;
+}
+
+.profileBio{
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;
+  padding-top: 10px;
+}
+
+.addRecipeImg {
+  width: 110%;
+  height: 50%;
+  opacity: 20%;
 }

@@ -8,8 +8,9 @@
   },
   "scripts": {
     "dev": "nodemon src",
-    "start": "node src/index.js",
-    "heroku-postbuild": " NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "start": "nodemon src/index.js",
+    "heroku-postbuild": " NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client",
+    "test": "jest index.test.js"
   },
   "keywords": [],
   "author": "",
@@ -25,9 +26,11 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.6.7"
+    "mongoose": "^6.6.7",
+    "supertest": "^6.3.1"
   },
   "devDependencies": {
+    "jest": "^29.3.1",
     "nodemon": "^2.0.20"
   }
 }
