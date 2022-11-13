@@ -152,6 +152,7 @@ export default function Forgot() {
                 label="New Password"
                 name="password"
                 autoComplete="password"
+                type="password"
                 autoFocus
                 error={passwordError}
                 helperText={passwordHelper}
