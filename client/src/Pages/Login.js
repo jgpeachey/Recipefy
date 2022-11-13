@@ -242,6 +242,7 @@ export default function Login() {
                   sitekey={process.env.REACT_APP_SITE_KEY}
                   onChange={verify}
                 />
+
                 {/* <Reaptcha
                   sitekey={process.env.REACT_APP_SITE_KEY}
                   explicit
@@ -263,6 +264,9 @@ export default function Login() {
                   </DialogContent>
                 </Dialog>
               </div>
+              <Link to="/forgotpassword" variant="body2">
+                cheesepizza
+              </Link>
               <Button
                 type="submit"
                 fullWidth
