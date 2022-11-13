@@ -28,6 +28,34 @@ router.post('/addrecipe', verifyAccessToken, async (req, res, next) => {
     });
 })
 
+// Update recipe API
+router.put('/updaterecipe', verifyAccessToken, async(req, res, next) => {
+    const recipe = Recipe.findOne({Title: req.body.Title, User_ID: req.auth.userId});
+    if(!recipe){
+        return res.status(409).json({
+            error: "Invalid recipe",
+          });
+    }
+
+    try{
+        const result = await Recipe.updateOne({Title: req.body.Title, User_ID: req.auth.userId}, {$set: req.body.Info});
+        if(result.matchedCount > 0){
+            return res.status(200).end();
+        } else {
+            return res.status(409).json({
+                error: "Invalid recipe",
+              });
+        }
+
+    } catch(e) {
+        return res.send({
+          error: `${e.message}`,
+        });
+    }
+
+});
+
+
 router.delete('/removerecipe', verifyAccessToken, async(req, res, next) => {
 
     await Recipe.deleteOne({ _id: req.body._id, User_ID: req.auth.userId});

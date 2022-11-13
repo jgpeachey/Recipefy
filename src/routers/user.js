@@ -236,6 +236,8 @@ router.put("/updateuser", verifyAccessToken, async(req, res, next) =>{
         req.body.Info.Password = hash;
       }
       const result = await User.updateOne({Email: req.body.Email}, {$set: req.body.Info});
+      
+      
 
       return res.status(200).end();
     } else {
