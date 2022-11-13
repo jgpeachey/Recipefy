@@ -22,8 +22,6 @@ export default function Forgot() {
   const [passwordConfirmError, setPasswordConfirmError] = useState(false);
   const [passwordHelper, setPasswordHelper] = useState("");
   const [passwordConfirmHelper, setPasswordConfirmHelper] = useState("");
-  const [userId, setuserId] = useState("");
-  const [token, setToken] = useState("");
 
   const app_name = "recipefy-g1";
   function buildPath(route) {
@@ -46,8 +44,6 @@ export default function Forgot() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    setuserId(searchParams.get("id"));
-    setToken(searchParams.get("token"));
 
     setPasswordError(false);
     setPasswordConfirmError(false);
@@ -67,23 +63,20 @@ export default function Forgot() {
       setPasswordError(true);
       setPasswordConfirmError(true);
       setPasswordConfirmHelper("Passwords do not match");
-    }
-
-    console.log(userId);
-    console.log(token);
-
-    Axios.post(buildPath("user/resetPassword"), {
-      userId: userId,
-      token: token,
-      newPassword: data.get("password"),
-    })
-      .then((response) => {
-        console.log(response);
-        navigate("/");
+    } else {
+      Axios.post(buildPath("user/resetPassword"), {
+        userId: searchParams.get("id"),
+        token: searchParams.get("token"),
+        newPassword: data.get("password"),
       })
-      .catch((error) => {
-        console.log(error.response.data.error);
-      });
+        .then((response) => {
+          console.log(response);
+          // navigate("/");
+        })
+        .catch((error) => {
+          console.log(error.response.data.error);
+        });
+    }
   };
 
   return (
@@ -163,10 +156,9 @@ export default function Forgot() {
                 required
                 fullWidth
                 id="confirmpassword"
-                name="ConfirmPassword"
+                name="confirmpassword"
                 label="Confirm Password"
                 type="password"
-                autoComplete="ConfirmPassword"
                 error={passwordConfirmError}
                 helperText={passwordConfirmHelper}
               />
