@@ -1,9 +1,8 @@
 import React, {useState} from 'react'
 import { SliderData } from './SliderData';
 import {FaArrowAltCircleRight, FaArrowAltCircleLeft} from 'react-icons/fa'
-import { Button, Box } from '@mui/material';
+import { Button, Box, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import Modal from './Modal';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import Dialog from "@mui/material/Dialog";
@@ -12,6 +11,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { maxWidth } from '@mui/system';
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Container from '@mui/system/Container';
 
 const theme = createTheme({});
 
@@ -63,26 +63,30 @@ const ImageCarousel = ({slides}) => {
           </div>
           <DialogContent>
             
-            <div className='modalContainer'>
-              <img className="modalImg" src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80'/>
-              <DialogContent>
-                <DialogTitle className="ingredientHeader">
-                  Ingredients:
-                </DialogTitle>
-                <DialogContentText className="recipeText">
-                  cumin, water, pork, mushrooms, cashews, onions
-                </DialogContentText>
-                <DialogTitle>
-                  Instructions:
-                </DialogTitle>
-                <DialogContentText className="recipeText">
-                  This is my recipe! It is really yummy and I like to cook it and it is a really good snack to eat. It is also nutritious. Loren ipsum.<br/>
-                  1.<br/>
-                  2.<br/>
-                  3.<br/>
-                </DialogContentText>
-              </DialogContent>
-            </div>
+          <Container>
+            <Grid container spacing={1}>
+              <div className='modalContainer'>
+                <img className="modalImg" src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80'/>
+                <DialogContent>
+                  <DialogTitle className="ingredientHeader">
+                    Ingredients:
+                  </DialogTitle>
+                  <DialogContentText className="recipeText">
+                    cumin, water, pork, mushrooms, cashews, onions
+                  </DialogContentText>
+                  <DialogTitle>
+                    Instructions:
+                  </DialogTitle>
+                  <DialogContentText className="recipeText">
+                    This is my recipe! It is really yummy and I like to cook it and it is a really good snack to eat. It is also nutritious. Loren ipsum.<br/>
+                    1.<br/>
+                    2.<br/>
+                    3.<br/>
+                  </DialogContentText>
+                </DialogContent>
+              </div>
+            </Grid>
+          </Container>
     
           </DialogContent>
         </Dialog>

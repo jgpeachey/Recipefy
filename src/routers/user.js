@@ -9,9 +9,7 @@ const crypto = require("crypto");
 const sgMail = require("@sendgrid/mail");
 const cloudinary = require("../utils/cloudinary");
 const axios = require("axios");
-const {
-  createAccessToken,
-} = require("../middleware/tokens");
+const { createAccessToken } = require("../middleware/tokens");
 
 const { appendFile } = require("fs");
 
@@ -19,7 +17,10 @@ require("dotenv").config();
 
 sgMail.setApiKey(process.env.SENDGRID_KEY);
 
-const link = (process.env.NODE_ENV === "production") ? "https://recipefy.herokuapp.com/" : "http://localhost:3000/"
+const link =
+  process.env.NODE_ENV === "production"
+    ? "https://recipefy.herokuapp.com/"
+    : "http://localhost:3000/";
 
 // register apis
 router.post("/register", async function (req, res) {
@@ -29,15 +30,13 @@ router.post("/register", async function (req, res) {
     });
   }
 
-  if(typeof req.body?.Email !== 'string' ||
-    !req.body?.Email?.length ) {
+  if (typeof req.body?.Email !== "string" || !req.body?.Email?.length) {
     return res.status(409).json({
       error: "Email required",
     });
   }
 
-  if(typeof req.body?.Password !== 'string' ||
-    !req.body?.Password?.length ) {
+  if (typeof req.body?.Password !== "string" || !req.body?.Password?.length) {
     return res.status(409).json({
       error: "Password required",
     });
@@ -129,16 +128,14 @@ router.get('/test', async (req, res) => {
   }
 
 })
-
-
-*/ 
+*/
 router.get("/verify", async (req, res, next) => {
   try {
     const user = await User.findOne({ emailToken: req.query.token });
     if (!user) {
-        return res.status(201).json({
-            error: "user DNE",
-        });
+      return res.status(201).json({
+        error: "user DNE",
+      });
     }
     user.emailToken = null;
     user.isVerified = true;
@@ -147,11 +144,10 @@ router.get("/verify", async (req, res, next) => {
   } catch (error) {
     console.log(error);
     return res.status(201).json({
-        error: error,
-      });
+      error: error,
+    });
   }
 });
-
 
 // login api
 router.post("/login", async (req, res, next) => {
@@ -168,34 +164,38 @@ router.post("/login", async (req, res, next) => {
     if (passAuth) {
       const accessToken = createAccessToken(user._id);
 
-        if(user.isVerified === false) {
-            const msg = {
-                from: "recipefyservices@gmail.com",
-                to: req.body.Email,
-                subject: "Recipefy - Verify your Email",
-                text: `
+      if (user.isVerified === false) {
+        const msg = {
+          from: "recipefyservices@gmail.com",
+          to: req.body.Email,
+          subject: "Recipefy - Verify your Email",
+          text: `
                         Hey! Thank you for registering!
                         Copy and paste the address below to verify your account.
                         http://localhost:3001/user/verify?token=${user.emailToken}
                     `,
-                html: `
+          html: `
                         <h1>Hello</h1>
                         <p>Thank you for Registering!<p>
                         <p>Please click the link below to verify your account<p>
                         <a href= "http://localhost:3001/user/verify?token=${user.emailToken}">Verify your Account</a>
                     `,
-              };
-            
-            void sgMail.send(msg);
-            return res.status(400).json({
+        };
+
+        void sgMail.send(msg);
+        return res
+          .status(400)
+          .json({
             error: "Please verify your email first",
-            }).end();
-        }
+          })
+          .end();
+      }
 
       return res.status(201).json({
         error: "",
         user: {
           id: user._id,
+          userName: user.Username,
           firstName: user.Firstname,
           lastName: user.Lastname,
           email: user.Email,
@@ -219,10 +219,10 @@ router.post("/login", async (req, res, next) => {
 });
 
 // Delete user function
-router.delete('/deleteuser', verifyAccessToken, async (req, res, next) => {
+router.delete("/deleteuser", verifyAccessToken, async (req, res, next) => {
   // Verifies user exists in database
   const user = await User.findOne({ Email: req.body.Email }).exec();
-  if (!user){
+  if (!user) {
     return res.status(409).json({
       error: "Invalid email",
     });
@@ -231,25 +231,21 @@ router.delete('/deleteuser', verifyAccessToken, async (req, res, next) => {
   try {
     // Verifies passwords match, if so deletes
     const passAuth = await bcrypt.compare(req.body.Password, user.Password);
-    if(passAuth){
-      await User.deleteOne({Email: req.body.Email});
+    if (passAuth) {
+      await User.deleteOne({ Email: req.body.Email });
       //console.log("Deleted\n");
       return res.status(200).end();
-    }
-
-    else {
+    } else {
       return res.status(409).json({
         error: "Invalid password",
       });
     }
-
-  } catch(e) {
+  } catch (e) {
     return res.send({
       error: `${e.message}`,
     });
   }
 });
-
 
 // Search Users API
 router.get("/searchUsers", verifyAccessToken, async (req, res, next) => {
