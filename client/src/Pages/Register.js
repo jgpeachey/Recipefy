@@ -380,7 +380,6 @@ export default function Register() {
                     </DialogContentText>
                   </DialogContent>
                 </Dialog>
-                ;
               </div>
               <Button
                 type="submit"

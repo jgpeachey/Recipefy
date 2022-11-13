@@ -29,11 +29,25 @@ const theme = createTheme();
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+const updateTransition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 export default function Profile() {
   const [cookies, setCookie] = useCookies(["user"]);
   const app_name = "recipefy-g1";
   const [open, setOpen] = useState(false);
   const [password, setPassword] = useState("");
+  const [newpassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [updateOpen, setUpdateOpen] = useState(false);
+
+  const handleUpdateOpen = () => {
+    setUpdateOpen(true);
+  };
+
+  const handleUpdateClose = () => {
+    setUpdateOpen(false);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -86,6 +100,9 @@ export default function Profile() {
   const [passwordError, setPasswordError] = useState(false);
   const [passwordConfirmError, setPasswordConfirmError] = useState(false);
   const [modalError, setModalError] = useState(false);
+  const [updatePasswordError, setupdatePasswordError] = useState(false);
+  const [updatePasswordModalError, setupdatePasswordModalError] =
+    useState(false);
 
   const [firstHelper, setFirstHelper] = useState("");
   const [lastHelper, setLastHelper] = useState("");
@@ -94,6 +111,41 @@ export default function Profile() {
   const [passwordHelper, setPasswordHelper] = useState("");
   const [passwordConfirmHelper, setPasswordConfirmHelper] = useState("");
   const [modalHelper, setModalHelper] = useState("");
+  const [updatePasswordHelper, setupdatePasswordHelper] = useState("");
+  const [updatePasswordModalHelper, setupdatePasswordModalHelper] =
+    useState("");
+
+  const updatePassword = (event) => {
+    if (!(newpassword === confirmPassword)) {
+      setupdatePasswordModalError(true);
+      setupdatePasswordModalHelper("Passwords do not match");
+    } else {
+      Axios.put(
+        buildPath("user/updateuser"),
+        {
+          Email: cookies.email,
+          Password: password,
+          Info: {
+            Password: newpassword,
+          },
+        },
+        {
+          headers: {
+            authorization: cookies.token,
+          },
+        }
+      )
+        .then((response) => {
+          console.log(response);
+          handleUpdateClose();
+        })
+        .catch((error) => {
+          console.log(error);
+          setupdatePasswordError(true);
+          setupdatePasswordHelper("Invalid Password");
+        });
+    }
+  };
 
   const deleteSubmit = (event) => {
     Axios.delete(buildPath("user/deleteuser"), {
@@ -138,14 +190,14 @@ export default function Profile() {
     setPasswordConfirmHelper("");
     const data = new FormData(event.currentTarget);
 
-    function isValidEmail(email) {
-      return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i.test(email);
-    }
+    // function isValidEmail(email) {
+    //   return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i.test(email);
+    // }
 
-    if (!isValidEmail(data.get("email"))) {
-      setEmailError(true);
-      setEmailHelper("Invalid email");
-    }
+    // if (!isValidEmail(data.get("email"))) {
+    //   setEmailError(true);
+    //   setEmailHelper("Invalid email");
+    // }
 
     if (data.get("firstName") === "") {
       setFirstError(true);
@@ -157,15 +209,15 @@ export default function Profile() {
       setLastHelper("Enter a last name");
     }
 
-    if (data.get("username") === "") {
-      setUserError(true);
-      setUsernameHelper("Enter an username");
-    }
+    // if (data.get("username") === "") {
+    //   setUserError(true);
+    //   setUsernameHelper("Enter an username");
+    // }
 
-    if (data.get("email") === "") {
-      setEmailError(true);
-      setEmailHelper("Enter an email");
-    }
+    // if (data.get("email") === "") {
+    //   setEmailError(true);
+    //   setEmailHelper("Enter an email");
+    // }
 
     if (data.get("password") === "") {
       setPasswordError(true);
@@ -180,29 +232,28 @@ export default function Profile() {
       setPasswordError(true);
       setPasswordConfirmError(true);
       setPasswordConfirmHelper("Passwords do not match");
-    } else if (isValidEmail(data.get("email"))) {
-      console.log(base64Picture);
-      Axios.post(buildPath("user/updateuser"), {
-        Firstname: data.get("firstName"),
-        Lastname: data.get("lastName"),
-        Username: data.get("username"),
-        Email: data.get("email"),
-        Pic: base64Picture,
-        Password: data.get("password"),
-      })
+    } else {
+      Axios.put(
+        buildPath("user/updateuser"),
+        {
+          Email: cookies.email,
+          Password: data.get("password"),
+          Info: {
+            Firstname: data.get("firstName"),
+            Lastname: data.get("lastName"),
+          },
+        },
+        {
+          headers: {
+            authorization: cookies.token,
+          },
+        }
+      )
         .then((response) => {
-          handleClickOpen();
-
-          console.log("User Updated");
+          console.log(response);
         })
         .catch((error) => {
-          if (error.response.data.error === "Username Exists") {
-            setUsernameHelper(error.response.data.error);
-          }
-          if (error.response.data.error === "Email Exists") {
-            setEmailHelper(error.response.data.error);
-          }
-          console.log(error.response.data);
+          console.log(error);
         });
     }
   };
@@ -228,7 +279,7 @@ export default function Profile() {
               color="text.primary"
               gutterBottom
             >
-              Profile
+              {cookies.username}
             </Typography>
             <Box
               marginBottom={1}
@@ -254,7 +305,7 @@ export default function Profile() {
               Welcome, {cookies.first} {cookies.last}
             </Typography>
 
-            <Box marginTop={2} textAlign="center">
+            {/* <Box marginTop={2} textAlign="center">
               <Button variant="outlined" component="label">
                 Change Profile Picture
                 <input
@@ -273,7 +324,7 @@ export default function Profile() {
                   {pictureSuccess}
                 </Typography>
               </Box>
-            </Box>
+            </Box> */}
             <Box
               component="form"
               noValidate
@@ -308,7 +359,7 @@ export default function Profile() {
                     defaultValue={cookies.last}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                   <TextField
                     required
                     fullWidth
@@ -320,8 +371,8 @@ export default function Profile() {
                     helperText={usernameHelper}
                     defaultValue={cookies.username}
                   />
-                </Grid>
-                <Grid item xs={12}>
+                </Grid> */}
+                {/* <Grid item xs={12}>
                   <TextField
                     required
                     fullWidth
@@ -333,7 +384,7 @@ export default function Profile() {
                     helperText={emailHelper}
                     defaultValue={cookies.email}
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12}>
                   <TextField
                     required
@@ -347,7 +398,7 @@ export default function Profile() {
                     helperText={passwordHelper}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                   <TextField
                     required
                     fullWidth
@@ -359,7 +410,7 @@ export default function Profile() {
                     error={passwordConfirmError}
                     helperText={passwordConfirmHelper}
                   />
-                </Grid>
+                </Grid> */}
               </Grid>
               <div
                 style={{
@@ -400,6 +451,65 @@ export default function Profile() {
                     <Button onClick={deleteSubmit}>Yes</Button>
                   </DialogActions>
                 </Dialog>
+                <Dialog
+                  open={updateOpen}
+                  TransitionComponent={updateTransition}
+                  keepMounted
+                  onClose={handleUpdateClose}
+                  aria-describedby="alert-dialog-slide-description"
+                >
+                  <DialogTitle>{"Update Password"}</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                      Please type in the fields to change your password.
+                    </DialogContentText>
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Current Password"
+                      type="password"
+                      fullWidth
+                      variant="standard"
+                      onChange={(newValue) =>
+                        setPassword(newValue.target.value)
+                      }
+                      error={updatePasswordError}
+                      helperText={updatePasswordHelper}
+                    />
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="New Password"
+                      type="password"
+                      fullWidth
+                      variant="standard"
+                      onChange={(newValue) =>
+                        setNewPassword(newValue.target.value)
+                      }
+                      error={updatePasswordModalError}
+                      helperText={updatePasswordModalHelper}
+                    />
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Confirm Password"
+                      type="password"
+                      fullWidth
+                      variant="standard"
+                      onChange={(newValue) =>
+                        setConfirmPassword(newValue.target.value)
+                      }
+                      error={updatePasswordModalError}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleUpdateClose}>Cancel</Button>
+                    <Button onClick={updatePassword}>Yes</Button>
+                  </DialogActions>
+                </Dialog>
               </div>
               <Button
                 type="submit"
@@ -409,7 +519,16 @@ export default function Profile() {
               >
                 Update
               </Button>
-              <Grid container justifyContent="flex-end">
+              <Grid container>
+                <Grid item xs>
+                  <Button
+                    variant="outlined"
+                    size="medium"
+                    onClick={handleUpdateOpen}
+                  >
+                    Update Password?
+                  </Button>
+                </Grid>
                 <Grid item>
                   <Button
                     variant="outlined"
