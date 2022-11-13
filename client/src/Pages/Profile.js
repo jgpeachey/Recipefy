@@ -297,6 +297,7 @@ export default function Profile() {
                     autoFocus
                     error={firstError}
                     helperText={firstHelper}
+                    defaultValue={cookies.first}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -309,6 +310,7 @@ export default function Profile() {
                     autoComplete="family-name"
                     error={lastError}
                     helperText={lastHelper}
+                    defaultValue={cookies.last}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -321,6 +323,7 @@ export default function Profile() {
                     autoComplete="username"
                     error={userError}
                     helperText={usernameHelper}
+                    defaultValue={cookies.username}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -333,6 +336,7 @@ export default function Profile() {
                     autoComplete="email"
                     error={emailError}
                     helperText={emailHelper}
+                    defaultValue={cookies.email}
                   />
                 </Grid>
                 <Grid item xs={12}>

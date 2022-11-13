@@ -168,7 +168,7 @@ export default function Register() {
         Firstname: data.get("firstName"),
         Lastname: data.get("lastName"),
         Username: data.get("username"),
-        Email: data.get("email"),
+        Email: data.get("email").toLowerCase(),
         Pic: base64Picture,
         Password: data.get("password"),
       })

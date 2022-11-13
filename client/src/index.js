@@ -9,6 +9,7 @@ import Home from "./Pages/Home";
 import { CookiesProvider } from "react-cookie";
 import Profile from "./Pages/Profile";
 import Forgot from "./Pages/Forgot";
+import AddRecipe from "./Pages/AddRecipe";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -21,13 +22,14 @@ root.render(
           <Route path="/home" index element={<Home />} />
           <Route path="/profile" index element={<Profile />} />
           <Route path="/forgotpassword" index element={<Forgot />} />
+          <Route path="/addrecipe" index element={<AddRecipe />} />
         </Routes>
       </BrowserRouter>
     </CookiesProvider>
   </>
 );
 
-//Login, Register, Forgot Password, User Profile Page, modal profile page of others, upload recipe, subscribed list, modal page of recipe
+//Login, Register, Forgot Password, User Profile Page, modal profile page of others, upload recipe, subscribed list, modal page of recipe, favorite recipes page
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
