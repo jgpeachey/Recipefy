@@ -375,13 +375,27 @@ router.post('/resetPasswordRequest', async (req, res, next) => {
 })
 // required fields will be userId, token, and then newPassword
 router.post('/resetPassword', async (req, res, next) => {
-  let resetToken = await Token.findOne({userId: mongoose.Types.ObjectId(req.body.userId)});
+  //console.log(req.body.userId);
+  const userId = (req.body.userId).trim();
+  console.log(req.body);
+  //console.log(typeof userId);
+  if((req.body.userId).length != 24){
+    return res.status(409).json({
+      error: "Invalid User Id"
+    })
+  }
+  if(req.body.token == ''){
+    return res.status(409).json({
+      error: "Invalid token"
+    })
+  }
+  const resetToken = await Token.findOne({userId: mongoose.Types.ObjectId(req.body.userId)});
   if(!resetToken){
     return res.status(409).json({
       error: "Invalid or expired password reset token"
     })
   }
-  const valid = await bcrypt.compare(req.body.token, resetToken.token)
+  let valid = await bcrypt.compare(req.body.token, resetToken.token)
   if(!valid){
     return res.status(409).json({
       error: "Invalid or expired password reset token"
