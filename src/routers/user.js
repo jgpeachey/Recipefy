@@ -23,7 +23,7 @@ const clientUrl =
   process.env.NODE_ENV === "production"
     ? "https://recipefy-g1.herokuapp.com"
     : "http://localhost:3000";
-
+const serverUrl = process.env.NODE_ENV === "production" ?  "https://recipefy-g1.herokuapp.com" : "http://localhost:3001";
 // register apis
 router.post("/register", async function (req, res) {
   if (typeof req.body?.Username !== "string" || !req.body?.Username?.length) {
@@ -93,13 +93,13 @@ router.post("/register", async function (req, res) {
     text: `
             Hey! Thank you for registering!
             Copy and paste the address below to verify your account.
-            ${clientUrl}/user/verify?token=${result.emailToken}
+            ${serverUrl}/user/verify/${result.emailToken}
         `,
     html: `
             <h1>Hello</h1>
             <p>Thank you for Registering!<p>
             <p>Please click the link below to verify your account<p>
-            <a href= "${clientUrl}/user/verify?token=${result.emailToken}">Verify your Account</a>
+            <a href= "${serverUrl}/user/verify/${result.emailToken}">Verify your Account</a>
         `,
   };
 
@@ -131,9 +131,9 @@ router.get('/test', async (req, res) => {
 
 })
 */
-router.get("/verify", async (req, res, next) => {
+router.get("/verify/:token", async (req, res, next) => {
   try {
-    const user = await User.findOne({ emailToken: req.query.token });
+    const user = await User.findOne({ emailToken: req.params.token });
     if (!user) {
       return res.status(201).json({
         error: "user DNE",
@@ -142,7 +142,10 @@ router.get("/verify", async (req, res, next) => {
     user.emailToken = null;
     user.isVerified = true;
     await user.save();
-    return res.redirect(clientUrl);
+    return res.status(201).json({
+      error: "",
+      message: "Verification Successful"
+    });
   } catch (error) {
     console.log(error);
     return res.status(201).json({
@@ -174,13 +177,13 @@ router.post("/login", async (req, res, next) => {
           text: `
                         Hey! Thank you for registering!
                         Copy and paste the address below to verify your account.
-                        ${clientUrl}/user/verify?token=${user.emailToken}
+                        ${serverUrl}/user/verify?token=${user.emailToken}
                     `,
           html: `
                         <h1>Hello</h1>
                         <p>Thank you for Registering!<p>
                         <p>Please click the link below to verify your account<p>
-                        <a href= "${clientUrl}/user/verify?token=${user.emailToken}">Verify your Account</a>
+                        <a href= "${serverUrl}/user/verify?token=${user.emailToken}">Verify your Account</a>
                     `,
         };
 
