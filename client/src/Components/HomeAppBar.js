@@ -23,6 +23,10 @@ export default function HomeAppBar() {
     navigate('/Profile');
   }
 
+  const navigateToHome = () => {
+    navigate('/Home');
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar color="primary">
@@ -41,7 +45,7 @@ export default function HomeAppBar() {
             <GroupIcon sx={{ ml: 5 }}></GroupIcon>
           </IconButton>
 
-          <div className="homeLogo" sx={{ flexGrow: 1 }}>
+          <div className="homeLogo" sx={{ flexGrow: 1 }} onClick={navigateToHome}>
             Recipefy
           </div>
           <Button className="navButton" color="inherit">
