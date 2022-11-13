@@ -71,7 +71,7 @@ export default function Forgot() {
       })
         .then((response) => {
           console.log(response);
-          // navigate("/");
+          navigate("/");
         })
         .catch((error) => {
           console.log(error.response.data.error);
