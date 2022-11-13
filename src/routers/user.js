@@ -21,8 +21,8 @@ sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 const clientUrl =
   process.env.NODE_ENV === "production"
-    ? "https://recipefy.herokuapp.com/"
-    : "http://localhost:3000/";
+    ? "https://recipefy.herokuapp.com"
+    : "http://localhost:3000";
 
 // register apis
 router.post("/register", async function (req, res) {
@@ -93,13 +93,13 @@ router.post("/register", async function (req, res) {
     text: `
             Hey! Thank you for registering!
             Copy and paste the address below to verify your account.
-            http://localhost:3001/user/verify?token=${result.emailToken}
+            ${clientUrl}/user/verify?token=${result.emailToken}
         `,
     html: `
             <h1>Hello</h1>
             <p>Thank you for Registering!<p>
             <p>Please click the link below to verify your account<p>
-            <a href= "http://localhost:3001/user/verify?token=${result.emailToken}">Verify your Account</a>
+            <a href= "${clientUrl}/user/verify?token=${result.emailToken}">Verify your Account</a>
         `,
   };
 
@@ -173,13 +173,13 @@ router.post("/login", async (req, res, next) => {
           text: `
                         Hey! Thank you for registering!
                         Copy and paste the address below to verify your account.
-                        http://localhost:3001/user/verify?token=${user.emailToken}
+                        ${clientUrl}/user/verify?token=${user.emailToken}
                     `,
           html: `
                         <h1>Hello</h1>
                         <p>Thank you for Registering!<p>
                         <p>Please click the link below to verify your account<p>
-                        <a href= "http://localhost:3001/user/verify?token=${user.emailToken}">Verify your Account</a>
+                        <a href= "${clientUrl}/user/verify?token=${user.emailToken}">Verify your Account</a>
                     `,
         };
 
@@ -349,7 +349,7 @@ router.post('/resetPasswordRequest', async (req, res, next) => {
     token: hash,
     createdAt: Date.now()
   }).save();
-  const emailLink = `${clientUrl}forgotpassword?token=${resetToken}&id=${user._id}`;
+  const emailLink = `${clientUrl}/forgotpassword?token=${resetToken}&id=${user._id}`;
   const msg = {
     from: "recipefyservices@gmail.com",
     to: req.body.Email,
