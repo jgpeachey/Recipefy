@@ -20,7 +20,7 @@ app.set("port", process.env.PORT || 3001);
 
 // app.use(express.static(path.join(__dirname + "/public")));
 
-app.use(express.json({limit: '25mb'}));
+app.use(express.json({ limit: "25mb" }));
 
 app.use(cookieParser());
 
@@ -45,7 +45,7 @@ if (process.env.NODE_ENV === "production") {
   // });
 
   app.get("/*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
   });
   /*app.get("/forgotpassword", (req, res) => {
     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
