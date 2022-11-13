@@ -8,12 +8,9 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
-import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Link from "@mui/material/Link";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import HomeAppBar from "../Components/HomeAppBar";
 import { useCookies } from "react-cookie";
@@ -185,30 +182,28 @@ export default function Profile() {
       setPasswordConfirmHelper("Passwords do not match");
     } else if (isValidEmail(data.get("email"))) {
       console.log(base64Picture);
-      //   Axios.post(buildPath("user/register"), {
-      //     Firstname: data.get("firstName"),
-      //     Lastname: data.get("lastName"),
-      //     Username: data.get("username"),
-      //     Email: data.get("email"),
-      //     Pic: base64Picture,
-      //     Password: data.get("password"),
-      //   })
-      //     .then((response) => {
-      //       handleClickOpen();
+      Axios.post(buildPath("user/updateuser"), {
+        Firstname: data.get("firstName"),
+        Lastname: data.get("lastName"),
+        Username: data.get("username"),
+        Email: data.get("email"),
+        Pic: base64Picture,
+        Password: data.get("password"),
+      })
+        .then((response) => {
+          handleClickOpen();
 
-      //       console.log("User Created");
-      //     })
-      //     .catch((error) => {
-      //       /*setUsernameHelper("");
-      //       setEmailHelper("");*/
-      //       if (error.response.data.error === "Username Exists") {
-      //         setUsernameHelper(error.response.data.error);
-      //       }
-      //       if (error.response.data.error === "Email Exists") {
-      //         setEmailHelper(error.response.data.error);
-      //       }
-      //       console.log(error.response.data);
-      //     });
+          console.log("User Updated");
+        })
+        .catch((error) => {
+          if (error.response.data.error === "Username Exists") {
+            setUsernameHelper(error.response.data.error);
+          }
+          if (error.response.data.error === "Email Exists") {
+            setEmailHelper(error.response.data.error);
+          }
+          console.log(error.response.data);
+        });
     }
   };
 
@@ -297,6 +292,7 @@ export default function Profile() {
                     autoFocus
                     error={firstError}
                     helperText={firstHelper}
+                    defaultValue={cookies.first}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -309,6 +305,7 @@ export default function Profile() {
                     autoComplete="family-name"
                     error={lastError}
                     helperText={lastHelper}
+                    defaultValue={cookies.last}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -321,6 +318,7 @@ export default function Profile() {
                     autoComplete="username"
                     error={userError}
                     helperText={usernameHelper}
+                    defaultValue={cookies.username}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -333,6 +331,7 @@ export default function Profile() {
                     autoComplete="email"
                     error={emailError}
                     helperText={emailHelper}
+                    defaultValue={cookies.email}
                   />
                 </Grid>
                 <Grid item xs={12}>

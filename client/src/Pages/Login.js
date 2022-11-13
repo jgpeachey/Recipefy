@@ -18,16 +18,31 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
+import DialogActions from "@mui/material/DialogActions";
 
 const theme = createTheme({});
+
+const forgotTransition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export default function Login() {
   const [cookies, setCookie] = useCookies(["user"]);
   const [open, setOpen] = useState(false);
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotEmail, setforgotEmail] = useState("");
 
   const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
   });
+
+  const handleForgotOpen = () => {
+    setForgotOpen(true);
+  };
+
+  const handleForgotClose = () => {
+    setForgotOpen(false);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -35,6 +50,19 @@ export default function Login() {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const confirmSubmit = (event) => {
+    Axios.post(buildPath("user/resetPasswordRequest"), {
+      Email: forgotEmail,
+    })
+      .then((response) => {
+        console.log("Email Sent");
+        handleForgotClose();
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
   };
 
   const app_name = "recipefy-g1";
@@ -214,6 +242,7 @@ export default function Login() {
                   sitekey={process.env.REACT_APP_SITE_KEY}
                   onChange={verify}
                 />
+
                 {/* <Reaptcha
                   sitekey={process.env.REACT_APP_SITE_KEY}
                   explicit
@@ -234,7 +263,6 @@ export default function Login() {
                     </DialogContentText>
                   </DialogContent>
                 </Dialog>
-                ;
               </div>
               <Button
                 type="submit"
@@ -246,10 +274,42 @@ export default function Login() {
                 Sign In
               </Button>
               <Grid container>
+                <Dialog
+                  open={forgotOpen}
+                  TransitionComponent={forgotTransition}
+                  keepMounted
+                  onClose={handleForgotClose}
+                  aria-describedby="alert-dialog-slide-description"
+                >
+                  <DialogTitle>{"Forgot Password"}</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                      Please type your email in to reset your password. If there
+                      is an account associated with that email you will receive
+                      an email soon.
+                    </DialogContentText>
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Email"
+                      type="email"
+                      fullWidth
+                      variant="standard"
+                      onChange={(newValue) =>
+                        setforgotEmail(newValue.target.value)
+                      }
+                      // error={modalError}
+                      // helperText={modalHelper}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleForgotClose}>Cancel</Button>
+                    <Button onClick={confirmSubmit}>Confirm</Button>
+                  </DialogActions>
+                </Dialog>
                 <Grid item xs>
-                  <Link to="#" variant="body2">
-                    Forgot password?
-                  </Link>
+                  <Link onClick={handleForgotOpen}>Forgot password?</Link>
                 </Grid>
                 <Grid item>
                   <Link to="/register" variant="body2">

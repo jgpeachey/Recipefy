@@ -13,33 +13,39 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 import { useCookies } from "react-cookie";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from "react-router-dom";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 export default function HomeAppBar() {
-  const [cookies, setCookie] = useCookies(["user"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   const navigate = useNavigate();
   const location = useLocation();
 
   const navigateToProfile = (e) => {
     e.preventDefault();
-    if(!(location.pathname==='/profile')){
+    if (!(location.pathname === "/profile")) {
       navigate("/profile");
     }
-  }
+  };
 
   const navigateToAddRecipe = (e) => {
     e.preventDefault();
-    if(!(location.pathname==='/addrecipe')){
+    if (!(location.pathname === "/addrecipe")) {
       navigate("/addrecipe");
     }
-  }
+  };
 
   const navigateToHome = (e) => {
     e.preventDefault();
-    if(!(location.pathname==='/home')){
+    if (!(location.pathname === "/home")) {
       navigate("/home");
     }
-  }
+  };
+
+  const logoutHome = (e) => {
+    removeCookie("user", { path: "/" });
+    navigate("/");
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -52,30 +58,41 @@ export default function HomeAppBar() {
                 width: 24,
                 height: 24,
               }}
-              onMouseDown={event => event.stopPropagation()}
+              onMouseDown={(event) => event.stopPropagation()}
               onClick={navigateToProfile}
             />
-            <PostAddOutlinedIcon 
+            <PostAddOutlinedIcon
               sx={{ ml: 5 }}
-              onMouseDown={event => event.stopPropagation()}
-              onClick={navigateToAddRecipe}>
-            </PostAddOutlinedIcon>
+              onMouseDown={(event) => event.stopPropagation()}
+              onClick={navigateToAddRecipe}
+            ></PostAddOutlinedIcon>
             <GroupIcon sx={{ ml: 5 }}></GroupIcon>
           </IconButton>
 
-          <Button className="homeLogo" sx={{ flexGrow: 1 }} onClick={navigateToHome}>
+          <Button
+            className="homeLogo"
+            sx={{ flexGrow: 1 }}
+            onClick={navigateToHome}
+          >
             <div className="homeLogo" sx={{ flexGrow: 1 }}>
               Recipefy
             </div>
           </Button>
-          
+
           <Button className="navButton" color="inherit">
             Categories
           </Button>
           <Button className="navButton" color="inherit" sx={{ ml: 2 }}>
             Trending
           </Button>
-          <SearchIcon sx={{ ml: 2 }}></SearchIcon>
+          <SearchIcon sx={{ ml: 2, mr: 2 }}></SearchIcon>
+          <Button
+            variant="contained"
+            endIcon={<LogoutIcon />}
+            onClick={logoutHome}
+          >
+            Logout
+          </Button>
         </Toolbar>
       </AppBar>
     </Box>
