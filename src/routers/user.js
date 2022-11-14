@@ -61,7 +61,7 @@ router.post("/register", async function (req, res) {
   const hash = await bcrypt.hash(req.body.Password, 10);
   let picurl =
     "https://res.cloudinary.com/dnkvi73mv/image/upload/v1667587410/user_jrsnx1.png";
-  //console.log(req.body.pic);
+  console.log(req.body.Pic.length);
   if (req.body.Pic != "") {
     try {
       picurl = (await cloudinary.uploader.upload(req.body.Pic)).secure_url;
@@ -239,11 +239,22 @@ router.put("/updateuser", verifyAccessToken, async(req, res, next) =>{
         const hash = await bcrypt.hash(req.body.Info.Password, 10);
         req.body.Info.Password = hash;
       }
+      let pic = "https://res.cloudinary.com/dnkvi73mv/image/upload/v1667587410/user_jrsnx1.png";
+      if(req.body.Info.Pic == ""){
+        req.body.Info.Pic = pic;       
+      } else if((req.body.Info).hasOwnProperty('Pic') && (req.body.Info.Pic).length > 30){
+        req.body.Info.Pic = (await cloudinary.uploader.upload(req.body.Info.Pic)).secure_url;
+        console.log(req.body.Info.Pic);
+      }
+      console.log(req.body.Info.Pic);
       const result = await User.updateOne({Email: req.body.Email}, {$set: req.body.Info});
       
+      //console.log(result);
       
 
-      return res.status(200).end();
+      return res.status(201).json({
+        error: ""
+      });
     } else {
       return res.status(409).json({
         error: "Invalid Password",
