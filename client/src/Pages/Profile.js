@@ -567,7 +567,6 @@ export default function Profile() {
                   keepMounted
                   onClose={handleClose}
                   aria-describedby="alert-dialog-slide-description"
-                  sx={{ width: "80%" }}
                 >
                   <DialogTitle>{"Delete Account"}</DialogTitle>
                   <DialogContent>
@@ -587,7 +586,6 @@ export default function Profile() {
                       }
                       error={modalError}
                       helperText={modalHelper}
-                      sx={{ padding: 5 }}
                     />
                   </DialogContent>
                   <DialogActions>
