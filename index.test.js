@@ -4,8 +4,8 @@ var authToken = '';
 describe('POST Testing login ', () =>{
     test("This should be a valid login", async () =>{   
         const response = await request(app).post("/user/login").send({
-            Email: "rith@gmail.com",
-            Password: "Rith"
+            Email: "test@test.com",
+            Password: "123456"
         })
         authToken = response._body.auth.accessToken;
         expect(response.statusCode).toEqual(201)
