@@ -66,7 +66,7 @@ router.delete("/removerecipe", verifyAccessToken, async (req, res, next) => {
 });
 
 // searchs for recipe for a specific user
-router.get("/findRecipe", verifyAccessToken, async (req, res, next) => {
+router.post("/findRecipe", verifyAccessToken, async (req, res, next) => {
   const page = parseInt(req.query.page);
   const count = parseInt(req.query.count);
   const search = req.query.search;
