@@ -258,6 +258,9 @@ export default function Profile() {
     //     console.log(error.response.data.error);
     //   });
   }
+  useEffect(() => {
+    getRecipes();
+  }, []);
 
   const updatePassword = (event) => {
     if (!(newpassword === confirmPassword)) {
