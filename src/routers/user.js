@@ -64,7 +64,7 @@ router.post("/register", async function (req, res) {
   const hash = await bcrypt.hash(req.body.Password, 10);
   let picurl =
     "https://res.cloudinary.com/dnkvi73mv/image/upload/v1667587410/user_jrsnx1.png";
-  console.log(req.body.Pic.length);
+  //console.log(req.body.Pic.length);
   if (req.body.Pic != "") {
     try {
       picurl = (await cloudinary.uploader.upload(req.body.Pic)).secure_url;
@@ -96,13 +96,13 @@ router.post("/register", async function (req, res) {
     text: `
             Hey! Thank you for registering!
             Copy and paste the address below to verify your account.
-            ${serverUrl}/user/verify/${result.emailToken}
+            ${clientUrl}/loading?token=${result.emailToken}
         `,
     html: `
             <h1>Hello</h1>
             <p>Thank you for Registering!<p>
             <p>Please click the link below to verify your account<p>
-            <a href= "${serverUrl}/user/verify/${result.emailToken}">Verify your Account</a>
+            <a href= "${clientUrl}/loading?token=${result.emailToken}">Verify your Account</a>
         `,
   };
 
@@ -180,13 +180,13 @@ router.post("/login", async (req, res, next) => {
           text: `
                         Hey! Thank you for registering!
                         Copy and paste the address below to verify your account.
-                        ${serverUrl}/user/verify?token=${user.emailToken}
+                        ${clientUrl}/loading?token=${user.emailToken}
                     `,
           html: `
                         <h1>Hello</h1>
                         <p>Thank you for Registering!<p>
                         <p>Please click the link below to verify your account<p>
-                        <a href= "${serverUrl}/user/verify?token=${user.emailToken}">Verify your Account</a>
+                        <a href="${clientUrl}/loading?token=${user.emailToken}">Verify your Account</a>
                     `,
         };
 

@@ -1,13 +1,13 @@
 const app = require('./src/index');
 const request = require('supertest')
-
+var authToken = '';
 describe('POST Testing login ', () =>{
     test("This should be a valid login", async () =>{   
         const response = await request(app).post("/user/login").send({
             Email: "rith@gmail.com",
             Password: "Rith"
         })
-        //console.log(response);
+        authToken = response._body.auth.accessToken;
         expect(response.statusCode).toEqual(201)
         //console.log(response.statusCode)
         expect(response.body.error).toEqual("")
@@ -55,3 +55,6 @@ describe('POST Testing registration', () => {
         expect(response.body.error).toEqual("Email Exists");
     })
 })
+/*describe('This should ', () => {
+
+}) */
