@@ -42,12 +42,12 @@ class RemoteService {
       return response.body;
     }
     Error err = errorFromJson(response.body);
-    throw Exception("Error ${response.statusCode}: ${err.message}");
+    throw Exception(err.message);
   }
 
   Future<dynamic> register(String firstName, String lastName, String username,
       String email, String pic, String password) async {
-    Map<String, dynamic> parameters = {
+    Map<String, String> parameters = {
       'Firstname': firstName,
       'Lastname': lastName,
       'Username': username,
@@ -55,13 +55,14 @@ class RemoteService {
       'Pic': pic,
       'Password': password
     };
-    var uri =
-        Uri.https('recipefy-g1.herokuapp.com', 'user/register', parameters);
-    final response = await http.post(uri);
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/user/register',
+    );
+    var response = await http.post(uri, body: parameters);
     if (response.statusCode == 200 || response.statusCode == 201) {
       return response.body;
     }
     Error err = errorFromJson(response.body);
-    throw Exception("Error ${response.statusCode}: ${err.message}");
+    throw Exception(err.message);
   }
 }

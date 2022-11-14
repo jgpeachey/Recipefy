@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:recipefy_mobile/views/home.dart';
 import 'views/login.dart';
 
 void main() {

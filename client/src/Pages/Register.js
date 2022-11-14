@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -95,6 +95,7 @@ export default function Register() {
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [passwordConfirmError, setPasswordConfirmError] = useState(false);
+  const [passwordStrengthValid, setPasswordStrengthValid] = useState(false);
 
   const [firstHelper, setFirstHelper] = useState("");
   const [lastHelper, setLastHelper] = useState("");
@@ -102,6 +103,82 @@ export default function Register() {
   const [emailHelper, setEmailHelper] = useState("");
   const [passwordHelper, setPasswordHelper] = useState("");
   const [passwordConfirmHelper, setPasswordConfirmHelper] = useState("");
+  const [passwordStrengthHelper, setPasswordStrengthHelper] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState("Very Weak");
+
+  var pass;
+  var strengthbar = document.getElementById("meter");
+  useEffect(() => {
+    pass = document.getElementById("password");
+    if (pass) {
+      pass.addEventListener("keyup", function (e) {
+        strengthbar = document.getElementById("meter");
+        checkPasswordStrength(pass.value);
+      });
+    }
+  }, [document.getElementById("password")]);
+
+  function checkPasswordStrength(password) {
+    setPasswordStrengthValid(false);
+    setPasswordStrengthHelper(
+      "Your password must contain a minimum of 8 characters, a lowercase letter, an uppercase letter, a number, and a symbol"
+    );
+    var strength = 0;
+    if (password.match(/[a-z]+/)) {
+      strength += 1;
+    }
+    if (password.match(/[A-Z]+/)) {
+      strength += 1;
+    }
+    if (password.match(/[0-9]+/)) {
+      strength += 1;
+    }
+    if (password.match(/[$@#&!]+/)) {
+      strength += 1;
+    }
+    if (password.length >= 8) {
+      strength += 1;
+    }
+
+    switch (strength) {
+      case 0:
+        strengthbar.value = 0;
+        setPasswordStrength("Very weak");
+        setPasswordStrengthValid(false);
+        break;
+
+      case 1:
+        strengthbar.value = 25;
+        setPasswordStrength("Weak");
+        setPasswordStrengthValid(false);
+        break;
+
+      case 2:
+        strengthbar.value = 50;
+        setPasswordStrength("Medium");
+        setPasswordStrengthValid(false);
+        break;
+
+      case 3:
+        strengthbar.value = 75;
+        setPasswordStrength("Strong");
+        setPasswordStrengthValid(false);
+        break;
+
+      case 4:
+        strengthbar.value = 75;
+        setPasswordStrength("Strong");
+        setPasswordStrengthValid(false);
+        break;
+
+      case 5:
+        strengthbar.value = 100;
+        setPasswordStrength("Very strong");
+        setPasswordStrengthValid(true);
+        setPasswordStrengthHelper("");
+        break;
+    }
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -158,7 +235,9 @@ export default function Register() {
       setPasswordConfirmError(true);
     }
 
-    if (!(data.get("password") == data.get("passwordConfirm"))) {
+    if (passwordStrengthValid == false) {
+      return;
+    } else if (!(data.get("password") == data.get("passwordConfirm"))) {
       setPasswordError(true);
       setPasswordConfirmError(true);
       setPasswordConfirmHelper("Passwords do not match");
@@ -330,6 +409,15 @@ export default function Register() {
                     error={passwordError}
                     helperText={passwordHelper}
                   />
+                </Grid>
+                <Grid item xs={12} marginTop={-1}>
+                  <Typography variant="body2">
+                    Strength: {passwordStrength}
+                  </Typography>
+                  <progress max="100" value="0" id="meter"></progress>
+                  <Typography variant="body2" color="red">
+                    {passwordStrengthHelper}
+                  </Typography>
                 </Grid>
                 <Grid item xs={12}>
                   <TextField

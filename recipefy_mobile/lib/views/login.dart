@@ -1,4 +1,5 @@
 import 'package:recipefy_mobile/services/remote_services.dart';
+import 'package:recipefy_mobile/views/home.dart';
 import 'register.dart';
 
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String emailInput = "";
   String passwordInput = "";
+  String errorText = "";
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +74,16 @@ class _LoginPageState extends State<LoginPage> {
                     passwordInput = text;
                   },
                 ),
-                const SizedBox(height: 35.0),
+                const SizedBox(height: 20.0),
+                Text(
+                  errorText, // Change to non constant later
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 18,
+                  ),
+                ),
+                const SizedBox(height: 15.0),
                 Material(
                   elevation: 5.0,
                   borderRadius: BorderRadius.circular(30.0),
@@ -82,11 +93,29 @@ class _LoginPageState extends State<LoginPage> {
                       padding:
                           const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                       onPressed: () async {
-                        var response = await RemoteService()
-                            .login(emailInput, passwordInput)
-                            .catchError((error) {
+                        if (emailInput == "") {
+                          debugPrint("Enter email");
+                          errorText = "Enter email";
+                          setState(() {});
+                          return;
+                        }
+                        if (passwordInput == "") {
+                          debugPrint("Enter password");
+                          errorText = "Enter password";
+                          setState(() {});
+                          return;
+                        }
+                        try {
+                          var response = await RemoteService()
+                              .login(emailInput, passwordInput);
+                          errorText = "";
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const MainFoodPage()));
+                        } catch (error) {
                           debugPrint(error.toString());
-                        });
+                          errorText = error.toString();
+                          setState(() {});
+                        }
                       },
                       child: const Text("Login", textAlign: TextAlign.center)),
                 ),
@@ -103,6 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                       padding:
                           const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                       onPressed: () {
+                        errorText = "";
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => const RegisterPage()));
                       },
