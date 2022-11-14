@@ -74,7 +74,8 @@ router.post("/register", async function (req, res) {
         .json({ error: "Image uploading error.", message: error });
     }
   }
-
+  const unhashToken = crypto.randomBytes(32).toString("hex")
+  const hashToken = await bcrypt.hash(unhashToken, 10);
   const userInfo = new User({
     _id: new mongoose.Types.ObjectId(),
     Firstname: req.body.Firstname,
@@ -82,12 +83,12 @@ router.post("/register", async function (req, res) {
     Username: req.body.Username,
     Pic: picurl,
     Email: req.body.Email,
-    emailToken: crypto.randomBytes(64).toString("hex"),
+    emailToken: hashToken,
     isVerified: false,
     Password: hash,
   });
 
-  const result = await userInfo.save();
+  await userInfo.save();
 
   const msg = {
     from: "recipefyservices@gmail.com",
@@ -96,13 +97,13 @@ router.post("/register", async function (req, res) {
     text: `
             Hey! Thank you for registering!
             Copy and paste the address below to verify your account.
-            ${clientUrl}/loading?token=${result.emailToken}
+            ${clientUrl}/loading?token=${unhashToken}&id=${userInfo._id}
         `,
     html: `
             <h1>Hello</h1>
             <p>Thank you for Registering!<p>
             <p>Please click the link below to verify your account<p>
-            <a href= "${clientUrl}/loading?token=${result.emailToken}">Verify your Account</a>
+            <a href= "${clientUrl}/loading?token=${unhashToken}&id=${userInfo._id}">Verify your Account</a>
         `,
   };
 
@@ -134,21 +135,33 @@ router.get('/test', async (req, res) => {
 
 })
 */
-router.get("/verify/:token", async (req, res, next) => {
+router.post("/verify", async (req, res, next) => {
   try {
-    const user = await User.findOne({ emailToken: req.params.token });
+    const user = await User.findOne({ _id: mongoose.Types.ObjectId(req.body.userId) });
     if (!user) {
       return res.status(201).json({
         error: "user DNE",
       });
     }
-    user.emailToken = null;
-    user.isVerified = true;
-    await user.save();
-    return res.status(201).json({
-      error: "",
-      message: "Verification Successful",
-    });
+    if(!user.emailToken){
+      return res.status(201).json({
+        error: "user already verified",
+      });
+    }
+    const result = await bcrypt.compare(req.body.emailToken, user.emailToken)
+    if(result){
+      user.emailToken = null;
+      user.isVerified = true;
+      await user.save();
+      return res.status(201).json({
+        error: "",
+        message: "Verification Successful",
+      });
+    } else {
+      return res.status(201).json({
+        error: "Invalid token verify again"
+      })
+    }
   } catch (error) {
     console.log(error);
     return res.status(201).json({
@@ -173,6 +186,9 @@ router.post("/login", async (req, res, next) => {
       const accessToken = createAccessToken(user._id);
 
       if (user.isVerified === false) {
+        const unhashToken = crypto.randomBytes(32).toString('hex');
+        user.emailToken = await bcrypt.hash(unhashToken, 10);
+        await user.save();
         const msg = {
           from: "recipefyservices@gmail.com",
           to: req.body.Email,
@@ -180,13 +196,13 @@ router.post("/login", async (req, res, next) => {
           text: `
                         Hey! Thank you for registering!
                         Copy and paste the address below to verify your account.
-                        ${clientUrl}/loading?token=${user.emailToken}
+                        ${clientUrl}/loading?token=${unhashToken}&id=${user._id}
                     `,
           html: `
                         <h1>Hello</h1>
                         <p>Thank you for Registering!<p>
                         <p>Please click the link below to verify your account<p>
-                        <a href="${clientUrl}/loading?token=${user.emailToken}">Verify your Account</a>
+                        <a href="${clientUrl}/loading?token=${unhashToken}&id=${user._id}">Verify your Account</a>
                     `,
         };
 
