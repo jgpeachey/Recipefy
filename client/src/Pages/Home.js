@@ -63,6 +63,7 @@ export default function Home() {
     };
     Axios.get(buildPath("recipe/findAllRecipe"), config)
       .then((response) => {
+        console.log(response);
         var res = [];
         for (let q = 0; q < response.data.results.length; q++) {
           res.push(response.data.results[q]);
