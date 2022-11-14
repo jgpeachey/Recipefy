@@ -4,8 +4,8 @@ var authToken = '';
 describe('POST Testing login ', () =>{
     test("This should be a valid login", async () =>{   
         const response = await request(app).post("/user/login").send({
-            Email: "rith@gmail.com",
-            Password: "Rith"
+            Email: "test@test.com",
+            Password: "123456"
         })
         authToken = response._body.auth.accessToken;
         expect(response.statusCode).toEqual(201)
@@ -55,6 +55,32 @@ describe('POST Testing registration', () => {
         expect(response.body.error).toEqual("Email Exists");
     })
 })
-/*describe('This should ', () => {
-
-}) */
+describe('PUT testing /updateuser', () => {
+    test("This should return Invalid email", async ()=> {
+        
+        const response = await request(app).put("/user/updateuser").send({
+            Email : "randomtest@test.com"
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(409)
+        expect(response.body.error).toEqual("Invalid email");
+    })
+    test("This should return Invalid Password", async () => {
+        const response = await request(app).put("/user/updateuser").send({
+            Email : "test@test.com",
+            Password: "amfnalgha"
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(409)
+        expect(response.body.error).toEqual("Invalid Password")
+    })
+    test("This should return a valid statusCode of 201", async () => {
+        const response = await request(app).put("/user/updateuser").send({
+            Email : "test@test.com",
+            Password: "123456",
+            Info: {
+                Username: "testing12345",
+                Firstname: "tester"
+            }
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(201)
+    })
+})
