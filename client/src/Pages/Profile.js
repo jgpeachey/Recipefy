@@ -67,6 +67,86 @@ export default function Profile() {
     }
   }
 
+  const [passwordStrengthHelper, setPasswordStrengthHelper] = useState(
+    "Your password must contain a minimum of 8 characters, a lowercase letter, an uppercase letter, a number, and a symbol"
+  );
+  const [passwordStrength, setPasswordStrength] = useState("Very Weak");
+  const [passwordStrengthValid, setPasswordStrengthValid] = useState(false);
+
+  var pass;
+  var strengthbar = document.getElementById("meter");
+  useEffect(() => {
+    pass = document.getElementById("new");
+    if (pass) {
+      pass.addEventListener("keyup", function (e) {
+        strengthbar = document.getElementById("meter");
+        checkPasswordStrength(pass.value);
+      });
+    }
+  }, [document.getElementById("password")]);
+
+  function checkPasswordStrength(password) {
+    setPasswordStrengthValid(false);
+    setPasswordStrengthHelper(
+      "Your password must contain a minimum of 8 characters, a lowercase letter, an uppercase letter, a number, and a symbol"
+    );
+    var strength = 0;
+    if (password.match(/[a-z]+/)) {
+      strength += 1;
+    }
+    if (password.match(/[A-Z]+/)) {
+      strength += 1;
+    }
+    if (password.match(/[0-9]+/)) {
+      strength += 1;
+    }
+    if (password.match(/[$@#&!]+/)) {
+      strength += 1;
+    }
+    if (password.length >= 8) {
+      strength += 1;
+    }
+
+    switch (strength) {
+      case 0:
+        strengthbar.value = 0;
+        setPasswordStrength("Very weak");
+        setPasswordStrengthValid(false);
+        break;
+
+      case 1:
+        strengthbar.value = 25;
+        setPasswordStrength("Weak");
+        setPasswordStrengthValid(false);
+        break;
+
+      case 2:
+        strengthbar.value = 50;
+        setPasswordStrength("Medium");
+        setPasswordStrengthValid(false);
+        break;
+
+      case 3:
+        strengthbar.value = 75;
+        setPasswordStrength("Strong");
+        setPasswordStrengthValid(false);
+        break;
+
+      case 4:
+        strengthbar.value = 75;
+        setPasswordStrength("Strong");
+        setPasswordStrengthValid(false);
+        break;
+
+      case 5:
+        strengthbar.value = 100;
+        setPasswordStrength("Very strong");
+        setPasswordStrengthValid(true);
+        setPasswordStrengthHelper("");
+        break;
+    }
+  }
+
   const [base64Picture, setBase64Picture] = useState("");
   const [pictureError, setPictureError] = useState("");
   const [pictureSuccess, setPictureSuccess] = useState("");
@@ -149,10 +229,6 @@ export default function Profile() {
         console.log(error.response.data.error);
       });
   }
-
-  useEffect(() => {
-    getRecipes();
-  }, []);
 
   const updatePassword = (event) => {
     if (!(newpassword === confirmPassword)) {
@@ -263,14 +339,36 @@ export default function Profile() {
       setPasswordHelper("Enter a password");
     }
 
-    if (data.get("passwordConfirm") === "") {
-      setPasswordConfirmError(true);
-    }
-
-    if (!(data.get("password") === data.get("passwordConfirm"))) {
-      setPasswordError(true);
-      setPasswordConfirmError(true);
-      setPasswordConfirmHelper("Passwords do not match");
+    if (base64Picture !== "") {
+      Axios.put(
+        buildPath("user/updateuser"),
+        {
+          Email: cookies.email,
+          Password: data.get("password"),
+          Info: {
+            Pic: `${base64Picture}`,
+            Firstname: data.get("firstName"),
+            Lastname: data.get("lastName"),
+          },
+        },
+        {
+          headers: {
+            authorization: cookies.token,
+          },
+        }
+      )
+        .then((response) => {
+          console.log(response);
+          setCookie("first", data.get("firstName"), { path: "/" });
+          setCookie("last", data.get("lastName"), { path: "/" });
+          setCookie("picture", response.data.pic, { path: "/" });
+          window.location.reload(false);
+        })
+        .catch((error) => {
+          console.log(error.response.data.error);
+          setPasswordError(true);
+          setPasswordHelper(error.response.data.error);
+        });
     } else {
       Axios.put(
         buildPath("user/updateuser"),
@@ -290,9 +388,14 @@ export default function Profile() {
       )
         .then((response) => {
           console.log(response);
+          setCookie("first", data.get("firstName"), { path: "/" });
+          setCookie("last", data.get("lastName"), { path: "/" });
+          window.location.reload(false);
         })
         .catch((error) => {
-          console.log(error);
+          console.log(error.response.data.error);
+          setPasswordError(true);
+          setPasswordHelper(error.response.data.error);
         });
     }
   };
@@ -344,7 +447,7 @@ export default function Profile() {
               Welcome, {cookies.first} {cookies.last}
             </Typography>
 
-            {/* <Box marginTop={2} textAlign="center">
+            <Box marginTop={2} textAlign="center">
               <Button variant="outlined" component="label">
                 Change Profile Picture
                 <input
@@ -363,7 +466,7 @@ export default function Profile() {
                   {pictureSuccess}
                 </Typography>
               </Box>
-            </Box> */}
+            </Box>
             <Box
               component="form"
               noValidate
@@ -464,6 +567,7 @@ export default function Profile() {
                   keepMounted
                   onClose={handleClose}
                   aria-describedby="alert-dialog-slide-description"
+                  sx={{ width: "80%" }}
                 >
                   <DialogTitle>{"Delete Account"}</DialogTitle>
                   <DialogContent>
@@ -483,6 +587,7 @@ export default function Profile() {
                       }
                       error={modalError}
                       helperText={modalHelper}
+                      sx={{ padding: 5 }}
                     />
                   </DialogContent>
                   <DialogActions>
@@ -505,7 +610,7 @@ export default function Profile() {
                     <TextField
                       autoFocus
                       margin="dense"
-                      id="name"
+                      id="current"
                       label="Current Password"
                       type="password"
                       fullWidth
@@ -519,7 +624,7 @@ export default function Profile() {
                     <TextField
                       autoFocus
                       margin="dense"
-                      id="name"
+                      id="new"
                       label="New Password"
                       type="password"
                       fullWidth
@@ -530,10 +635,19 @@ export default function Profile() {
                       error={updatePasswordModalError}
                       helperText={updatePasswordModalHelper}
                     />
+                    <Grid item xs={12} marginTop={2}>
+                      <Typography variant="body2">
+                        Strength: {passwordStrength}
+                      </Typography>
+                      <progress max="100" value="0" id="meter"></progress>
+                      <Typography variant="body2" color="red">
+                        {passwordStrengthHelper}
+                      </Typography>
+                    </Grid>
                     <TextField
                       autoFocus
                       margin="dense"
-                      id="name"
+                      id="confirmnew"
                       label="Confirm Password"
                       type="password"
                       fullWidth

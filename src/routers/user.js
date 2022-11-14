@@ -23,7 +23,10 @@ const clientUrl =
   process.env.NODE_ENV === "production"
     ? "https://recipefy-g1.herokuapp.com"
     : "http://localhost:3000";
-const serverUrl = process.env.NODE_ENV === "production" ?  "https://recipefy-g1.herokuapp.com" : "http://localhost:3001";
+const serverUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://recipefy-g1.herokuapp.com"
+    : "http://localhost:3001";
 // register apis
 router.post("/register", async function (req, res) {
   if (typeof req.body?.Username !== "string" || !req.body?.Username?.length) {
@@ -144,7 +147,7 @@ router.get("/verify/:token", async (req, res, next) => {
     await user.save();
     return res.status(201).json({
       error: "",
-      message: "Verification Successful"
+      message: "Verification Successful",
     });
   } catch (error) {
     console.log(error);
@@ -224,50 +227,57 @@ router.post("/login", async (req, res, next) => {
 });
 
 // Update User
-router.put("/updateuser", verifyAccessToken, async(req, res, next) =>{
-  const user = await User.findOne({Email: req.body.Email }).exec();
-  if(!user){
+router.put("/updateuser", verifyAccessToken, async (req, res, next) => {
+  const user = await User.findOne({ Email: req.body.Email }).exec();
+  if (!user) {
     return res.status(409).json({
       error: "Invalid email",
     });
   }
 
-  try{
+  try {
     const passAuth = await bcrypt.compare(req.body.Password, user.Password);
-    if(passAuth) {
-      if(req.body.Info.Password){
+    if (passAuth) {
+      if (req.body.Info.Password) {
         const hash = await bcrypt.hash(req.body.Info.Password, 10);
         req.body.Info.Password = hash;
       }
-      let pic = "https://res.cloudinary.com/dnkvi73mv/image/upload/v1667587410/user_jrsnx1.png";
-      if(req.body.Info.Pic == ""){
-        req.body.Info.Pic = pic;       
-      } else if((req.body.Info).hasOwnProperty('Pic') && (req.body.Info.Pic).length > 30){
-        req.body.Info.Pic = (await cloudinary.uploader.upload(req.body.Info.Pic)).secure_url;
+      let pic =
+        "https://res.cloudinary.com/dnkvi73mv/image/upload/v1667587410/user_jrsnx1.png";
+      if (req.body.Info.Pic == "") {
+        req.body.Info.Pic = pic;
+      } else if (
+        req.body.Info.hasOwnProperty("Pic") &&
+        req.body.Info.Pic.length > 30
+      ) {
+        req.body.Info.Pic = (
+          await cloudinary.uploader.upload(req.body.Info.Pic)
+        ).secure_url;
         console.log(req.body.Info.Pic);
       }
       console.log(req.body.Info.Pic);
-      const result = await User.updateOne({Email: req.body.Email}, {$set: req.body.Info});
-      
+      const result = await User.updateOne(
+        { Email: req.body.Email },
+        { $set: req.body.Info }
+      );
+
       //console.log(result);
-      
 
       return res.status(201).json({
-        error: ""
+        error: "",
+        pic: req.body.Info.Pic,
       });
     } else {
       return res.status(409).json({
         error: "Invalid Password",
       });
     }
-
-  } catch(e) {
+  } catch (e) {
     return res.send({
       error: `${e.message}`,
     });
   }
 });
-
 
 // Delete user function
 router.delete("/deleteuser", verifyAccessToken, async (req, res, next) => {
@@ -283,8 +293,7 @@ router.delete("/deleteuser", verifyAccessToken, async (req, res, next) => {
     if (passAuth) {
       await Recipe.deleteMany({ User_ID: user._id });
       await User.deleteOne({ Email: req.body.Email });
-     
-      
+
       return res.status(200).end();
     } else {
       return res.status(409).json({
@@ -341,19 +350,18 @@ router.get("/searchUsers", verifyAccessToken, async (req, res, next) => {
   }
 });
 
-
-router.post('/resetPasswordRequest', async (req, res, next) => {
+router.post("/resetPasswordRequest", async (req, res, next) => {
   // in this just send email
   const user = await User.findOne({ Email: req.body.Email });
 
-  if(!user){
+  if (!user) {
     return res.status(409).json({
-      error: "Invalid Email"
-    })
+      error: "Invalid Email",
+    });
   }
-  
+
   let token = await Token.findOne({ userId: user._id });
-  if(token){
+  if (token) {
     await token.deleteOne();
   }
 
@@ -364,7 +372,7 @@ router.post('/resetPasswordRequest', async (req, res, next) => {
   await new Token({
     userId: user._id,
     token: hash,
-    createdAt: Date.now()
+    createdAt: Date.now(),
   }).save();
   const emailLink = `${clientUrl}/forgotpassword?token=${resetToken}&id=${user._id}`;
   const msg = {
@@ -384,55 +392,60 @@ router.post('/resetPasswordRequest', async (req, res, next) => {
             <p>If you did not request to reset your password just ignore this email<p>
             <a href= "${emailLink}">Reset your password (expires in 1 hour)</a>
         `,
-  }
-  sgMail.send(msg).catch((error) => { console.error(error); });
+  };
+  sgMail.send(msg).catch((error) => {
+    console.error(error);
+  });
   return res.status(201).json({
-    error: ""
-  })
-})
+    error: "",
+  });
+});
 // required fields will be userId, token, and then newPassword
-router.post('/resetPassword', async (req, res, next) => {
+router.post("/resetPassword", async (req, res, next) => {
   //console.log(req.body.userId);
-  const userId = (req.body.userId).trim();
+  const userId = req.body.userId.trim();
   console.log(req.body);
   //console.log(typeof userId);
-  if((req.body.userId).length != 24){
+  if (req.body.userId.length != 24) {
     return res.status(409).json({
-      error: "Invalid User Id"
-    })
+      error: "Invalid User Id",
+    });
   }
-  if(req.body.token == ''){
+  if (req.body.token == "") {
     return res.status(409).json({
-      error: "Invalid token"
-    })
+      error: "Invalid token",
+    });
   }
-  const resetToken = await Token.findOne({userId: mongoose.Types.ObjectId(req.body.userId)});
-  if(!resetToken){
+  const resetToken = await Token.findOne({
+    userId: mongoose.Types.ObjectId(req.body.userId),
+  });
+  if (!resetToken) {
     return res.status(409).json({
-      error: "Invalid or expired password reset token"
-    })
+      error: "Invalid or expired password reset token",
+    });
   }
-  let valid = await bcrypt.compare(req.body.token, resetToken.token)
-  if(!valid){
+  let valid = await bcrypt.compare(req.body.token, resetToken.token);
+  if (!valid) {
     return res.status(409).json({
-      error: "Invalid or expired password reset token"
-    })
+      error: "Invalid or expired password reset token",
+    });
   }
   // otherwise its valid
-  const userCheck = await User.findOne({ _id: req.body.userId })
+  const userCheck = await User.findOne({ _id: req.body.userId });
   //console.log(userCheck.Password)
   const check = await bcrypt.compare(req.body.newPassword, userCheck.Password);
-  if(check){
+  if (check) {
     return res.status(409).json({
-      error: "This is the same as the previous password, please change to a new password."
-    })
+      error:
+        "This is the same as the previous password, please change to a new password.",
+    });
   }
   const hash = await bcrypt.hash(req.body.newPassword, 10);
   await User.updateOne(
     { _id: req.body.userId },
     { $set: { Password: hash } },
-    { new: true} 
-  )
+    { new: true }
+  );
   await resetToken.deleteOne();
   const user = await User.findById({ _id: req.body.userId });
   const msg = {
@@ -446,12 +459,14 @@ router.post('/resetPassword', async (req, res, next) => {
             <h1>Hello</h1>
             <p>${user.Email}'s password was successfully changed<p>
         `,
-  }
-  sgMail.send(msg).catch((error) => { console.error(error); });
+  };
+  sgMail.send(msg).catch((error) => {
+    console.error(error);
+  });
   return res.status(201).json({
-    error: ""
-  })
-})
+    error: "",
+  });
+});
 // router.post("/catch", async (req, res, next) => {
 //   const { token } = req.body;
 //   await axios.post(
