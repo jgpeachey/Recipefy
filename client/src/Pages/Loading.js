@@ -17,6 +17,7 @@ export default function Loading() {
   useEffect(() => {
     Axios.get(buildPath(`user/verify/${searchParams.get("token")}`))
       .then((response) => {
+        console.log(response);
         navigate("/");
       })
       .catch((error) => {
