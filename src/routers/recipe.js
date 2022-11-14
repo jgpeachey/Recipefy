@@ -15,6 +15,7 @@ router.post('/addrecipe', verifyAccessToken, async (req, res, next) => {
         Title: req.body.Title,
         Ingredients: req.body.Ingredients,
         Instructions: req.body.Instructions,
+        Description: req.body.Description,
         Calories: req.body.Calories,
         Sodium: req.body.Sodium,
         Likes: 0
@@ -27,6 +28,34 @@ router.post('/addrecipe', verifyAccessToken, async (req, res, next) => {
         message: 'recipe created'
     });
 })
+
+// Update recipe API
+router.put('/updaterecipe', verifyAccessToken, async(req, res, next) => {
+    const recipe = Recipe.findOne({Title: req.body.Title, User_ID: req.auth.userId});
+    if(!recipe){
+        return res.status(409).json({
+            error: "Invalid recipe",
+          });
+    }
+
+    try{
+        const result = await Recipe.updateOne({Title: req.body.Title, User_ID: req.auth.userId}, {$set: req.body.Info});
+        if(result.matchedCount > 0){
+            return res.status(200).end();
+        } else {
+            return res.status(409).json({
+                error: "Invalid recipe",
+              });
+        }
+
+    } catch(e) {
+        return res.send({
+          error: `${e.message}`,
+        });
+    }
+
+});
+
 
 router.delete('/removerecipe', verifyAccessToken, async(req, res, next) => {
 

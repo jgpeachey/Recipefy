@@ -8,6 +8,7 @@ const recipeInfo = mongoose.Schema({
   Instructions: { type: Array, require: true },
   Calories: { type: String },
   Sodium: { type: String },
+  Description: { type: String, require: true },
   Likes: { type: Number, require: true },
 });
 
