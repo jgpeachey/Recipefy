@@ -413,16 +413,25 @@ export default function Profile() {
           }}
         >
           <Container maxWidth="sm">
-            <Typography
-              marginTop={5}
-              component="h1"
-              variant="h2"
+            <Box
+              marginBottom={1}
+              textAlign="center"
               align="center"
-              color="text.primary"
-              gutterBottom
+              justifyContent="center"
+              display="flex"
             >
-              {cookies.username}
-            </Typography>
+              <Typography
+                marginTop={5}
+                component="h1"
+                variant="h2"
+                align="center"
+                color="text.primary"
+                gutterBottom
+              >
+                {cookies.username}
+              </Typography>
+            </Box>
+
             <Box
               marginBottom={1}
               textAlign="center"

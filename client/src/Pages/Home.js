@@ -73,6 +73,7 @@ export default function Home() {
         console.log(recipeCardsArray);
       })
       .catch((error) => {
+        console.log(error);
         console.log(error.response.data.error);
       });
   }
