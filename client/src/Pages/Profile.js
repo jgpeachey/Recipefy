@@ -203,19 +203,33 @@ export default function Profile() {
   function getRecipes() {
     setPage(page + 1);
     console.log(page);
-    const config = {
-      headers: {
-        authorization: cookies.token,
-      },
-      params: {
+    // const config = {
+    //   headers: {
+    //     authorization: cookies.token,
+    //   },
+    //   params: {
+    //     page: page,
+    //     count: 9,
+    //     search: "",
+    //     filter: cookies.id,
+    //   },
+    // };
+    Axios.post(
+      buildPath("recipe/findRecipe"),
+      {
         page: page,
         count: 9,
         search: "",
         filter: cookies.id,
       },
-    };
-    Axios.get(buildPath("recipe/findRecipe"), config)
+      {
+        headers: {
+          authorization: cookies.token,
+        },
+      }
+    )
       .then((response) => {
+        console.log(response);
         var res = [];
         for (let q = 0; q < response.data.results.length; q++) {
           res.push(response.data.results[q]);
@@ -226,9 +240,27 @@ export default function Profile() {
         console.log(recipeCardsArray);
       })
       .catch((error) => {
+        console.log(error);
         console.log(error.response.data.error);
       });
+    // Axios.get(buildPath("recipe/findRecipe"), config)
+    //   .then((response) => {
+    //     var res = [];
+    //     for (let q = 0; q < response.data.results.length; q++) {
+    //       res.push(response.data.results[q]);
+    //     }
+    //     if (res.length != 0) {
+    //       setRecipeCardsArray((current) => [...recipeCardsArray, ...res]);
+    //     }
+    //     console.log(recipeCardsArray);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error.response.data.error);
+    //   });
   }
+  useEffect(() => {
+    getRecipes();
+  }, []);
 
   const updatePassword = (event) => {
     if (!(newpassword === confirmPassword)) {
@@ -413,16 +445,25 @@ export default function Profile() {
           }}
         >
           <Container maxWidth="sm">
-            <Typography
-              marginTop={5}
-              component="h1"
-              variant="h2"
+            <Box
+              marginBottom={1}
+              textAlign="center"
               align="center"
-              color="text.primary"
-              gutterBottom
+              justifyContent="center"
+              display="flex"
             >
-              {cookies.username}
-            </Typography>
+              <Typography
+                marginTop={5}
+                component="h1"
+                variant="h2"
+                align="center"
+                color="text.primary"
+                gutterBottom
+              >
+                {cookies.username}
+              </Typography>
+            </Box>
+
             <Box
               marginBottom={1}
               textAlign="center"

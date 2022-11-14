@@ -15,8 +15,12 @@ export default function Loading() {
   }
 
   useEffect(() => {
-    Axios.get(buildPath(`user/verify/${searchParams.get("token")}`))
+    Axios.post(buildPath('user/verify'), {
+      userId: searchParams.get("id"),
+      emailToken: searchParams.get("token")
+    })
       .then((response) => {
+        console.log(response);
         navigate("/");
       })
       .catch((error) => {

@@ -51,18 +51,31 @@ export default function Home() {
   function getRecipes() {
     setPage(page + 1);
     console.log(page);
-    const config = {
-      headers: {
-        authorization: cookies.token,
-      },
-      params: {
+    // const config = {
+    //   headers: {
+    //     authorization: cookies.token,
+    //   },
+    //   params: {
+    //     page: page,
+    //     count: 9,
+    //     search: "",
+    //   },
+    // };
+    Axios.post(
+      buildPath("recipe/findAllRecipe"),
+      {
         page: page,
         count: 9,
         search: "",
       },
-    };
-    Axios.get(buildPath("recipe/findAllRecipe"), config)
+      {
+        headers: {
+          authorization: cookies.token,
+        },
+      }
+    )
       .then((response) => {
+        console.log(response);
         var res = [];
         for (let q = 0; q < response.data.results.length; q++) {
           res.push(response.data.results[q]);
@@ -73,8 +86,25 @@ export default function Home() {
         console.log(recipeCardsArray);
       })
       .catch((error) => {
+        console.log(error);
         console.log(error.response.data.error);
       });
+    // Axios.get(buildPath("recipe/findAllRecipe"), config)
+    //   .then((response) => {
+    //     console.log(response);
+    //     var res = [];
+    //     for (let q = 0; q < response.data.results.length; q++) {
+    //       res.push(response.data.results[q]);
+    //     }
+    //     if (res.length != 0) {
+    //       setRecipeCardsArray((current) => [...recipeCardsArray, ...res]);
+    //     }
+    //     console.log(recipeCardsArray);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     console.log(error.response.data.error);
+    //   });
   }
 
   useEffect(() => {
