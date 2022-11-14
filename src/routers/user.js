@@ -243,7 +243,7 @@ router.post("/login", async (req, res, next) => {
 });
 
 // Update User
-router.put("/updateuser", verifyAccessToken, async (req, res, next) => {
+router.post("/updateuser", verifyAccessToken, async (req, res, next) => {
   const user = await User.findOne({ Email: req.body.Email }).exec();
   if (!user) {
     return res.status(409).json({
@@ -296,7 +296,7 @@ router.put("/updateuser", verifyAccessToken, async (req, res, next) => {
 });
 
 // Delete user function
-router.delete("/deleteuser", verifyAccessToken, async (req, res, next) => {
+router.post("/deleteuser", verifyAccessToken, async (req, res, next) => {
   const user = await User.findOne({ Email: req.body.Email }).exec();
   if (!user) {
     return res.status(409).json({
@@ -324,7 +324,7 @@ router.delete("/deleteuser", verifyAccessToken, async (req, res, next) => {
 });
 
 // Search Users API
-router.get("/searchUsers", verifyAccessToken, async (req, res, next) => {
+router.post("/searchUsers", verifyAccessToken, async (req, res, next) => {
   const page = parseInt(req.query.page);
   const count = parseInt(req.query.count);
   const search = req.query.search;
