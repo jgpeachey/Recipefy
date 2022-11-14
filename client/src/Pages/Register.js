@@ -174,10 +174,8 @@ export default function Register() {
       case 5:
         strengthbar.value = 100;
         setPasswordStrength("Very strong");
-        if (password.length >= 8) {
-          setPasswordStrengthValid(true);
-          setPasswordStrengthHelper("");
-        }
+        setPasswordStrengthValid(true);
+        setPasswordStrengthHelper("");
         break;
     }
   }
