@@ -1,4 +1,4 @@
-import { Axios } from "axios";
+import Axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -13,8 +13,9 @@ export default function Loading() {
       return "http://localhost:3001/" + route;
     }
   }
+
   useEffect(() => {
-    Axios.get(buildPath("user/verify/" + searchParams.get("token")))
+    Axios.get(buildPath(`user/verify/${searchParams.get("token")}`))
       .then((response) => {
         navigate("/");
       })
