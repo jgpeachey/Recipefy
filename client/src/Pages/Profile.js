@@ -215,7 +215,7 @@ export default function Profile() {
     //   },
     // };
     Axios.post(
-      buildPath("recipe/findAllRecipe"),
+      buildPath("recipe/findRecipe"),
       {
         page: page,
         count: 9,
