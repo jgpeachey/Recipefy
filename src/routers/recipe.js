@@ -213,7 +213,29 @@ router.post("/likerecipe", verifyAccessToken, async (req, res, next) => {
   await User.updateOne({ _id: mongoose.Types.ObjectId(req.auth.userId)}, { $push: {Likes: mongoose.Types.ObjectId(req.body.recipeId)}})
 
   // finished
-  return res.json({
+  return res.status(201).json({
+    error: ""
+  })
+})
+
+// remove like endpoint
+router.post("/unlikeRecipe", verifyAccessToken, async (req, res, next) => {
+  const user = await User.findOne({_id: mongoose.Types.ObjectId(req.auth.userId)});
+  if(!user){
+    return res.status(201).json({
+      error: "Invalid User"
+    })
+  }
+  const recipe = await Recipe.findOne({_id: mongoose.Types.ObjectId(req.body.recipeId)});
+  if(!recipe){
+    return res.status(201).json({
+      error: "Recipe DNE"
+    })
+  }
+  // now that both recipe and user exist we can do stuff
+  await Recipe.updateOne({_id: mongoose.Types.ObjectId(req.body.recipeId)}, { $inc: { Likes: -1}})
+  await User.updateOne({ _id: mongoose.Types.ObjectId(req.auth.userId)}, { $pull: {Likes: mongoose.Types.ObjectId(req.body.recipeId)}})
+  return res.status(201).json({
     error: ""
   })
 })
