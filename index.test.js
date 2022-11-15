@@ -55,17 +55,31 @@ describe('POST Testing registration', () => {
         expect(response.body.error).toEqual("Email Exists");
     })
 })
-describe('PUT testing /updateuser', () => {
+describe("POST testing /searchUser", () => {
+    test("This should return an array of length 1", async () => {
+        const response = await request(app).post("/user/searchUsers?search=paulo&count=6&page=1").send({
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.results.length).toEqual(1);
+    })
+    test("This should return an empty array", async () => {
+        const response = await request(app).post("/user/searchUsers?search=avbsadgafgdaf&count=6&page=1").send({
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.results.length).toEqual(0);
+    })
+})
+describe('POST testing /updateuser', () => {
     test("This should return Invalid email", async ()=> {
         
-        const response = await request(app).put("/user/updateuser").send({
+        const response = await request(app).post("/user/updateuser").send({
             Email : "randomtest@test.com"
         }).set({authorization: authToken})
         expect(response.statusCode).toEqual(409)
         expect(response.body.error).toEqual("Invalid email");
     })
     test("This should return Invalid Password", async () => {
-        const response = await request(app).put("/user/updateuser").send({
+        const response = await request(app).post("/user/updateuser").send({
             Email : "test@test.com",
             Password: "amfnalgha"
         }).set({authorization: authToken})
@@ -73,7 +87,7 @@ describe('PUT testing /updateuser', () => {
         expect(response.body.error).toEqual("Invalid Password")
     })
     test("This should return a valid statusCode of 201", async () => {
-        const response = await request(app).put("/user/updateuser").send({
+        const response = await request(app).post("/user/updateuser").send({
             Email : "test@test.com",
             Password: "123456",
             Info: {
