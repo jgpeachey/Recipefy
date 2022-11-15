@@ -2,13 +2,23 @@ const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 const Recipe = require("../models/recipe");
+const User = require('../models/user')
 const { verifyAccessToken } = require("../middleware/tokens");
 const { json } = require("body-parser");
+const cloudinary = require('../utils/cloudinary');
 
 router.use(express.json({ limit: "50mb" }));
 router.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 router.post("/addrecipe", verifyAccessToken, async (req, res, next) => {
+  var foodpic = "https://res.cloudinary.com/dnkvi73mv/image/upload/v1668547871/pexels-ella-olsson-1640777_k7oghj.jpg";
+  if(req.body.Pic != ""){
+    try {
+      foodpic = (await cloudinary.uploader.upload(req.body.Pic)).secure_url;
+    } catch (error) {
+      return res.status(409).json({error: "Image uploading error", message: error})
+    }
+  }
   const recipeInfo = new Recipe({
     _id: new mongoose.Types.ObjectId(),
     User_ID: req.auth.userId,
@@ -18,6 +28,7 @@ router.post("/addrecipe", verifyAccessToken, async (req, res, next) => {
     Description: req.body.Description,
     Calories: req.body.Calories,
     Sodium: req.body.Sodium,
+    Pic: foodpic,
     Likes: 0,
   });
 
@@ -40,7 +51,14 @@ router.put("/updaterecipe", verifyAccessToken, async (req, res, next) => {
       error: "Invalid recipe",
     });
   }
-
+  let pic = "https://res.cloudinary.com/dnkvi73mv/image/upload/v1668547871/pexels-ella-olsson-1640777_k7oghj.jpg"
+  if(req.body.Info.Pic == ""){
+    req.body.Info.Pic = pic;
+  } else if( req.body.Info.hasOwnProperty("Pic") && req.body.Info.Pic.length > 30){
+    req.body.Info.Pic = (
+      await cloudinary.uploader.upload(req.body.Info.Pic)
+    ).secure_url;
+  }
   try {
     const result = await Recipe.updateOne(
       { Title: req.body.Title, User_ID: req.auth.userId },
@@ -102,9 +120,9 @@ router.post("/findRecipe", verifyAccessToken, async (req, res, next) => {
       .limit(count)
       .skip(startIndex)
       .exec();
-    res.json(results);
+    return res.json(results);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 });
 
@@ -150,5 +168,56 @@ router.post("/findAllRecipe", verifyAccessToken, async (req, res, next) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+router.post("/getLikedRecipes", verifyAccessToken , async (req, res, next) => {
+  const user = await User.findOne({_id: mongoose.Types.ObjectId(req.auth.userId)});
+  if(!user){
+    return res.status(201).json({
+      error: "Invalid User"
+    })
+  }
+  //const page = req.query.page;
+  //const count = req.query.count;
+  const likes = user.Likes;
+  let results = {error: "", results: []}
+  // first prune likes in the case of a nonexistent recipe
+  for(let i = likes.length - 1; i >= 0; i--){
+    const recipe = await Recipe.findOne({_id: mongoose.Types.ObjectId(likes[i])});
+    if(!recipe){
+      await User.updateOne({_id: mongoose.Types.ObjectId(req.auth.userId)}, { $pull: mongoose.Types.ObjectId(likes[i])})
+      likes.splice(i, 1);
+    } else {
+      results.results.push(recipe);
+    }
+  }
+  return res.status(201).json(results);
+})
+
+// likerecipe endpoint
+router.post("/likerecipe", verifyAccessToken, async (req, res, next) => {
+  const user = await User.findOne({_id: mongoose.Types.ObjectId(req.auth.userId)});
+  if(!user){
+    return res.status(201).json({
+      error: "Invalid User"
+    })
+  }
+  const recipe = await Recipe.findOne({_id: mongoose.Types.ObjectId(req.body.recipeId)});
+  if(!recipe){
+    return res.status(201).json({
+      error: "Recipe DNE"
+    })
+  }
+
+  // now that both recipe and user exist we can do stuff
+  await Recipe.updateOne({_id: mongoose.Types.ObjectId(req.body.recipeId)}, { $inc: { Likes: 1}})
+  await User.updateOne({ _id: mongoose.Types.ObjectId(req.auth.userId)}, { $push: {Likes: mongoose.Types.ObjectId(req.body.recipeId)}})
+
+  // finished
+  return res.json({
+    error: ""
+  })
+})
+
+
 
 module.exports = router;

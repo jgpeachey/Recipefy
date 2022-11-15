@@ -85,6 +85,7 @@ router.post("/register", async function (req, res) {
     Email: req.body.Email,
     emailToken: hashToken,
     isVerified: false,
+    Likes: [],
     Password: hash,
   });
 
