@@ -68,6 +68,12 @@ describe("POST testing /searchUser", () => {
         expect(response.statusCode).toEqual(200);
         expect(response.body.results.length).toEqual(0);
     })
+    test("This should return an array of length 6", async () => {
+        const response = await request(app).post("/user/searchUsers?search&count=6&page=1").send({
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.results.length).toEqual(6);
+    })
 })
 describe('POST testing /updateuser', () => {
     test("This should return Invalid email", async ()=> {
