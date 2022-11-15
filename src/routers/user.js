@@ -356,7 +356,14 @@ router.post("/searchUsers", verifyAccessToken, async (req, res, next) => {
   }
 
   try {
-    results.results = await User.find(filter)
+    results.results = await User.find(filter).select([
+        "Firstname",
+        "Lastname",
+        "Username",
+        "Pic",
+        "Email",
+        "isVerified"
+    ])
       .limit(count)
       .skip(startIndex)
       .exec();
