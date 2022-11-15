@@ -104,3 +104,21 @@ describe('POST testing /updateuser', () => {
         expect(response.statusCode).toEqual(201)
     })
 })
+describe("POST testing verification", () => {
+    test("This should return a User DNE", async () => {
+        const response = await request(app).post("/user/verify").send({
+            userId:"63729fc72304b9f55f466529",
+            emailToken: "a0105f935e57562b15a6e5edcac5adb414f1f394173b371065b802eb240c9705"
+        })
+        expect(response.statusCode).toEqual(201);
+        expect(response.body.error).toEqual("user DNE");
+    })
+    test("This should return user already verified", async () =>{
+        const response = await request(app).post("/user/verify").send({
+            userId:"636beb7b8f8b58d6a8df3726",
+            emailToken: "a0105f935e57562b15a6e5edcac5adb414f1f394173b371065b802eb240c9705"
+        })
+        expect(response.statusCode).toEqual(201);
+        expect(response.body.error).toEqual("user already verified");
+    })
+})
