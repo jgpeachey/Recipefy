@@ -26,11 +26,17 @@ export default function Home() {
   const [page, setPage] = useState(1);
 
   const [cookies, setCookie] = useCookies(["user"]);
-  console.log(cookies.token);
 
   const [recipeCardsArray, setRecipeCardsArray] = useState([]);
   const app_name = "recipefy-g1";
   const [openProfile, setOpenProfile] = useState(false);
+  const [searcher, setSearcher] = useState("");
+  const [change, setChange] = useState(false);
+
+  const appbarToHome = (appbardata) => {
+    console.log(appbardata);
+    setSearcher(appbardata);
+  };
 
   const handleClickOpen = () => {
     setOpenProfile(true);
@@ -61,60 +67,92 @@ export default function Home() {
     //     search: "",
     //   },
     // };
-    Axios.post(
-      buildPath("recipe/findAllRecipe"),
-      {
-        page: page,
-        count: 9,
-        search: "",
-      },
-      {
-        headers: {
-          authorization: cookies.token,
-        },
-      }
-    )
-      .then((response) => {
-        console.log(response);
-        var res = [];
-        for (let q = 0; q < response.data.results.length; q++) {
-          res.push(response.data.results[q]);
+    if (searcher === "") {
+      Axios.post(
+        buildPath(`recipe/findAllRecipe?page=${page}&&count=${9}&search`),
+        null,
+        {
+          headers: {
+            authorization: cookies.token,
+          },
         }
-        if (res.length != 0) {
-          setRecipeCardsArray((current) => [...recipeCardsArray, ...res]);
+      )
+        .then((response) => {
+          console.log(response);
+          var res = [];
+          for (let q = 0; q < response.data.results.length; q++) {
+            res.push(response.data.results[q]);
+          }
+          if (page === 1) {
+            console.log("cheese");
+            setRecipeCardsArray(res);
+            setChange(!change);
+          } else if (res.length != 0) {
+            setRecipeCardsArray((current) => [...recipeCardsArray, ...res]);
+          }
+          console.log(recipeCardsArray);
+        })
+        .catch((error) => {
+          console.log(error);
+          console.log(error.response.data.error);
+        });
+    } else {
+      setPage(1);
+      console.log("here");
+      Axios.post(
+        buildPath(
+          `recipe/findAllRecipe?page=${page}&&count=${9}&search=${searcher}`
+        ),
+        null,
+        {
+          headers: {
+            authorization: cookies.token,
+          },
         }
-        console.log(recipeCardsArray);
-      })
-      .catch((error) => {
-        console.log(error);
-        console.log(error.response.data.error);
-      });
-    // Axios.get(buildPath("recipe/findAllRecipe"), config)
-    //   .then((response) => {
-    //     console.log(response);
-    //     var res = [];
-    //     for (let q = 0; q < response.data.results.length; q++) {
-    //       res.push(response.data.results[q]);
-    //     }
-    //     if (res.length != 0) {
-    //       setRecipeCardsArray((current) => [...recipeCardsArray, ...res]);
-    //     }
-    //     console.log(recipeCardsArray);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     console.log(error.response.data.error);
-    //   });
+      )
+        .then((response) => {
+          console.log(response);
+          var res = [];
+          for (let q = 0; q < response.data.results.length; q++) {
+            res.push(response.data.results[q]);
+          }
+          if (res.length != 0) {
+            setRecipeCardsArray(res);
+          }
+          console.log(recipeCardsArray);
+        })
+        .catch((error) => {
+          console.log(error);
+          console.log(error.response.data.error);
+        });
+      // Axios.get(buildPath("recipe/findAllRecipe"), config)
+      //   .then((response) => {
+      //     console.log(response);
+      //     var res = [];
+      //     for (let q = 0; q < response.data.results.length; q++) {
+      //       res.push(response.data.results[q]);
+      //     }
+      //     if (res.length != 0) {
+      //       setRecipeCardsArray((current) => [...recipeCardsArray, ...res]);
+      //     }
+      //     console.log(recipeCardsArray);
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //     console.log(error.response.data.error);
+      //   });
+    }
   }
 
   useEffect(() => {
+    console.log("called");
     getRecipes();
-  }, []);
+  }, [searcher, change]);
 
   return (
     <BottomScrollListener onBottom={getRecipes}>
       <ThemeProvider theme={theme}>
-        <HomeAppBar />
+        <HomeAppBar appbarToHome={appbarToHome} />
 
         <ImageCarousel slides={SliderData} />
         <Button onClick={() => setOpenProfile(true)}>

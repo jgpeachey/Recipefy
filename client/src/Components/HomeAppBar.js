@@ -18,8 +18,51 @@ import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import { blue } from "@mui/material/colors";
+import { styled, alpha } from "@mui/material/styles";
 
-export default function HomeAppBar() {
+const Search = styled("div")(({ theme }) => ({
+  position: "relative",
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginLeft: 0,
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
+    marginLeft: theme.spacing(1),
+    width: "auto",
+  },
+}));
+
+const SearchIconWrapper = styled("div")(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: "inherit",
+  "& .MuiInputBase-input": {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      width: "12ch",
+      "&:focus": {
+        width: "20ch",
+      },
+    },
+  },
+}));
+
+export default function HomeAppBar({ appbarToHome }) {
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   const navigate = useNavigate();
   const location = useLocation();
@@ -49,39 +92,6 @@ export default function HomeAppBar() {
     removeCookie("user", { path: "/" });
     navigate("/");
   };
-
-  const SearchBar = ({ setSearchQuery }) => (
-    <Paper
-      variant="outlined"
-      component="form"
-      sx={{
-        p: "1px 2px",
-        display: "flex",
-        alignItems: "center",
-        width: 200,
-        backgroundColor: "#1976d2",
-      }}
-    >
-      <TextField
-        id="search-bar"
-        className="text"
-        onInput={(e) => {
-          setSearchQuery(e.target.value);
-        }}
-        label="Enter a city name"
-        variant="outlined"
-        placeholder="Search..."
-        size="small"
-      />
-      <IconButton
-        type="button"
-        sx={{ p: "10px", color: "white" }}
-        aria-label="search"
-      >
-        <SearchIcon />
-      </IconButton>
-    </Paper>
-  );
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -115,29 +125,23 @@ export default function HomeAppBar() {
             </div>
           </Button>
 
-          {/* <Button className="navButton" color="inherit">
-            Categories
-          </Button>
-          <Button className="navButton" color="inherit" sx={{ ml: 2 }}>
-            Trending
-          </Button> */}
-
-          {/* <Paper
-            component="form"
-            sx={{
-              p: "2px 4px",
-              display: "flex",
-              alignItems: "center",
-              width: 400,
-            }}
-          >
-            
-          </Paper> */}
-          <SearchBar />
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              onInput={(e) => {
+                appbarToHome(e.target.value);
+              }}
+              placeholder="Search…"
+              inputProps={{ "aria-label": "search" }}
+            />
+          </Search>
           <Button
             variant="contained"
             endIcon={<LogoutIcon />}
             onClick={logoutHome}
+            sx={{ ml: 2 }}
           >
             Logout
           </Button>
