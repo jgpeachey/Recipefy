@@ -295,7 +295,7 @@ export default function Profile() {
   };
 
   const deleteSubmit = (event) => {
-    Axios.post(buildPath("user/deleteuser"), {
+    Axios.delete(buildPath("user/deleteuser"), {
       headers: {
         authorization: cookies.token,
       },
