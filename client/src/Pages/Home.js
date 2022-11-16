@@ -34,7 +34,7 @@ export default function Home() {
   const [change, setChange] = useState(false);
   var counter = 0;
   const [userCards, setUserCards] = useState([]);
-  const [clickedUser, setClickedUser] = useState("");
+  const [clickedUser, setClickedUser] = useState(0);
 
   const appbarToHome = (appbardata) => {
     console.log(appbardata);
@@ -57,13 +57,14 @@ export default function Home() {
     }
   }
 
-  function getUserRecipes() {
-    var userToGet = 0;
+  function getUserRecipes(name) {
+    var userToGet;
+    if (clickedUser >= 1) return;
 
     console.log(clickedUser);
-    
+
     Axios.post(
-      buildPath(`user/searchUsers?page=${1}&count=${9}&search=${clickedUser}`),
+      buildPath(`user/searchUsers?page=${1}&count=${9}&search=${name}`),
       null,
       {
         headers: {
@@ -81,10 +82,7 @@ export default function Home() {
         Axios.post(
           buildPath("recipe/getUserRecipe"),
           {
-            page: 1,
-            count: 9,
-            search: "",
-            userId: userToGet
+            userId: userToGet,
           },
           {
             headers: {
@@ -225,8 +223,8 @@ export default function Home() {
         <Button
           onClick={(event) => {
             setOpenProfile(true);
-            getUserRecipes();
-            setClickedUser(event.target.innerText);
+            setClickedUser(clickedUser + 1);
+            getUserRecipes(event.target.innerText);
           }}
         >
           omarashry98
