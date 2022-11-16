@@ -32,6 +32,7 @@ export default function Home() {
   const [openProfile, setOpenProfile] = useState(false);
   const [searcher, setSearcher] = useState("");
   const [change, setChange] = useState(false);
+  var counter = 0;
   const [userCards, setUserCards] = useState([])
 
   const appbarToHome = (appbardata) => {
@@ -136,7 +137,10 @@ export default function Home() {
         .then((response) => {
           console.log(response);
           var res = [];
+          counter = recipeCardsArray.length;
           for (let q = 0; q < response.data.results.length; q++) {
+            response.data.results[q].index = counter;
+            counter++;
             res.push(response.data.results[q]);
           }
           if (page === 1) {
@@ -169,7 +173,10 @@ export default function Home() {
         .then((response) => {
           console.log(response);
           var res = [];
+          counter = recipeCardsArray.length;
           for (let q = 0; q < response.data.results.length; q++) {
+            response.data.results[q].index = counter;
+            counter++;
             res.push(response.data.results[q]);
           }
           if (res.length != 0) {
@@ -202,6 +209,7 @@ export default function Home() {
 
   useEffect(() => {
     console.log("called");
+    console.log(page);
     getRecipes();
   }, [searcher, change]);
 

@@ -206,6 +206,7 @@ export default function AddRecipe() {
     let title = document.getElementById("title").value;
     let calories = document.getElementById("calories").value;
     let sodium = document.getElementById("sodium").value;
+    let description = document.getElementById("description").value;
     var ingredients = arr.map(function (item) {
       return item["value"];
     });
@@ -226,6 +227,8 @@ export default function AddRecipe() {
           Instructions: instructions,
           Calories: calories,
           Sodium: sodium,
+          Description: description,
+          Pic: base64Picture,
         },
       };
       console.log(cookies.token);
@@ -240,6 +243,8 @@ export default function AddRecipe() {
           Instructions: instructions,
           Calories: calories,
           Sodium: sodium,
+          Description: description,
+          Pic: base64Picture,
         },
         {
           headers: {
