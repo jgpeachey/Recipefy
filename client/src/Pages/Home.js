@@ -32,6 +32,7 @@ export default function Home() {
   const [openProfile, setOpenProfile] = useState(false);
   const [searcher, setSearcher] = useState("");
   const [change, setChange] = useState(false);
+  const [userCards, setUserCards] = useState([])
 
   const appbarToHome = (appbardata) => {
     console.log(appbardata);
@@ -70,6 +71,8 @@ export default function Home() {
         console.log(response.data.results[0]);
         userToGet = response.data.results[0]._id;
 
+        console.log(userToGet);
+
         Axios.post(
           buildPath("recipe/findRecipe"),
           {
@@ -86,6 +89,15 @@ export default function Home() {
         )
           .then((response) => {
             console.log(response);
+            var ret = [];
+
+            for (let q = 0; q < response.data.results.length; q++) {
+              ret.push(response.data.results[q]);
+            }
+            if (ret.length != 0) {
+              setUserCards((current) => [...userCards, ...ret]);
+            }
+            console.log(userCards);
           })
           .catch((error) => {
             console.log(error);
@@ -250,7 +262,7 @@ export default function Home() {
 
           <Container>
             <Grid container spacing={11} marginTop={-8.5}>
-              {recipeCardsArray.map((recipe) => (
+              {userCards.map((recipe) => (
                 <RecipeCard recipe={recipe} />
               ))}
             </Grid>
