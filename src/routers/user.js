@@ -298,7 +298,7 @@ router.post("/updateuser", verifyAccessToken, async (req, res, next) => {
 });
 
 // Delete user function
-router.post("/deleteuser", verifyAccessToken, async (req, res, next) => {
+router.delete("/deleteuser", verifyAccessToken, async (req, res, next) => {
   const user = await User.findOne({ Email: req.body.Email }).exec();
   if (!user) {
     return res.status(409).json({

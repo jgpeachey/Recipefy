@@ -200,9 +200,33 @@ describe("Post testing /updaterecipe", () => {
 
 // test findRecipe endpoint
 describe("Post testing /findRecipe", () => {
-    test("This should return a response of 201", async () => {
+    test("This should return a response of 200", async () => {
         const response = await request(app).post("/recipe/findRecipe?search&count=6&page=1").set({authorization: authToken})
         expect(response.statusCode).toEqual(200);
         expect(response.body.results.length).toEqual(6)
+    })
+    test("This should return a response of 200 and an array of length 0", async () =>{
+        const response = await request(app).post("/recipe/findRecipe?search=adgghsdgadgfagf&count=6&page=1").set({authorization: authToken})
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.results.length).toEqual(0)
+    })
+})
+
+// gets recipes from a specific user
+describe("Post testing /getUserRecipes", () => {
+    // searches own recipes
+    test("This should return a response of 200", async () => { 
+        const response = await request(app).post("/recipe/getUserRecipe?count=6&page=1").send({
+            userId: userId
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.results.length).toEqual(6)
+    })
+    test("This should return a response of 200 and an empty array", async () => {
+        const response = await request(app).post("/recipe/getUserRecipe?search=alkgjdagnsadga&count=6&page=1").send({
+            userId: "63729fc72304b9f55f466529"
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.results.length).toEqual(0)
     })
 })
