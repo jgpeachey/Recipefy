@@ -23,6 +23,7 @@ import Container from "@mui/material/Container";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -94,6 +95,13 @@ export default function HomeAppBar({ appbarToHome }) {
     }
   };
 
+  const navigatetoFavorites = (e) => {
+    e.preventDefault();
+    if (!(location.pathname === "/favorites")) {
+      navigate("/favorites");
+    }
+  };
+
   const navigateToHome = (e) => {
     e.preventDefault();
     if (!(location.pathname === "/home")) {
@@ -136,9 +144,12 @@ export default function HomeAppBar({ appbarToHome }) {
                 onClick={navigateToAddRecipe}
               ></PostAddOutlinedIcon>
             </IconButton>
-            {/* <IconButton size="large" color="inherit" sx={{ margin: "auto" }}>
-              <GroupIcon sx={{ ml: 5 }}></GroupIcon>
-            </IconButton> */}
+            <IconButton size="large" color="inherit" sx={{ margin: "auto" }}>
+              <FavoriteIcon
+                sx={{ width: 32, height: 32 }}
+                onClick={navigatetoFavorites}
+              ></FavoriteIcon>
+            </IconButton>
           </Box>
 
           <Button
@@ -149,7 +160,7 @@ export default function HomeAppBar({ appbarToHome }) {
               justifyContent: "center",
               width: "100%",
               alignItems: "center",
-              ml: 20,
+              ml: 17,
             }}
             onClick={navigateToHome}
           >
@@ -201,9 +212,9 @@ export default function HomeAppBar({ appbarToHome }) {
                   onClick={navigateToAddRecipe}
                 ></PostAddOutlinedIcon>
               </MenuItem>
-              {/* <MenuItem>
-                <GroupIcon></GroupIcon>
-              </MenuItem> */}
+              <MenuItem>
+                <FavoriteIcon onClick={navigatetoFavorites}></FavoriteIcon>
+              </MenuItem>
               <MenuItem>
                 <Search sx={{}}>
                   <SearchIconWrapper>
