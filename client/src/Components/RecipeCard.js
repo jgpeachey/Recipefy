@@ -58,7 +58,7 @@ export default function RecipeCard({ recipe }) {
                 >
                   <Avatar
                     alt="Remy Sharp"
-                    src="https://www.melskitchencafe.com/wp-content/uploads/french-bread2.jpg"
+                    src={recipe.profilePic}
                     sx={{ width: 32, height: 32 }}
                   ></Avatar>
                   <Typography
@@ -68,7 +68,7 @@ export default function RecipeCard({ recipe }) {
                     marginTop={0.3}
                     marginLeft={1}
                   >
-                    Username
+                    {recipe.Username}
                   </Typography>
                 </Button>
               </Box>
