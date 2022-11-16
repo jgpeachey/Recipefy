@@ -259,7 +259,13 @@ router.post("/likerecipe", verifyAccessToken, async (req, res, next) => {
       error: "Recipe DNE"
     })
   }
-
+  //console.log(user.Likes);
+  // one more check that the user didnt already like the recipe
+  if(user.Likes.includes(mongoose.Types.ObjectId(req.body.recipeId))){
+    return res.status(201).json({
+      error: "Already Liked"
+    })
+  }
   // now that both recipe and user exist we can do stuff
   await Recipe.updateOne({_id: mongoose.Types.ObjectId(req.body.recipeId)}, { $inc: { Likes: 1}})
   await User.updateOne({ _id: mongoose.Types.ObjectId(req.auth.userId)}, { $push: {Likes: mongoose.Types.ObjectId(req.body.recipeId)}})
