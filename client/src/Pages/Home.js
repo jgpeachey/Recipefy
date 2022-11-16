@@ -26,7 +26,7 @@ export default function Home() {
   const [page, setPage] = useState(1);
 
   const [cookies, setCookie] = useCookies(["user"]);
-
+  console.log(cookies.token);
   const [recipeCardsArray, setRecipeCardsArray] = useState([]);
   const app_name = "recipefy-g1";
   const [openProfile, setOpenProfile] = useState(false);
@@ -52,6 +52,50 @@ export default function Home() {
     } else {
       return "http://localhost:3001/" + route;
     }
+  }
+
+  function getUserRecipes() {
+    var userToGet = 0;
+    Axios.post(
+      buildPath(`user/searchUsers?page=${1}&count=${9}&search=omarashry98`),
+      null,
+      {
+        headers: {
+          authorization: cookies.token,
+        },
+      }
+    )
+      .then((response) => {
+        console.log(response);
+        console.log(response.data.results[0]);
+        userToGet = response.data.results[0]._id;
+
+        Axios.post(
+          buildPath("recipe/findRecipe"),
+          {
+            page: 1,
+            count: 9,
+            search: "",
+            filter: userToGet,
+          },
+          {
+            headers: {
+              authorization: cookies.token,
+            },
+          }
+        )
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log(error);
+            console.log(error.response.data.error);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log(error.response.data.error);
+      });
   }
 
   function getRecipes() {
@@ -155,7 +199,12 @@ export default function Home() {
         <HomeAppBar appbarToHome={appbarToHome} />
 
         <ImageCarousel slides={SliderData} />
-        <Button onClick={() => setOpenProfile(true)}>
+        <Button
+          onClick={() => {
+            setOpenProfile(true);
+            getUserRecipes();
+          }}
+        >
           Testing Profile Modal
         </Button>
 
