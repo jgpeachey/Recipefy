@@ -33,7 +33,8 @@ export default function Home() {
   const [searcher, setSearcher] = useState("");
   const [change, setChange] = useState(false);
   var counter = 0;
-  const [userCards, setUserCards] = useState([])
+  const [userCards, setUserCards] = useState([]);
+  const [clickedUser, setClickedUser] = useState("");
 
   const appbarToHome = (appbardata) => {
     console.log(appbardata);
@@ -58,8 +59,11 @@ export default function Home() {
 
   function getUserRecipes() {
     var userToGet = 0;
+
+    console.log(clickedUser);
+    
     Axios.post(
-      buildPath(`user/searchUsers?page=${1}&count=${9}&search=omarashry98`),
+      buildPath(`user/searchUsers?page=${1}&count=${9}&search=${clickedUser}`),
       null,
       {
         headers: {
@@ -75,12 +79,12 @@ export default function Home() {
         console.log(userToGet);
 
         Axios.post(
-          buildPath("recipe/findRecipe"),
+          buildPath("recipe/getUserRecipe"),
           {
             page: 1,
             count: 9,
             search: "",
-            filter: userToGet,
+            userId: userToGet
           },
           {
             headers: {
@@ -90,13 +94,12 @@ export default function Home() {
         )
           .then((response) => {
             console.log(response);
-            var ret = [];
-
+            var res = [];
             for (let q = 0; q < response.data.results.length; q++) {
-              ret.push(response.data.results[q]);
+              res.push(response.data.results[q]);
             }
-            if (ret.length != 0) {
-              setUserCards((current) => [...userCards, ...ret]);
+            if (res.length != 0) {
+              setUserCards((current) => [...userCards, ...res]);
             }
             console.log(userCards);
           })
@@ -220,12 +223,13 @@ export default function Home() {
 
         <ImageCarousel slides={SliderData} />
         <Button
-          onClick={() => {
+          onClick={(event) => {
             setOpenProfile(true);
             getUserRecipes();
+            setClickedUser(event.target.innerText);
           }}
         >
-          Testing Profile Modal
+          omarashry98
         </Button>
 
         <Container>
