@@ -226,6 +226,7 @@ router.post("/login", async (req, res, next) => {
           email: user.Email,
           isVerified: user.isVerified,
           pic: user.Pic,
+          likes: user.Likes
         },
         auth: {
           accessToken: accessToken,

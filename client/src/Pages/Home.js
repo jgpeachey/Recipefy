@@ -26,12 +26,14 @@ export default function Home() {
   const [page, setPage] = useState(1);
 
   const [cookies, setCookie] = useCookies(["user"]);
-
+  console.log(cookies.token);
   const [recipeCardsArray, setRecipeCardsArray] = useState([]);
   const app_name = "recipefy-g1";
   const [openProfile, setOpenProfile] = useState(false);
   const [searcher, setSearcher] = useState("");
   const [change, setChange] = useState(false);
+  var counter = 0;
+  const [userCards, setUserCards] = useState([])
 
   const appbarToHome = (appbardata) => {
     console.log(appbardata);
@@ -52,6 +54,61 @@ export default function Home() {
     } else {
       return "http://localhost:3001/" + route;
     }
+  }
+
+  function getUserRecipes() {
+    var userToGet = 0;
+    Axios.post(
+      buildPath(`user/searchUsers?page=${1}&count=${9}&search=omarashry98`),
+      null,
+      {
+        headers: {
+          authorization: cookies.token,
+        },
+      }
+    )
+      .then((response) => {
+        console.log(response);
+        console.log(response.data.results[0]);
+        userToGet = response.data.results[0]._id;
+
+        console.log(userToGet);
+
+        Axios.post(
+          buildPath("recipe/findRecipe"),
+          {
+            page: 1,
+            count: 9,
+            search: "",
+            filter: userToGet,
+          },
+          {
+            headers: {
+              authorization: cookies.token,
+            },
+          }
+        )
+          .then((response) => {
+            console.log(response);
+            var ret = [];
+
+            for (let q = 0; q < response.data.results.length; q++) {
+              ret.push(response.data.results[q]);
+            }
+            if (ret.length != 0) {
+              setUserCards((current) => [...userCards, ...ret]);
+            }
+            console.log(userCards);
+          })
+          .catch((error) => {
+            console.log(error);
+            console.log(error.response.data.error);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log(error.response.data.error);
+      });
   }
 
   function getRecipes() {
@@ -80,7 +137,10 @@ export default function Home() {
         .then((response) => {
           console.log(response);
           var res = [];
+          counter = recipeCardsArray.length;
           for (let q = 0; q < response.data.results.length; q++) {
+            response.data.results[q].index = counter;
+            counter++;
             res.push(response.data.results[q]);
           }
           if (page === 1) {
@@ -113,7 +173,10 @@ export default function Home() {
         .then((response) => {
           console.log(response);
           var res = [];
+          counter = recipeCardsArray.length;
           for (let q = 0; q < response.data.results.length; q++) {
+            response.data.results[q].index = counter;
+            counter++;
             res.push(response.data.results[q]);
           }
           if (res.length != 0) {
@@ -146,6 +209,7 @@ export default function Home() {
 
   useEffect(() => {
     console.log("called");
+    console.log(page);
     getRecipes();
   }, [searcher, change]);
 
@@ -155,7 +219,12 @@ export default function Home() {
         <HomeAppBar appbarToHome={appbarToHome} />
 
         <ImageCarousel slides={SliderData} />
-        <Button onClick={() => setOpenProfile(true)}>
+        <Button
+          onClick={() => {
+            setOpenProfile(true);
+            getUserRecipes();
+          }}
+        >
           Testing Profile Modal
         </Button>
 
@@ -201,7 +270,7 @@ export default function Home() {
 
           <Container>
             <Grid container spacing={11} marginTop={-8.5}>
-              {recipeCardsArray.map((recipe) => (
+              {userCards.map((recipe) => (
                 <RecipeCard recipe={recipe} />
               ))}
             </Grid>
