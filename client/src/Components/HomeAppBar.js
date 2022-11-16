@@ -18,11 +18,68 @@ import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import { blue } from "@mui/material/colors";
+import { styled, alpha } from "@mui/material/styles";
+import Container from "@mui/material/Container";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
-export default function HomeAppBar() {
+const Search = styled("div")(({ theme }) => ({
+  position: "relative",
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginLeft: 0,
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
+    marginLeft: theme.spacing(1),
+    width: "auto",
+  },
+}));
+
+const SearchIconWrapper = styled("div")(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: "inherit",
+  "& .MuiInputBase-input": {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      width: "12ch",
+      "&:focus": {
+        width: "20ch",
+      },
+    },
+  },
+}));
+
+export default function HomeAppBar({ appbarToHome }) {
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   const navigate = useNavigate();
   const location = useLocation();
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
 
   const navigateToProfile = (e) => {
     e.preventDefault();
@@ -38,6 +95,13 @@ export default function HomeAppBar() {
     }
   };
 
+  const navigatetoFavorites = (e) => {
+    e.preventDefault();
+    if (!(location.pathname === "/favorites")) {
+      navigate("/favorites");
+    }
+  };
+
   const navigateToHome = (e) => {
     e.preventDefault();
     if (!(location.pathname === "/home")) {
@@ -50,99 +114,165 @@ export default function HomeAppBar() {
     navigate("/");
   };
 
-  const SearchBar = ({ setSearchQuery }) => (
-    <Paper
-      variant="outlined"
-      component="form"
-      sx={{
-        p: "1px 2px",
-        display: "flex",
-        alignItems: "center",
-        width: 200,
-        backgroundColor: "#1976d2",
-      }}
-    >
-      <TextField
-        id="search-bar"
-        className="text"
-        onInput={(e) => {
-          setSearchQuery(e.target.value);
-        }}
-        label="Enter a city name"
-        variant="outlined"
-        placeholder="Search..."
-        size="small"
-      />
-      <IconButton
-        type="button"
-        sx={{ p: "10px", color: "white" }}
-        aria-label="search"
-      >
-        <SearchIcon />
-      </IconButton>
-    </Paper>
-  );
-
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar color="primary">
-        <Toolbar>
-          <IconButton size="large" color="inherit" sx={{ mr: 2 }}>
-            <Avatar
-              src={cookies.picture}
-              sx={{
-                width: 24,
-                height: 24,
-              }}
-              onMouseDown={(event) => event.stopPropagation()}
-              onClick={navigateToProfile}
-            />
-            <PostAddOutlinedIcon
-              sx={{ ml: 5 }}
-              onMouseDown={(event) => event.stopPropagation()}
-              onClick={navigateToAddRecipe}
-            ></PostAddOutlinedIcon>
-            <GroupIcon sx={{ ml: 5 }}></GroupIcon>
-          </IconButton>
+    // <Box sx={{ flexGrow: 1 }}>
+    <AppBar color="primary" position="fixed">
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+              justifyContent: "left",
+            }}
+          >
+            <IconButton size="large" color="inherit" sx={{ margin: "auto" }}>
+              <Avatar
+                src={cookies.picture}
+                sx={{
+                  width: 32,
+                  height: 32,
+                }}
+                // onMouseDown={(event) => event.stopPropagation()}
+                onClick={navigateToProfile}
+              />
+            </IconButton>
+            <IconButton size="large" color="inherit" sx={{ margin: "auto" }}>
+              <PostAddOutlinedIcon
+                sx={{ width: 32, height: 32 }}
+                // onMouseDown={(event) => event.stopPropagation()}
+                onClick={navigateToAddRecipe}
+              ></PostAddOutlinedIcon>
+            </IconButton>
+            <IconButton size="large" color="inherit" sx={{ margin: "auto" }}>
+              <FavoriteIcon
+                sx={{ width: 32, height: 32 }}
+                onClick={navigatetoFavorites}
+              ></FavoriteIcon>
+            </IconButton>
+          </Box>
 
           <Button
             className="homeLogo"
-            sx={{ flexGrow: 1 }}
+            sx={{
+              // flexGrow: 1,
+              display: "flex",
+              justifyContent: "center",
+              width: "100%",
+              alignItems: "center",
+              ml: 17,
+            }}
             onClick={navigateToHome}
           >
             <div className="homeLogo" sx={{ flexGrow: 1 }}>
               Recipefy
             </div>
           </Button>
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: "block", md: "none" },
+              }}
+            >
+              <MenuItem>
+                <Avatar
+                  src={cookies.picture}
+                  sx={{
+                    width: 24,
+                    height: 24,
+                  }}
+                  onClick={navigateToProfile}
+                />
+              </MenuItem>
+              <MenuItem>
+                <PostAddOutlinedIcon
+                  onClick={navigateToAddRecipe}
+                ></PostAddOutlinedIcon>
+              </MenuItem>
+              <MenuItem>
+                <FavoriteIcon onClick={navigatetoFavorites}></FavoriteIcon>
+              </MenuItem>
+              <MenuItem>
+                <Search sx={{}}>
+                  <SearchIconWrapper>
+                    <SearchIcon />
+                  </SearchIconWrapper>
+                  <StyledInputBase
+                    onInput={(e) => {
+                      appbarToHome(e.target.value);
+                    }}
+                    placeholder="Search…"
+                    inputProps={{ "aria-label": "search" }}
+                  />
+                </Search>
+              </MenuItem>
+              <MenuItem>
+                <Button
+                  variant="contained"
+                  endIcon={<LogoutIcon />}
+                  onClick={logoutHome}
+                  sx={{ ml: 2 }}
+                >
+                  Logout
+                </Button>
+              </MenuItem>
+            </Menu>
+          </Box>
 
-          {/* <Button className="navButton" color="inherit">
-            Categories
-          </Button>
-          <Button className="navButton" color="inherit" sx={{ ml: 2 }}>
-            Trending
-          </Button> */}
-
-          {/* <Paper
-            component="form"
+          <Box
             sx={{
-              p: "2px 4px",
-              display: "flex",
-              alignItems: "center",
-              width: 400,
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+              justifyContent: "right",
             }}
           >
-            
-          </Paper> */}
-          <SearchBar />
-          <Button
-            variant="contained"
-            endIcon={<LogoutIcon />}
-            onClick={logoutHome}
-          >
-            Logout
-          </Button>
+            <Search sx={{}}>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                onInput={(e) => {
+                  appbarToHome(e.target.value);
+                }}
+                placeholder="Search…"
+                inputProps={{ "aria-label": "search" }}
+              />
+            </Search>
+            <Button
+              variant="contained"
+              endIcon={<LogoutIcon />}
+              onClick={logoutHome}
+              sx={{ ml: 2 }}
+            >
+              Logout
+            </Button>
+          </Box>
         </Toolbar>
-      </AppBar>
-    </Box>
+      </Container>
+    </AppBar>
+    // {/* </Box> */}
   );
 }

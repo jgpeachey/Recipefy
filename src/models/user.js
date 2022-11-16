@@ -14,6 +14,7 @@ const userInfo = mongoose.Schema({
     },
     emailToken: {type: String},
     isVerified: {type: Boolean},
+    Likes: {type: Array, require: true}, // will store references to liked recipes
     Password: {type: String, require: true}
 });
 

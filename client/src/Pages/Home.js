@@ -27,10 +27,19 @@ export default function Home() {
 
   const [cookies, setCookie] = useCookies(["user"]);
   console.log(cookies.token);
-
   const [recipeCardsArray, setRecipeCardsArray] = useState([]);
   const app_name = "recipefy-g1";
   const [openProfile, setOpenProfile] = useState(false);
+  const [searcher, setSearcher] = useState("");
+  const [change, setChange] = useState(false);
+  var counter = 0;
+  const [userCards, setUserCards] = useState([]);
+  const [clickedUser, setClickedUser] = useState("");
+
+  const appbarToHome = (appbardata) => {
+    console.log(appbardata);
+    setSearcher(appbardata);
+  };
 
   const handleClickOpen = () => {
     setOpenProfile(true);
@@ -48,6 +57,63 @@ export default function Home() {
     }
   }
 
+  function getUserRecipes() {
+    var userToGet = 0;
+
+    console.log(clickedUser);
+    
+    Axios.post(
+      buildPath(`user/searchUsers?page=${1}&count=${9}&search=${clickedUser}`),
+      null,
+      {
+        headers: {
+          authorization: cookies.token,
+        },
+      }
+    )
+      .then((response) => {
+        console.log(response);
+        console.log(response.data.results[0]);
+        userToGet = response.data.results[0]._id;
+
+        console.log(userToGet);
+
+        Axios.post(
+          buildPath("recipe/getUserRecipe"),
+          {
+            page: 1,
+            count: 9,
+            search: "",
+            userId: userToGet
+          },
+          {
+            headers: {
+              authorization: cookies.token,
+            },
+          }
+        )
+          .then((response) => {
+            console.log(response);
+            var res = [];
+            for (let q = 0; q < response.data.results.length; q++) {
+              res.push(response.data.results[q]);
+            }
+            if (res.length != 0) {
+              setUserCards((current) => [...userCards, ...res]);
+            }
+            console.log(userCards);
+          })
+          .catch((error) => {
+            console.log(error);
+            console.log(error.response.data.error);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log(error.response.data.error);
+      });
+  }
+
   function getRecipes() {
     setPage(page + 1);
     console.log(page);
@@ -61,64 +127,109 @@ export default function Home() {
     //     search: "",
     //   },
     // };
-    Axios.post(
-      buildPath("recipe/findAllRecipe"),
-      {
-        page: page,
-        count: 9,
-        search: "",
-      },
-      {
-        headers: {
-          authorization: cookies.token,
-        },
-      }
-    )
-      .then((response) => {
-        console.log(response);
-        var res = [];
-        for (let q = 0; q < response.data.results.length; q++) {
-          res.push(response.data.results[q]);
+    if (searcher === "") {
+      Axios.post(
+        buildPath(`recipe/findAllRecipe?page=${page}&&count=${9}&search`),
+        null,
+        {
+          headers: {
+            authorization: cookies.token,
+          },
         }
-        if (res.length != 0) {
-          setRecipeCardsArray((current) => [...recipeCardsArray, ...res]);
+      )
+        .then((response) => {
+          console.log(response);
+          var res = [];
+          counter = recipeCardsArray.length;
+          for (let q = 0; q < response.data.results.length; q++) {
+            response.data.results[q].index = counter;
+            counter++;
+            res.push(response.data.results[q]);
+          }
+          if (page === 1) {
+            console.log("cheese");
+            setRecipeCardsArray(res);
+            setChange(!change);
+          } else if (res.length != 0) {
+            setRecipeCardsArray((current) => [...recipeCardsArray, ...res]);
+          }
+          console.log(recipeCardsArray);
+        })
+        .catch((error) => {
+          console.log(error);
+          console.log(error.response.data.error);
+        });
+    } else {
+      setPage(1);
+      console.log("here");
+      Axios.post(
+        buildPath(
+          `recipe/findAllRecipe?page=${page}&&count=${9}&search=${searcher}`
+        ),
+        null,
+        {
+          headers: {
+            authorization: cookies.token,
+          },
         }
-        console.log(recipeCardsArray);
-      })
-      .catch((error) => {
-        console.log(error);
-        console.log(error.response.data.error);
-      });
-    // Axios.get(buildPath("recipe/findAllRecipe"), config)
-    //   .then((response) => {
-    //     console.log(response);
-    //     var res = [];
-    //     for (let q = 0; q < response.data.results.length; q++) {
-    //       res.push(response.data.results[q]);
-    //     }
-    //     if (res.length != 0) {
-    //       setRecipeCardsArray((current) => [...recipeCardsArray, ...res]);
-    //     }
-    //     console.log(recipeCardsArray);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     console.log(error.response.data.error);
-    //   });
+      )
+        .then((response) => {
+          console.log(response);
+          var res = [];
+          counter = recipeCardsArray.length;
+          for (let q = 0; q < response.data.results.length; q++) {
+            response.data.results[q].index = counter;
+            counter++;
+            res.push(response.data.results[q]);
+          }
+          if (res.length != 0) {
+            setRecipeCardsArray(res);
+          }
+          console.log(recipeCardsArray);
+        })
+        .catch((error) => {
+          console.log(error);
+          console.log(error.response.data.error);
+        });
+      // Axios.get(buildPath("recipe/findAllRecipe"), config)
+      //   .then((response) => {
+      //     console.log(response);
+      //     var res = [];
+      //     for (let q = 0; q < response.data.results.length; q++) {
+      //       res.push(response.data.results[q]);
+      //     }
+      //     if (res.length != 0) {
+      //       setRecipeCardsArray((current) => [...recipeCardsArray, ...res]);
+      //     }
+      //     console.log(recipeCardsArray);
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //     console.log(error.response.data.error);
+      //   });
+    }
   }
 
   useEffect(() => {
+    console.log("called");
+    console.log(page);
     getRecipes();
-  }, []);
+  }, [searcher, change]);
 
   return (
     <BottomScrollListener onBottom={getRecipes}>
       <ThemeProvider theme={theme}>
-        <HomeAppBar />
+        <HomeAppBar appbarToHome={appbarToHome} />
 
         <ImageCarousel slides={SliderData} />
-        <Button onClick={() => setOpenProfile(true)}>
-          Testing Profile Modal
+        <Button
+          onClick={(event) => {
+            setOpenProfile(true);
+            getUserRecipes();
+            setClickedUser(event.target.innerText);
+          }}
+        >
+          omarashry98
         </Button>
 
         <Container>
@@ -163,7 +274,7 @@ export default function Home() {
 
           <Container>
             <Grid container spacing={11} marginTop={-8.5}>
-              {recipeCardsArray.map((recipe) => (
+              {userCards.map((recipe) => (
                 <RecipeCard recipe={recipe} />
               ))}
             </Grid>

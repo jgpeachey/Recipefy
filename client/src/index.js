@@ -11,6 +11,7 @@ import Profile from "./Pages/Profile";
 import Forgot from "./Pages/Forgot";
 import AddRecipe from "./Pages/AddRecipe";
 import Loading from "./Pages/Loading";
+import Favorite from "./Pages/Favorite";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -25,6 +26,7 @@ root.render(
           <Route path="/forgotpassword" index element={<Forgot />} />
           <Route path="/addrecipe" index element={<AddRecipe />} />
           <Route path="/loading" index element={<Loading />} />
+          <Route path="/favorites" index element={<Favorite />} />
         </Routes>
       </BrowserRouter>
     </CookiesProvider>

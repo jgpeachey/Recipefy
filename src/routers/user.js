@@ -85,6 +85,7 @@ router.post("/register", async function (req, res) {
     Email: req.body.Email,
     emailToken: hashToken,
     isVerified: false,
+    Likes: [],
     Password: hash,
   });
 
@@ -225,6 +226,7 @@ router.post("/login", async (req, res, next) => {
           email: user.Email,
           isVerified: user.isVerified,
           pic: user.Pic,
+          likes: user.Likes
         },
         auth: {
           accessToken: accessToken,
@@ -243,7 +245,7 @@ router.post("/login", async (req, res, next) => {
 });
 
 // Update User
-router.put("/updateuser", verifyAccessToken, async (req, res, next) => {
+router.post("/updateuser", verifyAccessToken, async (req, res, next) => {
   const user = await User.findOne({ Email: req.body.Email }).exec();
   if (!user) {
     return res.status(409).json({
@@ -269,9 +271,9 @@ router.put("/updateuser", verifyAccessToken, async (req, res, next) => {
         req.body.Info.Pic = (
           await cloudinary.uploader.upload(req.body.Info.Pic)
         ).secure_url;
-        console.log(req.body.Info.Pic);
+        //console.log(req.body.Info.Pic);
       }
-      console.log(req.body.Info.Pic);
+      //console.log(req.body.Info.Pic);
       const result = await User.updateOne(
         { Email: req.body.Email },
         { $set: req.body.Info }
@@ -296,7 +298,7 @@ router.put("/updateuser", verifyAccessToken, async (req, res, next) => {
 });
 
 // Delete user function
-router.delete("/deleteuser", verifyAccessToken, async (req, res, next) => {
+router.post("/deleteuser", verifyAccessToken, async (req, res, next) => {
   const user = await User.findOne({ Email: req.body.Email }).exec();
   if (!user) {
     return res.status(409).json({
@@ -324,7 +326,7 @@ router.delete("/deleteuser", verifyAccessToken, async (req, res, next) => {
 });
 
 // Search Users API
-router.get("/searchUsers", verifyAccessToken, async (req, res, next) => {
+router.post("/searchUsers", verifyAccessToken, async (req, res, next) => {
   const page = parseInt(req.query.page);
   const count = parseInt(req.query.count);
   const search = req.query.search;
@@ -356,7 +358,14 @@ router.get("/searchUsers", verifyAccessToken, async (req, res, next) => {
   }
 
   try {
-    results.results = await User.find(filter)
+    results.results = await User.find(filter).select([
+        "Firstname",
+        "Lastname",
+        "Username",
+        "Pic",
+        "Email",
+        "isVerified"
+    ])
       .limit(count)
       .skip(startIndex)
       .exec();
@@ -420,7 +429,7 @@ router.post("/resetPasswordRequest", async (req, res, next) => {
 router.post("/resetPassword", async (req, res, next) => {
   //console.log(req.body.userId);
   const userId = req.body.userId.trim();
-  console.log(req.body);
+  //console.log(req.body);
   //console.log(typeof userId);
   if (req.body.userId.length != 24) {
     return res.status(409).json({
@@ -437,7 +446,7 @@ router.post("/resetPassword", async (req, res, next) => {
   });
   if (!resetToken) {
     return res.status(409).json({
-      error: "Invalid or expired password reset token",
+      error: "Invalid userId",
     });
   }
   let valid = await bcrypt.compare(req.body.token, resetToken.token);
