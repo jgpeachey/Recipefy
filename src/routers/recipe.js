@@ -20,6 +20,10 @@ router.post("/addrecipe", verifyAccessToken, async (req, res, next) => {
     }
   }
   const user = await User.findOne({ _id: req.auth.userId }).exec();
+  //console.log(user)
+  if(!user){
+    return res.status(409).json({error: "User DNE"});
+  }
   const recipeInfo = new Recipe({
     _id: new mongoose.Types.ObjectId(),
     User_ID: req.auth.userId,
@@ -37,16 +41,16 @@ router.post("/addrecipe", verifyAccessToken, async (req, res, next) => {
 
   const result = await recipeInfo.save();
 
-  console.log(result);
+  //console.log(result);
   return res.status(201).json({
     message: "recipe created",
   });
 });
 
 // Update recipe API
-router.put("/updaterecipe", verifyAccessToken, async (req, res, next) => {
+router.post("/updaterecipe", verifyAccessToken, async (req, res, next) => {
   const recipe = Recipe.findOne({
-    Title: req.body.Title,
+    _id: req.body._id,
     User_ID: req.auth.userId,
   });
   if (!recipe) {
@@ -64,11 +68,13 @@ router.put("/updaterecipe", verifyAccessToken, async (req, res, next) => {
   }
   try {
     const result = await Recipe.updateOne(
-      { Title: req.body.Title, User_ID: req.auth.userId },
+      { _id: req.body._id, User_ID: req.auth.userId },
       { $set: req.body.Info }
     );
     if (result.matchedCount > 0) {
-      return res.status(200).end();
+      return res.status(201).json({
+        error: ""
+      });
     } else {
       return res.status(409).json({
         error: "Invalid recipe",

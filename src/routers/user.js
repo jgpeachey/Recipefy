@@ -271,9 +271,9 @@ router.post("/updateuser", verifyAccessToken, async (req, res, next) => {
         req.body.Info.Pic = (
           await cloudinary.uploader.upload(req.body.Info.Pic)
         ).secure_url;
-        console.log(req.body.Info.Pic);
+        //console.log(req.body.Info.Pic);
       }
-      console.log(req.body.Info.Pic);
+      //console.log(req.body.Info.Pic);
       const result = await User.updateOne(
         { Email: req.body.Email },
         { $set: req.body.Info }
@@ -429,7 +429,7 @@ router.post("/resetPasswordRequest", async (req, res, next) => {
 router.post("/resetPassword", async (req, res, next) => {
   //console.log(req.body.userId);
   const userId = req.body.userId.trim();
-  console.log(req.body);
+  //console.log(req.body);
   //console.log(typeof userId);
   if (req.body.userId.length != 24) {
     return res.status(409).json({
@@ -446,7 +446,7 @@ router.post("/resetPassword", async (req, res, next) => {
   });
   if (!resetToken) {
     return res.status(409).json({
-      error: "Invalid or expired password reset token",
+      error: "Invalid userId",
     });
   }
   let valid = await bcrypt.compare(req.body.token, resetToken.token);
