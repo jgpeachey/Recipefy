@@ -19,9 +19,12 @@ router.post("/addrecipe", verifyAccessToken, async (req, res, next) => {
       return res.status(409).json({error: "Image uploading error", message: error})
     }
   }
+  const user = await User.findOne({ _id: req.auth.userId }).exec();
   const recipeInfo = new Recipe({
     _id: new mongoose.Types.ObjectId(),
     User_ID: req.auth.userId,
+    Username: user.Username,
+    profilePic: user.Pic,
     Title: req.body.Title,
     Ingredients: req.body.Ingredients,
     Instructions: req.body.Instructions,
