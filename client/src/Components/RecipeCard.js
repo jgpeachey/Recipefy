@@ -193,7 +193,9 @@ export default function RecipeCard({ recipe }) {
           <div className='modalContainerTop'>
             <DialogTitle sx={{ color: 'white' }}>{recipe.Title}</DialogTitle>
             <DialogContentText sx={{ color: 'white' }}>
-              by: {recipe.Username}
+              <Button sx={{color:'white'}}>
+                by: {recipe.Username}
+              </Button>
             </DialogContentText>
             <Avatar
               src={recipe.profilePic}

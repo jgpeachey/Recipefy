@@ -268,6 +268,7 @@ export default function Home() {
               }}
               onMouseDown={(event) => event.stopPropagation()}
             />
+            <Button sx={{ color:'white' , pl:2 }}>Follow+</Button>
           </div>
 
           <DialogContentText className="profileBio">
