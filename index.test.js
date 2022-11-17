@@ -300,3 +300,67 @@ describe("POST testing /unlikeRecipe", () => {
         expect(response.body.error).toEqual("Recipe DNE");
     })
 })
+
+
+describe("POST testing /followUser", () => {
+    test("This should return a response of 201 and an empty error", async () => {
+        const response = await request(app).post("/user/followUser").send({
+            userId: "636beb7b8f8b58d6a8df3726"
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(201);
+        expect(response.body.error).toEqual("");
+    })
+    test("This should return a response of 409 and that the user already followed the user", async () => {
+        const response = await request(app).post("/user/followUser").send({
+            userId: "636beb7b8f8b58d6a8df3726"
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(409);
+        expect(response.body.error).toEqual("Already following");    
+    })
+    test("This should return a response of 409 and that the user DNE", async () => {
+        const response = await request(app).post("/user/followUser").send({
+            userId: "123beb7b8f8b58d6a8df3726"
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(409);
+        expect(response.body.error).toEqual("User DNE");
+    }) 
+    test("This should return a response of 409 and that cannot follow yourself", async () => {
+        const response = await request(app).post("/user/followUser").send({
+            userId: userId
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(409);
+        expect(response.body.error).toEqual("Cannot follow yourself");
+    })
+})
+
+describe("POST testing /unfollowUser", () => {
+    test("This should return a response of 201 and an empty error", async () => {
+        const response = await request(app).post("/user/unfollowUser").send({
+            userId: "636beb7b8f8b58d6a8df3726"
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(201);
+        expect(response.body.error).toEqual("");
+    })
+    test("This should return a response of 409 and Not following user already", async () => {
+        const response = await request(app).post("/user/unfollowUser").send({
+            userId: "636beb7b8f8b58d6a8df3726"
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(409);
+        expect(response.body.error).toEqual("Not following user already");
+    })
+    test("This should return a response of 409 and that the user DNE", async () => {
+        const response = await request(app).post("/user/unfollowUser").send({
+            userId: "123beb7b8f8b58d6a8df3726"
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(409);
+        expect(response.body.error).toEqual("User DNE");
+    })
+    test("This should return a response of 409 and that cannot unfollow yourself", async () => {
+        const response = await request(app).post("/user/unfollowUser").send({
+            userId: userId
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(409);
+        expect(response.body.error).toEqual("Cannot unfollow yourself");
+    })
+
+})
