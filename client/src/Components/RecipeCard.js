@@ -12,18 +12,18 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { maxWidth } from '@mui/system';
-import Container from '@mui/system/Container';
+import { maxWidth } from "@mui/system";
+import Container from "@mui/system/Container";
 import { useState } from "react";
 
-// import Axios from "axios";
-// import { useCookies } from "react-cookie";
+import Axios from "axios";
+import { cookies, useCookies } from "react-cookie";
 
 const theme = createTheme({
-  typography:{
-    button:{
-      textTransform: 'none'
-    }
+  typography: {
+    button: {
+      textTransform: "none",
+    },
   },
 
   components: {
@@ -54,25 +54,26 @@ export default function RecipeCard({ recipe }) {
   const [open, setOpen] = useState(false);
   // const [username, setUsername] = useState("");
   // const [pfp, setPfp] = useState("");
-
+  // console.log(recipe);
   const app_name = "recipefy-g1";
-  // const [cookies, setCookie] = useCookies(["user"]);
+  const [cookies, setCookie] = useCookies(["user"]);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
+    // getLikedRecipes()
     setOpen(false);
   };
 
-  // function buildPath(route) {
-  //   if (process.env.NODE_ENV === "production") {
-  //     return "https://" + app_name + ".herokuapp.com/" + route;
-  //   } else {
-  //     return "http://localhost:3001/" + route;
-  //   }
-  // }
+  function buildPath(route) {
+    if (process.env.NODE_ENV === "production") {
+      return "https://" + app_name + ".herokuapp.com/" + route;
+    } else {
+      return "http://localhost:3001/" + route;
+    }
+  }
 
   // function getUserInfo(){
 
@@ -97,6 +98,46 @@ export default function RecipeCard({ recipe }) {
   //       console.log(error.response.data.error);
   //     });
   // }
+
+  function likeRecipe() {
+    Axios.post(
+      buildPath("recipe/likerecipe"),
+      {
+        recipeId: recipe._id,
+      },
+      {
+        headers: {
+          authorization: cookies.token,
+        },
+      }
+    )
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  function unlikeRecipe() {
+    Axios.post(
+      buildPath("recipe/unlikerecipe"),
+      {
+        recipeId: recipe._id,
+      },
+      {
+        headers: {
+          authorization: cookies.token,
+        },
+      }
+    )
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   return (
     <Grid item xs={4}>
@@ -123,6 +164,7 @@ export default function RecipeCard({ recipe }) {
                   color="blue"
                   marginTop={0.3}
                   marginLeft={1}
+                  fontSize={18}
                 >
                   {recipe.Username}
                 </Typography>
@@ -190,12 +232,10 @@ export default function RecipeCard({ recipe }) {
           maxWidth={maxWidth}
           aria-describedby="alert-dialog-slide-description"
         >
-          <div className='modalContainerTop'>
-            <DialogTitle sx={{ color: 'white' }}>{recipe.Title}</DialogTitle>
-            <DialogContentText sx={{ color: 'white' }}>
-              <Button sx={{color:'white'}}>
-                by: {recipe.Username}
-              </Button>
+          <div className="modalContainerTop">
+            <DialogTitle sx={{ color: "white" }}>{recipe.Title}</DialogTitle>
+            <DialogContentText sx={{ color: "white" }}>
+              <Button sx={{ color: "white" }}>by: {recipe.Username}</Button>
             </DialogContentText>
             <Avatar
               src={recipe.profilePic}
@@ -205,36 +245,53 @@ export default function RecipeCard({ recipe }) {
               }}
               onMouseDown={(event) => event.stopPropagation()}
             />
-            <Button sx={{ color:'white' , pl:2 }}>Favorite+</Button>
+            <Button
+              variant="contained"
+              sx={{ color: "red", ml: 2, backgroundColor: "white" }}
+              endIcon={<FavoriteIcon />}
+              onClick={likeRecipe}
+            >
+              Like
+            </Button>
+            <Button
+              variant="contained"
+              sx={{ color: "white", ml: 2 }}
+              endIcon={<FavoriteIcon />}
+              onClick={unlikeRecipe}
+            >
+              UnLike
+            </Button>
+            {/* lemme know how you feel about this button, I was thinking we could change the color and all that nonsense.
+            We can put the follow when you click on that persons username instead cause idk where else we would put the like
+          unless we put it all the way at the end of the modal screen area.  @ ALEX */}
+            {/* THESE ARE TEMPORARY LIKE AND UNLIKE BUTTONS,IN THE FUTURE MAKE IT ONE BUTTON @ALEX */}
+
+            {/* <Button sx={{ color: "white", pl: 2 }}>Favorite+</Button> */}
           </div>
           <DialogContent>
-            
-          <Container>
-            <Grid container spacing={1}>
-              <div className='modalContainer'>
-                <img className="modalImg" src={recipe.Pic}/>
-                <DialogContent>
-                  <DialogTitle className="ingredientHeader">
-                    Ingredients:
-                  </DialogTitle>
-                  <DialogContentText className="recipeText">
-                    {recipe.Ingredients.map((ingredient) => (
-                      <DialogContentText>-{ingredient}</DialogContentText>
-                    ))}
-                  </DialogContentText>
-                  <DialogTitle>
-                    Instructions:
-                  </DialogTitle>
-                  <DialogContentText className="recipeText">
-                    {recipe.Instructions.map((instruction) => (
-                      <DialogContentText>-{instruction}</DialogContentText>
-                    ))}
-                  </DialogContentText>
-                </DialogContent>
-              </div>
-            </Grid>
-          </Container>
-    
+            <Container>
+              <Grid container spacing={1}>
+                <div className="modalContainer">
+                  <img className="modalImg" src={recipe.Pic} />
+                  <DialogContent>
+                    <DialogTitle className="ingredientHeader">
+                      Ingredients:
+                    </DialogTitle>
+                    <DialogContentText className="recipeText">
+                      {recipe.Ingredients.map((ingredient) => (
+                        <DialogContentText>-{ingredient}</DialogContentText>
+                      ))}
+                    </DialogContentText>
+                    <DialogTitle>Instructions:</DialogTitle>
+                    <DialogContentText className="recipeText">
+                      {recipe.Instructions.map((instruction) => (
+                        <DialogContentText>-{instruction}</DialogContentText>
+                      ))}
+                    </DialogContentText>
+                  </DialogContent>
+                </div>
+              </Grid>
+            </Container>
           </DialogContent>
         </Dialog>
       </ThemeProvider>

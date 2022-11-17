@@ -17,6 +17,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { maxWidth } from "@mui/system";
 import Avatar from "@mui/material/Avatar";
 import { BottomScrollListener } from "react-bottom-scroll-listener";
+import { useCounter, useDeepCompareEffect } from "react-use";
 
 import Axios from "axios";
 
@@ -138,7 +139,7 @@ export default function Favorite() {
     //   },
     // };
     if (searcher === "") {
-      setPageTitle(cookies.firstName + "'s Favorite Recipes");
+      setPageTitle(cookies.first + "'s Favorite Recipes");
       Axios.post(buildPath(`recipe/getLikedRecipes`), null, {
         headers: {
           authorization: cookies.token,
@@ -173,7 +174,7 @@ export default function Favorite() {
       console.log("here");
       Axios.post(
         buildPath(
-          `recipe/findAllRecipe?page=${page}&&count=${9}&search=${searcher}`
+          `recipe/findRecipe?page=${page}&&count=${9}&search=${searcher}`
         ),
         null,
         {
@@ -184,7 +185,6 @@ export default function Favorite() {
       )
         .then((response) => {
           console.log(response);
-          setChange(!change);
           var res = [];
           counter = recipeCardsArray.length;
           for (let q = 0; q < response.data.results.length; q++) {
@@ -220,10 +220,10 @@ export default function Favorite() {
     }
   }
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     console.log("called");
     getLikedRecipes();
-  }, [searcher, change]);
+  }, [searcher, recipeCardsArray]);
 
   return (
     <ThemeProvider theme={theme}>
