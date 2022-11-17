@@ -267,7 +267,7 @@ export default function Profile() {
       setupdatePasswordModalError(true);
       setupdatePasswordModalHelper("Passwords do not match");
     } else {
-      Axios.put(
+      Axios.post(
         buildPath("user/updateuser"),
         {
           Email: cookies.email,
@@ -372,7 +372,7 @@ export default function Profile() {
     }
 
     if (base64Picture !== "") {
-      Axios.put(
+      Axios.post(
         buildPath("user/updateuser"),
         {
           Email: cookies.email,
@@ -402,7 +402,7 @@ export default function Profile() {
           setPasswordHelper(error.response.data.error);
         });
     } else {
-      Axios.put(
+      Axios.post(
         buildPath("user/updateuser"),
         {
           Email: cookies.email,

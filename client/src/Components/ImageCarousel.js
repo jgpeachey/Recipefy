@@ -59,7 +59,7 @@ const ImageCarousel = ({slides}) => {
               by: Recipe_Creator
             </DialogContentText>
             <AccountCircleIcon sx={{ color: 'white' }} className="modalPFP"/>
-            <Button sx={{ color:'white' , pl:2 }}>Follow+</Button>
+            <Button sx={{ color:'white' , pl:2 }}>Favorite+</Button>
           </div>
           <DialogContent>
             

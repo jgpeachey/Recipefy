@@ -200,9 +200,103 @@ describe("Post testing /updaterecipe", () => {
 
 // test findRecipe endpoint
 describe("Post testing /findRecipe", () => {
-    test("This should return a response of 201", async () => {
+    test("This should return a response of 200", async () => {
         const response = await request(app).post("/recipe/findRecipe?search&count=6&page=1").set({authorization: authToken})
         expect(response.statusCode).toEqual(200);
         expect(response.body.results.length).toEqual(6)
+    })
+    test("This should return a response of 200 and an array of length 0", async () =>{
+        const response = await request(app).post("/recipe/findRecipe?search=adgghsdgadgfagf&count=6&page=1").set({authorization: authToken})
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.results.length).toEqual(0)
+    })
+})
+
+// gets recipes from a specific user
+describe("Post testing /getUserRecipes", () => {
+    // searches own recipes
+    test("This should return a response of 200", async () => { 
+        const response = await request(app).post("/recipe/getUserRecipe?count=6&page=1").send({
+            userId: userId
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.results.length).toEqual(6)
+    })
+    test("This should return a response of 200 and an empty array", async () => {
+        const response = await request(app).post("/recipe/getUserRecipe?search=alkgjdagnsadga&count=6&page=1").send({
+            userId: "63729fc72304b9f55f466529"
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.results.length).toEqual(0)
+    })
+})
+
+// looks among all recipes
+describe("Post testing /findAllRecipe", () => {
+    test("This should return a response of 200 and an array of size 6", async () => { 
+        const response = await request(app).post("/recipe/findAllRecipe?search&count=6&page=2").set({authorization: authToken})
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.results.length).toEqual(6)
+    })
+    test("This should return a response of 200 and an array of size 0", async () => { 
+        const response = await request(app).post("/recipe/findAllRecipe?search=haklghqwerwfs=&count=6&page=2").set({authorization: authToken})
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.results.length).toEqual(0)
+    })
+})
+
+// returns a list of liked recipes
+
+describe("Post testing /getLikedRecipes", () => {
+    test("This should return a response of 201 and an array", async () => { 
+        const response = await request(app).post("/recipe/getLikedRecipes").set({authorization: authToken})
+        expect(response.statusCode).toEqual(201);
+        expect(typeof response.body.results).toEqual('object') // an array is an object
+    })
+    test("This should return a response of 403 an error", async () => {
+        const response = await request(app).post("/recipe/getLikedRecipes").set({authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2c4VySWQiOiI2MzZiZWI3YjhmOGI1OGQ2YThkZjM3MjYiLCJpYXQiOjE2Njg2MjM1MjEsImV4cCI6MTY2ODY0NTEyMX0.JpqxwggVEZsdkLKrTBJOSz3h-L_G-e3f29l3DZ-AcaA"})
+        expect(response.statusCode).toEqual(403);
+    })
+})
+
+// testing likerecipe endpoint
+describe("POST testing /likerecipe", () => {
+    test("This should return a response of 201 and an empty error", async () => {
+        const response = await request(app).post("/recipe/likerecipe").send({
+            recipeId: "636fcc87dced3d921c73669f"
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(201);
+        expect(response.body.error).toEqual("");
+    })
+    test("This should return a response of 201 and that the user already liked the recipe", async () => {
+        const response = await request(app).post("/recipe/likerecipe").send({
+            recipeId: "636fcc87dced3d921c73669f"
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(201);
+        expect(response.body.error).toEqual("Already Liked");
+    })
+    test("This should return a response of 201 and that the Recipe DNE", async () => {
+        const response = await request(app).post("/recipe/likerecipe").send({
+            recipeId: "636fcc87dddd3d921c73669f"
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(201);
+        expect(response.body.error).toEqual("Recipe DNE");
+    })
+})
+
+describe("POST testing /unlikeRecipe", () => {
+    test("This should return a response of 201 and an empty error", async () => {
+        const response = await request(app).post("/recipe/unlikeRecipe").send({
+            recipeId: "636fcc87dced3d921c73669f"
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(201);
+        expect(response.body.error).toEqual("");
+    })
+    test("This should return a response of 201 and that the Recipe DNE", async () => {
+        const response = await request(app).post("/recipe/unlikeRecipe").send({
+            recipeId: "636fcc87dddd3d921c73669f"
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(201);
+        expect(response.body.error).toEqual("Recipe DNE");
     })
 })

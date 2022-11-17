@@ -236,7 +236,7 @@ router.post("/getLikedRecipes", verifyAccessToken , async (req, res, next) => {
   for(let i = likes.length - 1; i >= 0; i--){
     const recipe = await Recipe.findOne({_id: mongoose.Types.ObjectId(likes[i])});
     if(!recipe){
-      await User.updateOne({_id: mongoose.Types.ObjectId(req.auth.userId)}, { $pull: mongoose.Types.ObjectId(likes[i])})
+      await User.updateOne({_id: mongoose.Types.ObjectId(req.auth.userId)}, { $pull: { Likes: mongoose.Types.ObjectId(likes[i])}})
       likes.splice(i, 1);
     } else {
       results.results.push(recipe);
@@ -259,7 +259,13 @@ router.post("/likerecipe", verifyAccessToken, async (req, res, next) => {
       error: "Recipe DNE"
     })
   }
-
+  //console.log(user.Likes);
+  // one more check that the user didnt already like the recipe
+  if(user.Likes.includes(mongoose.Types.ObjectId(req.body.recipeId))){
+    return res.status(201).json({
+      error: "Already Liked"
+    })
+  }
   // now that both recipe and user exist we can do stuff
   await Recipe.updateOne({_id: mongoose.Types.ObjectId(req.body.recipeId)}, { $inc: { Likes: 1}})
   await User.updateOne({ _id: mongoose.Types.ObjectId(req.auth.userId)}, { $push: {Likes: mongoose.Types.ObjectId(req.body.recipeId)}})
