@@ -236,7 +236,7 @@ router.post("/getLikedRecipes", verifyAccessToken , async (req, res, next) => {
   for(let i = likes.length - 1; i >= 0; i--){
     const recipe = await Recipe.findOne({_id: mongoose.Types.ObjectId(likes[i])});
     if(!recipe){
-      await User.updateOne({_id: mongoose.Types.ObjectId(req.auth.userId)}, { $pull: mongoose.Types.ObjectId(likes[i])})
+      await User.updateOne({_id: mongoose.Types.ObjectId(req.auth.userId)}, { $pull: { Likes: mongoose.Types.ObjectId(likes[i])}})
       likes.splice(i, 1);
     } else {
       results.results.push(recipe);
