@@ -92,7 +92,7 @@ router.delete("/removerecipe", verifyAccessToken, async (req, res, next) => {
   return res.status(200).end();
 });
 
-// searchs for recipe for a specific user
+// searchs for recipe for current user
 router.post("/findRecipe", verifyAccessToken, async (req, res, next) => {
   const page = parseInt(req.query.page);
   const count = parseInt(req.query.count);
