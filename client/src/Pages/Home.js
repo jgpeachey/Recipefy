@@ -10,11 +10,9 @@ import ImageCarousel from "../Components/ImageCarousel";
 import { SliderData } from "../Components/SliderData";
 
 import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { maxWidth } from "@mui/system";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Avatar from "@mui/material/Avatar";
 import { BottomScrollListener } from "react-bottom-scroll-listener";
 
@@ -23,18 +21,23 @@ import Axios from "axios";
 const theme = createTheme({});
 
 export default function Home() {
+  var counter = 0;
+
   const [page, setPage] = useState(1);
 
   const [cookies, setCookie] = useCookies(["user"]);
   console.log(cookies.token);
-  const [recipeCardsArray, setRecipeCardsArray] = useState([]);
   const app_name = "recipefy-g1";
+
   const [openProfile, setOpenProfile] = useState(false);
   const [searcher, setSearcher] = useState("");
   const [change, setChange] = useState(false);
-  var counter = 0;
+  const [recipeCardsArray, setRecipeCardsArray] = useState([]);
+
   const [userCards, setUserCards] = useState([]);
   const [clickedUser, setClickedUser] = useState(0);
+  const [pfp, setPfp] = useState("");
+  const [username, setUsername] = useState("");
 
   const appbarToHome = (appbardata) => {
     console.log(appbardata);
@@ -62,6 +65,8 @@ export default function Home() {
     if (clickedUser >= 1) return;
 
     console.log(clickedUser);
+    setUsername(name);
+    console.log(pfp);
 
     Axios.post(
       buildPath(`user/searchUsers?page=${1}&count=${9}&search=${name}`),
@@ -76,8 +81,10 @@ export default function Home() {
         console.log(response);
         console.log(response.data.results[0]);
         userToGet = response.data.results[0]._id;
+        setPfp(response.data.results[0].Pic)
 
         console.log(userToGet);
+        console.log(pfp);
 
         Axios.post(
           buildPath("recipe/getUserRecipe"),
@@ -110,6 +117,10 @@ export default function Home() {
         console.log(error);
         console.log(error.response.data.error);
       });
+  }
+
+  function getClickedRecipe(){
+    console.log("pee")
   }
 
   function getRecipes() {
@@ -247,33 +258,27 @@ export default function Home() {
         >
           <div className="modalContainerTop">
             <DialogTitle sx={{ color: "white" }}>
-              {"Alex's Recipes"}
+              {username}
             </DialogTitle>
             <Avatar
-              src={cookies.picture}
+              src={pfp}
               sx={{
                 width: 24,
                 height: 24,
               }}
               onMouseDown={(event) => event.stopPropagation()}
             />
-            <Button sx={{ color: "white", pl: 2 }}>Follow+</Button>
+            <Button sx={{ color:'white' , pl:2 }}>Follow+</Button>
           </div>
 
           <DialogContentText className="profileBio">
-            Bio: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            Vestibulum id lacus pharetra, rhoncus sem non, commodo tellus.
-            Aliquam pharetra sem at arcu luctus, sed consectetur magna auctor.
-            Etiam ornare neque in fermentum convallis. Morbi laoreet mauris
-            pretium elementum posuere. Proin viverra faucibus rhoncus. Curabitur
-            tempus ultricies cursus. Vestibulum ut lacinia nisl, quis auctor
-            metus.
+            List of posted recipes:
           </DialogContentText>
 
           <Container>
-            <Grid container spacing={11} marginTop={-8.5}>
+            <Grid container spacing={11} marginTop={-8.5} marginBottom={3}>
               {userCards.map((recipe) => (
-                <RecipeCard recipe={recipe} />
+                <RecipeCard recipe={recipe}/>
               ))}
             </Grid>
           </Container>

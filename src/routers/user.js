@@ -85,6 +85,8 @@ router.post("/register", async function (req, res) {
     Email: req.body.Email,
     emailToken: hashToken,
     isVerified: false,
+    Followers: [],
+    Following: [],
     Likes: [],
     Password: hash,
   });
@@ -118,24 +120,11 @@ router.post("/register", async function (req, res) {
 /*
 // test
 router.get('/test', async (req, res) => {
-  try{
-    const user = await User.findOne({ _id: new mongoose.Types.ObjectId(req.body.userId)})
-    if(!user){
-      return res.status(201).json({
-        error: "Could not find User",
-      })
-    }
-    return res.status(201).json({
-      user: user
-    })
-  }catch(error){
-    return res.status(201).json({
-      error: error
-    })
-  }
-
+  await User.updateMany({__v: 0}, {$set: {Followers: [], Following: []}})
+  res.status(200).json({message: 'done'})
 })
 */
+
 router.post("/verify", async (req, res, next) => {
   try {
     const user = await User.findOne({ _id: mongoose.Types.ObjectId(req.body.userId) });
@@ -226,6 +215,8 @@ router.post("/login", async (req, res, next) => {
           email: user.Email,
           isVerified: user.isVerified,
           pic: user.Pic,
+          followers: user.Followers,
+          following: user.Following,
           likes: user.Likes
         },
         auth: {
@@ -298,7 +289,7 @@ router.post("/updateuser", verifyAccessToken, async (req, res, next) => {
 });
 
 // Delete user function
-router.post("/deleteuser", verifyAccessToken, async (req, res, next) => {
+router.delete("/deleteuser", verifyAccessToken, async (req, res, next) => {
   const user = await User.findOne({ Email: req.body.Email }).exec();
   if (!user) {
     return res.status(409).json({
@@ -488,6 +479,112 @@ router.post("/resetPassword", async (req, res, next) => {
   sgMail.send(msg).catch((error) => {
     console.error(error);
   });
+  return res.status(201).json({
+    error: "",
+  });
+});
+// getfollowers no parameters required
+router.post("/getFollowers", verifyAccessToken, async (req, res, next) => {
+  const user = await User.findOne({_id: mongoose.Types.ObjectId(req.auth.userId)});
+  if (!user) {
+    return res.status(409).json({
+      error: "Invalid User Id",
+    });
+  }
+  const followers = user.Followers;
+  let results = {error: "", results: []};
+  for(let i = followers.length - 1; i >= 0; i--){
+    const follower = await User.findOne({_id: mongoose.Types.ObjectId(followers[i])}).select(["_id","Firstname", "Lastname", "Username", "Pic", "Followers", "Following"]);
+    if(!follower){
+      await User.updateOne({_id: mongoose.Types.ObjectId(req.auth.userId)}, { $pull: {Followers: mongoose.Types.ObjectId(followers[i])}})
+      likes.splice(i, 1);
+    } else {
+      results.results.push(follower);
+    }
+  }
+  return res.status(201).json(results);
+})
+
+// getfollowing no parameters required
+router.post("/getFollowing", verifyAccessToken, async (req, res, next) => {
+  const user = await User.findOne({_id: mongoose.Types.ObjectId(req.auth.userId)});
+  if (!user) {
+    return res.status(409).json({
+      error: "Invalid User Id",
+    });
+  }
+  const followings = user.Following;
+  let results = {error: "", results: []};
+  for(let i = followings.length - 1; i >= 0; i--){
+    const following = await User.findOne({_id: mongoose.Types.ObjectId(followings[i])}).select(["_id","Firstname", "Lastname", "Username", "Pic", "Followers", "Following"]);
+    if(!following){
+      await User.updateOne({_id: mongoose.Types.ObjectId(req.auth.userId)}, { $pull: {Following: mongoose.Types.ObjectId(followings[i])}})
+      likes.splice(i, 1);
+    } else {
+      results.results.push(following);
+    }
+  }
+  return res.status(201).json(results);
+})
+
+// follow user requires one body field userId
+router.post("/followUser", verifyAccessToken, async (req, res, next) => {
+  const user = await User.findOne({_id: mongoose.Types.ObjectId(req.auth.userId)});
+  if(!user){
+    return res.status(409).json({
+      error: "Invalid User Id",
+    });
+  }
+  const userToFollow = await User.findOne({_id: mongoose.Types.ObjectId(req.body.userId)});
+  if(!userToFollow){
+    return res.status(409).json({
+      error: "User DNE",
+    });
+  }
+  if(userToFollow._id.toString() == user._id.toString()){
+    return res.status(409).json({
+      error: "Cannot follow yourself",
+    });
+  }
+  if(user.Following.includes(userToFollow._id)){
+    return res.status(409).json({
+      error: "Already following",
+    });
+  }
+  await User.updateOne({_id: mongoose.Types.ObjectId(req.auth.userId)}, { $push: {Following: mongoose.Types.ObjectId(userToFollow._id)}});
+  await User.updateOne({_id: mongoose.Types.ObjectId(userToFollow._id)}, { $push: {Followers: mongoose.Types.ObjectId(user._id)}});
+
+  return res.status(201).json({
+    error: "",
+  });
+})
+
+// unfollow user requires one body element, userId
+router.post("/unfollowUser", verifyAccessToken, async (req, res, next) => {
+  const user = await User.findOne({_id: mongoose.Types.ObjectId(req.auth.userId)});
+  if(!user){
+    return res.status(409).json({
+      error: "Invalid User Id",
+    });
+  }
+  const userToUnfollow = await User.findOne({_id: mongoose.Types.ObjectId(req.body.userId)});
+  if(!userToUnfollow){
+    return res.status(409).json({
+      error: "User DNE",
+    });
+  }
+  if(userToUnfollow._id.toString() == user._id.toString()){
+    return res.status(409).json({
+      error: "Cannot unfollow yourself",
+    });
+  }
+  if(!user.Following.includes(userToUnfollow._id)){
+    return res.status(409).json({
+      error: "Not following user already",
+    });
+  }
+  await User.updateOne({_id: mongoose.Types.ObjectId(req.auth.userId)}, { $pull: {Following: mongoose.Types.ObjectId(userToUnfollow._id)}});
+  await User.updateOne({_id: mongoose.Types.ObjectId(userToUnfollow._id)}, { $pull: {Followers: mongoose.Types.ObjectId(user._id)}});
   return res.status(201).json({
     error: "",
   });
