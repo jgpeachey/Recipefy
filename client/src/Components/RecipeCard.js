@@ -50,7 +50,7 @@ const theme = createTheme({
   },
 });
 
-export default function RecipeCard({ recipe }) {
+export default function RecipeCard({ recipe, getLikedRecipes }) {
   const [open, setOpen] = useState(false);
   // const [username, setUsername] = useState("");
   // const [pfp, setPfp] = useState("");
@@ -63,7 +63,7 @@ export default function RecipeCard({ recipe }) {
   };
 
   const handleClose = () => {
-    // getLikedRecipes()
+    // getLikedRecipes();
     setOpen(false);
   };
 

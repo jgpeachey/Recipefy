@@ -292,7 +292,7 @@ export default function Favorite() {
         <Container>
           <Grid container spacing={11} marginTop={-8.5} marginBottom={3}>
             {userCards.map((recipe) => (
-              <RecipeCard recipe={recipe} />
+              <RecipeCard recipe={recipe} getLikedRecipes={getLikedRecipes} />
             ))}
           </Grid>
         </Container>
