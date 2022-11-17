@@ -483,7 +483,7 @@ router.post("/resetPassword", async (req, res, next) => {
     error: "",
   });
 });
-// getfollowers
+// getfollowers no parameters required
 router.post("/getFollowers", verifyAccessToken, async (req, res, next) => {
   const user = await User.findOne({_id: mongoose.Types.ObjectId(req.auth.userId)});
   if (!user) {
@@ -505,7 +505,7 @@ router.post("/getFollowers", verifyAccessToken, async (req, res, next) => {
   return res.status(201).json(results);
 })
 
-// getfollowing
+// getfollowing no parameters required
 router.post("/getFollowing", verifyAccessToken, async (req, res, next) => {
   const user = await User.findOne({_id: mongoose.Types.ObjectId(req.auth.userId)});
   if (!user) {
@@ -527,7 +527,7 @@ router.post("/getFollowing", verifyAccessToken, async (req, res, next) => {
   return res.status(201).json(results);
 })
 
-// follow user
+// follow user requires one body field userId
 router.post("/followUser", verifyAccessToken, async (req, res, next) => {
   const user = await User.findOne({_id: mongoose.Types.ObjectId(req.auth.userId)});
   if(!user){
@@ -559,7 +559,7 @@ router.post("/followUser", verifyAccessToken, async (req, res, next) => {
   });
 })
 
-// unfollow user
+// unfollow user requires one body element, userId
 router.post("/unfollowUser", verifyAccessToken, async (req, res, next) => {
   const user = await User.findOne({_id: mongoose.Types.ObjectId(req.auth.userId)});
   if(!user){
