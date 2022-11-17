@@ -138,7 +138,7 @@ export default function Favorite() {
     //   },
     // };
     if (searcher === "") {
-      setPageTitle(cookies.username + "'s Favorite Recipes");
+      setPageTitle(cookies.firstName + "'s Favorite Recipes");
       Axios.post(buildPath(`recipe/getLikedRecipes`), null, {
         headers: {
           authorization: cookies.token,
@@ -168,7 +168,7 @@ export default function Favorite() {
           console.log(error.response.data.error);
         });
     } else {
-      setPageTitle("Search Results");
+      setPageTitle("Search Result");
       setPage(1);
       console.log("here");
       Axios.post(
