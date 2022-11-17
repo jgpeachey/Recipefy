@@ -10,11 +10,9 @@ import ImageCarousel from "../Components/ImageCarousel";
 import { SliderData } from "../Components/SliderData";
 
 import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { maxWidth } from "@mui/system";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Avatar from "@mui/material/Avatar";
 import { BottomScrollListener } from "react-bottom-scroll-listener";
 
@@ -40,8 +38,6 @@ export default function Home() {
   const [clickedUser, setClickedUser] = useState(0);
   const [pfp, setPfp] = useState("");
   const [username, setUsername] = useState("");
-
-
 
   const appbarToHome = (appbardata) => {
     console.log(appbardata);
@@ -124,7 +120,7 @@ export default function Home() {
   }
 
   function getClickedRecipe(){
-
+    console.log("pee")
   }
 
   function getRecipes() {
@@ -281,7 +277,7 @@ export default function Home() {
           <Container>
             <Grid container spacing={11} marginTop={-8.5} marginBottom={3}>
               {userCards.map((recipe) => (
-                <RecipeCard recipe={recipe} />
+                <RecipeCard recipe={recipe}/>
               ))}
             </Grid>
           </Container>
