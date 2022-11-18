@@ -153,21 +153,29 @@ export default function RecipeCard({ recipe, getLikedRecipes }) {
                 marginTop={0.5}
                 marginBottom={1}
               >
-                <Avatar
-                  alt="Remy Sharp"
-                  src={recipe.profilePic}
-                  sx={{ width: 32, height: 32 }}
-                ></Avatar>
-                <Typography
-                  variant="body2"
-                  component="h2"
-                  color="blue"
-                  marginTop={0.3}
-                  marginLeft={1}
-                  fontSize={18}
+                <Button
+                  onMouseDown={(event) => event.stopPropagation()}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    event.preventDefault();
+                  }}
                 >
-                  {recipe.Username}
-                </Typography>
+                  <Avatar
+                    alt="Remy Sharp"
+                    src={recipe.profilePic}
+                    sx={{ width: 32, height: 32 }}
+                  ></Avatar>
+                  <Typography
+                    variant="body2"
+                    component="h2"
+                    color="blue"
+                    marginTop={0.3}
+                    marginLeft={1}
+                    fontSize={18}
+                  >
+                    {recipe.Username}
+                  </Typography>
+                </Button>
               </Box>
               <img src={recipe.Pic} alt="" className="img" />
               <Box
