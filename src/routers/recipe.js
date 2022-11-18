@@ -10,6 +10,12 @@ const cloudinary = require('../utils/cloudinary');
 router.use(express.json({ limit: "50mb" }));
 router.use(express.urlencoded({ limit: "50mb", extended: true }));
 
+
+router.post("/test", async (req, res) => { 
+  await Recipe.updateMany({__v: 0}, {$set: {CreatedAt: Date.now()}})
+  return res.status(200).json({message: ""})
+})
+
 router.post("/addrecipe", verifyAccessToken, async (req, res, next) => {
   var foodpic = "https://res.cloudinary.com/dnkvi73mv/image/upload/v1668547871/pexels-ella-olsson-1640777_k7oghj.jpg";
   if(req.body.Pic != ""){
@@ -35,10 +41,11 @@ router.post("/addrecipe", verifyAccessToken, async (req, res, next) => {
     Description: req.body.Description,
     Calories: req.body.Calories,
     Sodium: req.body.Sodium,
+    CreatedAt: Date.now(),
     Pic: foodpic,
     Likes: 0,
   });
-
+  
   const result = await recipeInfo.save();
 
   //console.log(result);
