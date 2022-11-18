@@ -41,7 +41,7 @@ export default function Favorite() {
   const [clickedUser, setClickedUser] = useState(0);
   const [pfp, setPfp] = useState("");
   const [username, setUsername] = useState("");
-  var pedroboolean = true;
+  var onFavoritePageboolean = true;
 
   const appbarToHome = (appbardata) => {
     console.log(appbardata);
@@ -264,7 +264,7 @@ export default function Favorite() {
             <RecipeCard
               recipe={recipe}
               getLikedRecipes={getLikedRecipes}
-              pedro={pedroboolean}
+              onFavoritePage={onFavoritePageboolean}
             />
           ))}
         </Grid>

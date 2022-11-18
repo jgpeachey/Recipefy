@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -14,7 +15,6 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { maxWidth } from "@mui/system";
 import Container from "@mui/system/Container";
-import { useState } from "react";
 
 import Axios from "axios";
 import { cookies, useCookies } from "react-cookie";
@@ -53,7 +53,7 @@ const theme = createTheme({
 export default function RecipeCard({
   recipe,
   getLikedRecipes,
-  pedro,
+  onFavoritePage,
   likeChange,
 }) {
   const [open, setOpen] = useState(false);
@@ -63,12 +63,14 @@ export default function RecipeCard({
   const app_name = "recipefy-g1";
   const [cookies, setCookie] = useCookies(["user"]);
 
+  useEffect(() => {}, []);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
-    if (pedro) getLikedRecipes();
+    if (onFavoritePage) getLikedRecipes();
     setOpen(false);
   };
 
