@@ -292,6 +292,13 @@ describe("POST testing /unlikeRecipe", () => {
         expect(response.statusCode).toEqual(201);
         expect(response.body.error).toEqual("");
     })
+    test("This should return a response of 201 and that the user never liked the recipe", async () => {
+        const response = await request(app).post("/recipe/unlikeRecipe").send({
+            recipeId: "636fcc87dced3d921c73669f"
+        }).set({authorization: authToken})
+        expect(response.statusCode).toEqual(201);
+        expect(response.body.error).toEqual("Recipe never liked");
+    })
     test("This should return a response of 201 and that the Recipe DNE", async () => {
         const response = await request(app).post("/recipe/unlikeRecipe").send({
             recipeId: "636fcc87dddd3d921c73669f"

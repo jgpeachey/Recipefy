@@ -291,6 +291,9 @@ router.post("/unlikeRecipe", verifyAccessToken, async (req, res, next) => {
     })
   }
   // now that both recipe and user exist we can do stuff
+  if(!user.Likes.includes(mongoose.Types.ObjectId(req.body.recipeId))){
+    return res.status(201).json({ error: "Recipe never liked" })
+  }
   await Recipe.updateOne({_id: mongoose.Types.ObjectId(req.body.recipeId)}, { $inc: { Likes: -1}})
   await User.updateOne({ _id: mongoose.Types.ObjectId(req.auth.userId)}, { $pull: {Likes: mongoose.Types.ObjectId(req.body.recipeId)}})
   return res.status(201).json({
