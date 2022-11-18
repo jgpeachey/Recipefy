@@ -33,6 +33,7 @@ export default function Home() {
   const [searcher, setSearcher] = useState("");
   const [change, setChange] = useState(false);
   const [recipeCardsArray, setRecipeCardsArray] = useState([]);
+  const [likeChange, setlikeChange] = useState(false);
 
   const [userCards, setUserCards] = useState([]);
   const [clickedUser, setClickedUser] = useState(0);
@@ -42,6 +43,10 @@ export default function Home() {
   const appbarToHome = (appbardata) => {
     console.log(appbardata);
     setSearcher(appbardata);
+  };
+
+  const likeChanger = () => {
+    setlikeChange(!likeChange);
   };
 
   const handleClickOpen = () => {
@@ -81,7 +86,7 @@ export default function Home() {
         console.log(response);
         console.log(response.data.results[0]);
         userToGet = response.data.results[0]._id;
-        setPfp(response.data.results[0].Pic)
+        setPfp(response.data.results[0].Pic);
 
         console.log(userToGet);
         console.log(pfp);
@@ -119,8 +124,8 @@ export default function Home() {
       });
   }
 
-  function getClickedRecipe(){
-    console.log("pee")
+  function getClickedRecipe() {
+    console.log("pee");
   }
 
   function getRecipes() {
@@ -223,7 +228,7 @@ export default function Home() {
     console.log("called");
     console.log(page);
     getRecipes();
-  }, [searcher, change]);
+  }, [searcher, change, likeChange]);
 
   return (
     <BottomScrollListener onBottom={getRecipes}>
@@ -244,7 +249,7 @@ export default function Home() {
         <Container>
           <Grid container spacing={11} marginTop={-8.5}>
             {recipeCardsArray.map((recipe) => (
-              <RecipeCard recipe={recipe} />
+              <RecipeCard recipe={recipe} likeChange={likeChanger} />
             ))}
           </Grid>
         </Container>
@@ -257,9 +262,7 @@ export default function Home() {
           aria-describedby="alert-dialog-slide-description"
         >
           <div className="modalContainerTop">
-            <DialogTitle sx={{ color: "white" }}>
-              {username}
-            </DialogTitle>
+            <DialogTitle sx={{ color: "white" }}>{username}</DialogTitle>
             <Avatar
               src={pfp}
               sx={{
@@ -268,7 +271,7 @@ export default function Home() {
               }}
               onMouseDown={(event) => event.stopPropagation()}
             />
-            <Button sx={{ color:'white' , pl:2 }}>Follow+</Button>
+            <Button sx={{ color: "white", pl: 2 }}>Follow+</Button>
           </div>
 
           <DialogContentText className="profileBio">
@@ -278,7 +281,7 @@ export default function Home() {
           <Container>
             <Grid container spacing={11} marginTop={-8.5} marginBottom={3}>
               {userCards.map((recipe) => (
-                <RecipeCard recipe={recipe}/>
+                <RecipeCard recipe={recipe} />
               ))}
             </Grid>
           </Container>

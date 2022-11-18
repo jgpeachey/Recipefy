@@ -50,7 +50,12 @@ const theme = createTheme({
   },
 });
 
-export default function RecipeCard({ recipe, getLikedRecipes }) {
+export default function RecipeCard({
+  recipe,
+  getLikedRecipes,
+  pedro,
+  likeChange,
+}) {
   const [open, setOpen] = useState(false);
   // const [username, setUsername] = useState("");
   // const [pfp, setPfp] = useState("");
@@ -63,7 +68,7 @@ export default function RecipeCard({ recipe, getLikedRecipes }) {
   };
 
   const handleClose = () => {
-    // getLikedRecipes();
+    if (pedro) getLikedRecipes();
     setOpen(false);
   };
 
@@ -113,6 +118,7 @@ export default function RecipeCard({ recipe, getLikedRecipes }) {
     )
       .then((response) => {
         console.log(response);
+        likeChange();
       })
       .catch((error) => {
         console.log(error);
@@ -133,6 +139,7 @@ export default function RecipeCard({ recipe, getLikedRecipes }) {
     )
       .then((response) => {
         console.log(response);
+        likeChange();
       })
       .catch((error) => {
         console.log(error);

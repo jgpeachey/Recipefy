@@ -41,6 +41,7 @@ export default function Favorite() {
   const [clickedUser, setClickedUser] = useState(0);
   const [pfp, setPfp] = useState("");
   const [username, setUsername] = useState("");
+  var pedroboolean = true;
 
   const appbarToHome = (appbardata) => {
     console.log(appbardata);
@@ -260,7 +261,11 @@ export default function Favorite() {
       <Container>
         <Grid container spacing={11} marginTop={-7.5}>
           {recipeCardsArray.map((recipe) => (
-            <RecipeCard recipe={recipe} />
+            <RecipeCard
+              recipe={recipe}
+              getLikedRecipes={getLikedRecipes}
+              pedro={pedroboolean}
+            />
           ))}
         </Grid>
       </Container>
@@ -292,7 +297,7 @@ export default function Favorite() {
         <Container>
           <Grid container spacing={11} marginTop={-8.5} marginBottom={3}>
             {userCards.map((recipe) => (
-              <RecipeCard recipe={recipe} getLikedRecipes={getLikedRecipes} />
+              <RecipeCard recipe={recipe} />
             ))}
           </Grid>
         </Container>
