@@ -19,6 +19,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import DialogActions from "@mui/material/DialogActions";
+import { useCookies } from "react-cookie";
 
 const theme = createTheme({});
 
@@ -27,6 +28,9 @@ const forgotTransition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function Forgot() {
+  const [cookies, setCookie] = useCookies(["user"]);
+  const navigate = useNavigate();
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [passwordError, setPasswordError] = useState(false);
   const [passwordConfirmError, setPasswordConfirmError] = useState(false);
@@ -44,7 +48,6 @@ export default function Forgot() {
     }
   }
 
-  const navigate = useNavigate();
   // const[email, setEmail] = useState('');
   // const[password, setPassword] = useState('');
   const [captcha, setCaptcha] = useState(false);

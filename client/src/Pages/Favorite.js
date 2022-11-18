@@ -8,7 +8,7 @@ import RecipeCard from "../Components/RecipeCard";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import ImageCarousel from "../Components/ImageCarousel";
-
+import { useNavigate, Link } from "react-router-dom";
 import { SliderData } from "../Components/SliderData";
 
 import Dialog from "@mui/material/Dialog";
@@ -24,10 +24,18 @@ import Axios from "axios";
 const theme = createTheme({});
 
 export default function Favorite() {
+  const [cookies, setCookie] = useCookies(["user"]);
+  const navigate = useNavigate();
+  if (
+    cookies.token === "" ||
+    cookies.token === undefined ||
+    cookies.token === null
+  ) {
+    navigate("/");
+  }
   var counter = 0;
 
   const [page, setPage] = useState(0);
-  const [cookies, setCookie] = useCookies(["user"]);
   console.log(cookies.token);
   const [pageTitle, setPageTitle] = useState("");
   const app_name = "recipefy-g1";

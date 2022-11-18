@@ -110,7 +110,7 @@ export default function HomeAppBar({ appbarToHome }) {
   };
 
   const logoutHome = (e) => {
-    removeCookie("user", { path: "/" });
+    removeCookie("token", { path: "/" });
     navigate("/");
   };
 
