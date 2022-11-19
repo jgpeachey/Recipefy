@@ -80,7 +80,7 @@ export default function RecipeCard({
 
   const handleClose2 = () => {
     setOpenProfile(false);
-  }
+  };
 
   function buildPath(route) {
     if (process.env.NODE_ENV === "production") {
@@ -220,7 +220,15 @@ export default function RecipeCard({
       <ThemeProvider theme={theme}>
         <Paper elevation={10}>
           <Box padding={1}>
-            <CardActionArea>
+            <CardActionArea
+              onMouseDown={(event) => event.stopPropagation()}
+              onClick={(event) => {
+                event.stopPropagation();
+                event.preventDefault();
+                setOpen(true);
+                console.log(recipe);
+              }}
+            >
               <Box
                 sx={{
                   display: "flex",
@@ -264,7 +272,7 @@ export default function RecipeCard({
                 }}
                 marginTop={0.5}
               >
-                <Button
+                {/* <Button
                   onMouseDown={(event) => event.stopPropagation()}
                   onClick={(event) => {
                     event.stopPropagation();
@@ -272,22 +280,22 @@ export default function RecipeCard({
                     setOpen(true);
                     console.log(recipe);
                   }}
+                > */}
+                <RestaurantMenuOutlinedIcon
+                  sx={{
+                    width: 18,
+                    m: ".45rem",
+                  }}
+                />
+                <Typography
+                  variant="h6"
+                  component="h2"
+                  marginTop={0.5}
+                  noWrap="false"
                 >
-                  <RestaurantMenuOutlinedIcon
-                    sx={{
-                      width: 18,
-                      m: ".45rem",
-                    }}
-                  />
-                  <Typography
-                    variant="h6"
-                    component="h2"
-                    marginTop={0.5}
-                    noWrap="false"
-                  >
-                    {recipe.Title}
-                  </Typography>
-                </Button>
+                  {recipe.Title}
+                </Typography>
+                {/* </Button> */}
               </Box>
               <Box
                 sx={{
@@ -322,7 +330,8 @@ export default function RecipeCard({
           <div className="modalContainerTop">
             <DialogTitle sx={{ color: "white" }}>{recipe.Title}</DialogTitle>
             <DialogContentText sx={{ color: "white" }}>
-              <Button sx={{ color: "white" }}
+              <Button
+                sx={{ color: "white" }}
                 onClick={(event) => {
                   setOpenProfile(true);
                   setClickedUser(clickedUser + 1);
