@@ -57,8 +57,12 @@ export default function RecipeCard({
   likeChange,
 }) {
   const [open, setOpen] = useState(false);
-  // const [username, setUsername] = useState("");
-  // const [pfp, setPfp] = useState("");
+  const [username, setUsername] = useState("");
+  const [pfp, setPfp] = useState("");
+  const [userCards, setUserCards] = useState([]);
+  const [clickedUser, setClickedUser] = useState(0);
+  const [openProfile, setOpenProfile] = useState(false);
+
   // console.log(recipe);
   const app_name = "recipefy-g1";
   const [cookies, setCookie] = useCookies(["user"]);
@@ -73,6 +77,10 @@ export default function RecipeCard({
     if (onFavoritePage) getLikedRecipes();
     setOpen(false);
   };
+
+  const handleClose2 = () => {
+    setOpenProfile(false);
+  }
 
   function buildPath(route) {
     if (process.env.NODE_ENV === "production") {
@@ -127,6 +135,65 @@ export default function RecipeCard({
       });
   }
 
+  function getUserRecipes(name) {
+    var userToGet;
+    if (clickedUser >= 1) return;
+
+    console.log(clickedUser);
+    setUsername(name);
+    console.log(pfp);
+
+    Axios.post(
+      buildPath(`user/searchUsers?page=${1}&count=${9}&search=${name}`),
+      null,
+      {
+        headers: {
+          authorization: cookies.token,
+        },
+      }
+    )
+      .then((response) => {
+        console.log(response);
+        console.log(response.data.results[0]);
+        userToGet = response.data.results[0]._id;
+        setPfp(response.data.results[0].Pic);
+
+        console.log(userToGet);
+        console.log(pfp);
+
+        Axios.post(
+          buildPath("recipe/getUserRecipe"),
+          {
+            userId: userToGet,
+          },
+          {
+            headers: {
+              authorization: cookies.token,
+            },
+          }
+        )
+          .then((response) => {
+            console.log(response);
+            var res = [];
+            for (let q = 0; q < response.data.results.length; q++) {
+              res.push(response.data.results[q]);
+            }
+            if (res.length != 0) {
+              setUserCards((current) => [...userCards, ...res]);
+            }
+            console.log(userCards);
+          })
+          .catch((error) => {
+            console.log(error);
+            console.log(error.response.data.error);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log(error.response.data.error);
+      });
+  }
+
   function unlikeRecipe() {
     Axios.post(
       buildPath("recipe/unlikerecipe"),
@@ -167,6 +234,9 @@ export default function RecipeCard({
                   onClick={(event) => {
                     event.stopPropagation();
                     event.preventDefault();
+                    setOpenProfile(true);
+                    setClickedUser(clickedUser + 1);
+                    getUserRecipes(event.target.innerText);
                   }}
                 >
                   <Avatar
@@ -252,7 +322,15 @@ export default function RecipeCard({
           <div className="modalContainerTop">
             <DialogTitle sx={{ color: "white" }}>{recipe.Title}</DialogTitle>
             <DialogContentText sx={{ color: "white" }}>
-              <Button sx={{ color: "white" }}>by: {recipe.Username}</Button>
+              <Button sx={{ color: "white" }}
+                onClick={(event) => {
+                  setOpenProfile(true);
+                  setClickedUser(clickedUser + 1);
+                  getUserRecipes(event.target.innerText);
+                }}
+              >
+                {recipe.Username}
+              </Button>
             </DialogContentText>
             <Avatar
               src={recipe.profilePic}
@@ -310,6 +388,39 @@ export default function RecipeCard({
               </Grid>
             </Container>
           </DialogContent>
+        </Dialog>
+
+        <Dialog
+          open={openProfile}
+          keepMounted
+          onClose={handleClose2}
+          maxWidth={maxWidth}
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <div className="modalContainerTop">
+            <DialogTitle sx={{ color: "white" }}>{username}</DialogTitle>
+            <Avatar
+              src={pfp}
+              sx={{
+                width: 24,
+                height: 24,
+              }}
+              onMouseDown={(event) => event.stopPropagation()}
+            />
+            <Button sx={{ color: "white", pl: 2 }}>Follow+</Button>
+          </div>
+
+          <DialogContentText className="profileBio">
+            List of posted recipes:
+          </DialogContentText>
+
+          <Container>
+            <Grid container spacing={11} marginTop={-8.5} marginBottom={3}>
+              {userCards.map((recipe) => (
+                <RecipeCard recipe={recipe} />
+              ))}
+            </Grid>
+          </Container>
         </Dialog>
       </ThemeProvider>
     </Grid>

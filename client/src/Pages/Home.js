@@ -245,7 +245,7 @@ export default function Home() {
         <HomeAppBar appbarToHome={appbarToHome} />
 
         <ImageCarousel slides={SliderData} />
-        <Button
+        {/* <Button
           onClick={(event) => {
             setOpenProfile(true);
             setClickedUser(clickedUser + 1);
@@ -253,7 +253,7 @@ export default function Home() {
           }}
         >
           omarashry98
-        </Button>
+        </Button> */}
 
         <Container>
           <Grid container spacing={11} marginTop={-8.5}>

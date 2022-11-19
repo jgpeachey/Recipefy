@@ -49,6 +49,7 @@ export default function Favorite() {
   const [clickedUser, setClickedUser] = useState(0);
   const [pfp, setPfp] = useState("");
   const [username, setUsername] = useState("");
+  
   var onFavoritePageboolean = true;
 
   const appbarToHome = (appbardata) => {
