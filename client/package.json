@@ -27,13 +27,14 @@
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.4.2",
     "react-scripts": "5.0.1",
+    "react-use": "^17.4.0",
     "reaptcha": "^1.12.1",
     "web-vitals": "^2.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --transformIgnorePatterns node_modules/jest/bin/jest.js/",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

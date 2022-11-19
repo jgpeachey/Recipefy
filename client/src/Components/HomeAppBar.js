@@ -110,7 +110,7 @@ export default function HomeAppBar({ appbarToHome }) {
   };
 
   const logoutHome = (e) => {
-    removeCookie("user", { path: "/" });
+    removeCookie("token", { path: "/" });
     navigate("/");
   };
 
@@ -150,6 +150,12 @@ export default function HomeAppBar({ appbarToHome }) {
                 onClick={navigatetoFavorites}
               ></FavoriteIcon>
             </IconButton>
+            <IconButton size="large" color="inherit" sx={{ margin: "auto" }}>
+              <GroupIcon
+                sx={{ width: 32, height: 32 }}
+                // onClick={navigatetoFavorites}
+              ></GroupIcon>
+            </IconButton>
           </Box>
 
           <Button
@@ -160,7 +166,7 @@ export default function HomeAppBar({ appbarToHome }) {
               justifyContent: "center",
               width: "100%",
               alignItems: "center",
-              ml: 17,
+              ml: 11,
             }}
             onClick={navigateToHome}
           >
@@ -214,6 +220,9 @@ export default function HomeAppBar({ appbarToHome }) {
               </MenuItem>
               <MenuItem>
                 <FavoriteIcon onClick={navigatetoFavorites}></FavoriteIcon>
+              </MenuItem>
+              <MenuItem>
+                <GroupIcon></GroupIcon>
               </MenuItem>
               <MenuItem>
                 <Search sx={{}}>

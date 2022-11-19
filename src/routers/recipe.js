@@ -10,6 +10,13 @@ const cloudinary = require('../utils/cloudinary');
 router.use(express.json({ limit: "50mb" }));
 router.use(express.urlencoded({ limit: "50mb", extended: true }));
 
+/*
+router.post("/test", async (req, res) => { 
+  await Recipe.updateMany({__v: 0}, {$set: {CreatedAt: Date.now()}})
+  return res.status(200).json({message: ""})
+})
+*/
+
 router.post("/addrecipe", verifyAccessToken, async (req, res, next) => {
   var foodpic = "https://res.cloudinary.com/dnkvi73mv/image/upload/v1668547871/pexels-ella-olsson-1640777_k7oghj.jpg";
   if(req.body.Pic != ""){
@@ -35,10 +42,11 @@ router.post("/addrecipe", verifyAccessToken, async (req, res, next) => {
     Description: req.body.Description,
     Calories: req.body.Calories,
     Sodium: req.body.Sodium,
+    CreatedAt: Date.now(),
     Pic: foodpic,
     Likes: 0,
   });
-
+  
   const result = await recipeInfo.save();
 
   //console.log(result);
@@ -92,7 +100,7 @@ router.delete("/removerecipe", verifyAccessToken, async (req, res, next) => {
   return res.status(200).end();
 });
 
-// searchs for recipe for a specific user
+// searchs for recipe for current user
 router.post("/findRecipe", verifyAccessToken, async (req, res, next) => {
   const page = parseInt(req.query.page);
   const count = parseInt(req.query.count);
@@ -291,6 +299,9 @@ router.post("/unlikeRecipe", verifyAccessToken, async (req, res, next) => {
     })
   }
   // now that both recipe and user exist we can do stuff
+  if(!user.Likes.includes(mongoose.Types.ObjectId(req.body.recipeId))){
+    return res.status(201).json({ error: "Recipe never liked" })
+  }
   await Recipe.updateOne({_id: mongoose.Types.ObjectId(req.body.recipeId)}, { $inc: { Likes: -1}})
   await User.updateOne({ _id: mongoose.Types.ObjectId(req.auth.userId)}, { $pull: {Likes: mongoose.Types.ObjectId(req.body.recipeId)}})
   return res.status(201).json({

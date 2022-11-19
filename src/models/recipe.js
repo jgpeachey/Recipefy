@@ -11,6 +11,7 @@ const recipeInfo = mongoose.Schema({
   Calories: { type: String },
   Sodium: { type: String },
   Description: { type: String, require: true },
+  CreatedAt: { type: Date, require: true, default: Date.now() },
   Pic: { type: String, require: true},
   Likes: { type: Number, require: true },
 });

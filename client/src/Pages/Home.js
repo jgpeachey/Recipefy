@@ -8,13 +8,11 @@ import RecipeCard from "../Components/RecipeCard";
 import ImageCarousel from "../Components/ImageCarousel";
 
 import { SliderData } from "../Components/SliderData";
-
+import { useNavigate, Link } from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { maxWidth } from "@mui/system";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Avatar from "@mui/material/Avatar";
 import { BottomScrollListener } from "react-bottom-scroll-listener";
 
@@ -23,11 +21,20 @@ import Axios from "axios";
 const theme = createTheme({});
 
 export default function Home() {
+  const [cookies, setCookie] = useCookies(["user"]);
+  const navigate = useNavigate();
+
+  if (
+    cookies.token === "" ||
+    cookies.token === undefined ||
+    cookies.token == null
+  ) {
+    navigate("/");
+  }
   var counter = 0;
 
   const [page, setPage] = useState(1);
 
-  const [cookies, setCookie] = useCookies(["user"]);
   console.log(cookies.token);
   const app_name = "recipefy-g1";
 
@@ -35,17 +42,20 @@ export default function Home() {
   const [searcher, setSearcher] = useState("");
   const [change, setChange] = useState(false);
   const [recipeCardsArray, setRecipeCardsArray] = useState([]);
+  const [likeChange, setlikeChange] = useState(false);
 
   const [userCards, setUserCards] = useState([]);
   const [clickedUser, setClickedUser] = useState(0);
   const [pfp, setPfp] = useState("");
   const [username, setUsername] = useState("");
 
-
-
   const appbarToHome = (appbardata) => {
     console.log(appbardata);
     setSearcher(appbardata);
+  };
+
+  const likeChanger = () => {
+    setlikeChange(!likeChange);
   };
 
   const handleClickOpen = () => {
@@ -85,7 +95,7 @@ export default function Home() {
         console.log(response);
         console.log(response.data.results[0]);
         userToGet = response.data.results[0]._id;
-        setPfp(response.data.results[0].Pic)
+        setPfp(response.data.results[0].Pic);
 
         console.log(userToGet);
         console.log(pfp);
@@ -123,8 +133,8 @@ export default function Home() {
       });
   }
 
-  function getClickedRecipe(){
-
+  function getClickedRecipe() {
+    console.log("pee");
   }
 
   function getRecipes() {
@@ -227,7 +237,7 @@ export default function Home() {
     console.log("called");
     console.log(page);
     getRecipes();
-  }, [searcher, change]);
+  }, [searcher, change, likeChange]);
 
   return (
     <BottomScrollListener onBottom={getRecipes}>
@@ -235,7 +245,7 @@ export default function Home() {
         <HomeAppBar appbarToHome={appbarToHome} />
 
         <ImageCarousel slides={SliderData} />
-        <Button
+        {/* <Button
           onClick={(event) => {
             setOpenProfile(true);
             setClickedUser(clickedUser + 1);
@@ -243,12 +253,12 @@ export default function Home() {
           }}
         >
           omarashry98
-        </Button>
+        </Button> */}
 
         <Container>
           <Grid container spacing={11} marginTop={-8.5}>
             {recipeCardsArray.map((recipe) => (
-              <RecipeCard recipe={recipe} />
+              <RecipeCard recipe={recipe} likeChange={likeChanger} />
             ))}
           </Grid>
         </Container>
@@ -261,9 +271,7 @@ export default function Home() {
           aria-describedby="alert-dialog-slide-description"
         >
           <div className="modalContainerTop">
-            <DialogTitle sx={{ color: "white" }}>
-              {username}
-            </DialogTitle>
+            <DialogTitle sx={{ color: "white" }}>{username}</DialogTitle>
             <Avatar
               src={pfp}
               sx={{
@@ -272,6 +280,7 @@ export default function Home() {
               }}
               onMouseDown={(event) => event.stopPropagation()}
             />
+            <Button sx={{ color: "white", pl: 2 }}>Follow+</Button>
           </div>
 
           <DialogContentText className="profileBio">

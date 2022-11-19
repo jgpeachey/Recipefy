@@ -36,6 +36,14 @@ const updateTransition = React.forwardRef(function Transition(props, ref) {
 });
 export default function Profile() {
   const [cookies, setCookie] = useCookies(["user"]);
+  const navigate = useNavigate();
+  if (
+    cookies.token === "" ||
+    cookies.token === undefined ||
+    cookies.token === null
+  ) {
+    navigate("/");
+  }
   const app_name = "recipefy-g1";
   const [open, setOpen] = useState(false);
   const [password, setPassword] = useState("");
@@ -172,8 +180,6 @@ export default function Profile() {
       console.log("File uploaded");
     }
   };
-
-  const navigate = useNavigate();
 
   const [firstError, setFirstError] = useState(false);
   const [lastError, setLastError] = useState(false);
