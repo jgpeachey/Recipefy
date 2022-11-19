@@ -129,7 +129,7 @@ export default function RecipeCard({
     )
       .then((response) => {
         console.log(response);
-        if (response.data.error !== "Already Liked") setLiked(recipe.Likes + 1);
+        if (response.data.error !== "Already Liked") setLiked(liked + 1);
         // likeChange();
       })
       .catch((error) => {
@@ -210,8 +210,7 @@ export default function RecipeCard({
     )
       .then((response) => {
         console.log(response);
-        if (response.data.error !== "Recipe never liked")
-          setLiked(recipe.Likes - 1);
+        if (response.data.error !== "Recipe never liked") setLiked(liked - 1);
       })
       .catch((error) => {
         console.log(error);
