@@ -62,6 +62,7 @@ export default function RecipeCard({
   const [userCards, setUserCards] = useState([]);
   const [clickedUser, setClickedUser] = useState(0);
   const [openProfile, setOpenProfile] = useState(false);
+  const [liked, setLiked] = useState(recipe.Likes);
 
   // console.log(recipe);
   const app_name = "recipefy-g1";
@@ -128,7 +129,8 @@ export default function RecipeCard({
     )
       .then((response) => {
         console.log(response);
-        likeChange();
+        if (response.data.error !== "Already Liked") setLiked(recipe.Likes + 1);
+        // likeChange();
       })
       .catch((error) => {
         console.log(error);
@@ -208,12 +210,15 @@ export default function RecipeCard({
     )
       .then((response) => {
         console.log(response);
-        likeChange();
+        if (response.data.error !== "Recipe never liked")
+          setLiked(recipe.Likes - 1);
       })
       .catch((error) => {
         console.log(error);
       });
   }
+
+  // useEffect(() => {}, [liked]);
 
   return (
     <Grid item xs={4}>
@@ -307,7 +312,7 @@ export default function RecipeCard({
                 marginBottom={0.5}
               >
                 <Typography variant="body1" component="p" marginTop={1}>
-                  {recipe.Likes} likes
+                  {liked} likes
                 </Typography>
                 <FavoriteIcon
                   sx={{
