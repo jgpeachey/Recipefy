@@ -85,3 +85,44 @@ test("NewAppBar showing correctly", () => {
   const registerElement = screen.getAllByText(/Register/i);
   expect(registerElement).toBeTruthy();
 });
+
+// describe("Favorite Page", () => {
+//   const dummy = [
+//     {
+//       _id: "636704ff83f2c5c924ddb5db",
+//       User_ID: "63629343630fd6eaa0fe00b2",
+//       Title: "haram meal",
+//       Ingredients: ["pork", "bacon", "vodka", "shark"],
+//       Instructions: [
+//         "mix that ish together",
+//         "no cap",
+//         "youre going to jahanam",
+//       ],
+//       Likes: 0,
+//       Pic: "https://res.cloudinary.com/dnkvi73mv/image/upload/v1668547871/pexels-ella-olsson-1640777_k7oghj.jpg",
+//       Title: "haram meal",
+//       User_ID: "63629343630fd6eaa0fe00b2",
+//       index: 7,
+//       __v: 0,
+//       _id: "636704ff83f2c5c924ddb5db",
+//     },
+//   ];
+
+//   test("Favorite showing correctly", () => {
+//     render(
+//       <BrowserRouter>
+//         <Favorite />
+//       </BrowserRouter>
+//     );
+
+//     axios.get.mockResolvedValue({ data: dummy });
+
+//     const favorites = () => screen.getAllByTestId("comment");
+
+//     const loginElement = screen.getAllByText(/Login/i);
+//     expect(loginElement).toBeTruthy();
+
+//     const registerElement = screen.getAllByText(/Register/i);
+//     expect(registerElement).toBeTruthy();
+//   });
+// });

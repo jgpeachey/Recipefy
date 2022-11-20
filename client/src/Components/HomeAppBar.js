@@ -150,12 +150,12 @@ export default function HomeAppBar({ appbarToHome }) {
                 onClick={navigatetoFavorites}
               ></FavoriteIcon>
             </IconButton>
-            <IconButton size="large" color="inherit" sx={{ margin: "auto" }}>
+            {/* <IconButton size="large" color="inherit" sx={{ margin: "auto" }}>
               <GroupIcon
                 sx={{ width: 32, height: 32 }}
                 // onClick={navigatetoFavorites}
               ></GroupIcon>
-            </IconButton>
+            </IconButton> */}
           </Box>
 
           <Button
@@ -221,9 +221,9 @@ export default function HomeAppBar({ appbarToHome }) {
               <MenuItem>
                 <FavoriteIcon onClick={navigatetoFavorites}></FavoriteIcon>
               </MenuItem>
-              <MenuItem>
+              {/* <MenuItem>
                 <GroupIcon></GroupIcon>
-              </MenuItem>
+              </MenuItem> */}
               <MenuItem>
                 <Search sx={{}}>
                   <SearchIconWrapper>
