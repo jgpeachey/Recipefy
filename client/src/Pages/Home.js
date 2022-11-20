@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import HomeAppBar from "../Components/HomeAppBar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Grid, Button, AppBar } from "@mui/material";
+import { Grid, Button, AppBar, Typography } from "@mui/material";
 import { Container } from "@mui/material";
 import { useCookies } from "react-cookie";
 import RecipeCard from "../Components/RecipeCard";
@@ -342,7 +342,10 @@ export default function Home() {
         >
         <HomeAppBar/>
         <Divider />
-        <List sx={{mt:10}}>
+        <Button sx={{mt:9}}>Following:</Button> 
+        {/* will end up navigating to following page */}
+        <Divider />
+        <List sx={{}}>
           {followingArray.map((person) => (
             <ListItem key={person.Username} disablePadding>
               <ListItemButton>
