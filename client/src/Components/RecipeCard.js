@@ -252,7 +252,7 @@ export default function RecipeCard({
       });
   }
 
-  function getLikedRecipes() {
+  function getLikedRecipes2() {
     Axios.post(buildPath(`recipe/getLikedRecipes`), null, {
       headers: {
         authorization: cookies.token,
@@ -267,6 +267,7 @@ export default function RecipeCard({
         }
 
         setLikedId(res);
+        console.log(res);
       })
       .catch((error) => {
         console.log(error);
@@ -275,9 +276,13 @@ export default function RecipeCard({
   }
 
   function getLikedStatus() {
+    console.log("cum")
+    console.log(likedId)
     for (let i = 0; i < likedId.length; i++) {
+      console.log("cum2")
       for (let j = 0; j < id.length; j++) {
-        if (likedId[i] == id[j]) setLiked2(true);
+        if (likedId[i] == id[j]) {
+        setLiked2(true);
         console.log(liked2);
         return;
       }
@@ -287,6 +292,7 @@ export default function RecipeCard({
 
     console.log(liked2);
   }
+}
 
   function followPerson() {
     Axios.post(
@@ -372,9 +378,9 @@ export default function RecipeCard({
               onClick={(event) => {
                 event.stopPropagation();
                 event.preventDefault();
+                getLikedRecipes2();
                 setOpen(true);
                 getRecipesId();
-                getLikedRecipes();
                 getLikedStatus();
                 getFollowingList();
                 console.log(recipe);
