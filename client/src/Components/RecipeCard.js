@@ -245,6 +245,7 @@ export default function RecipeCard({
         }
 
         setId(res);
+        console.log(id);
       })
       .catch((error) => {
         console.log(error);
@@ -267,7 +268,7 @@ export default function RecipeCard({
         }
 
         setLikedId(res);
-        console.log(res);
+        console.log(likedId);
       })
       .catch((error) => {
         console.log(error);
