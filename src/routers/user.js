@@ -589,6 +589,49 @@ router.post("/unfollowUser", verifyAccessToken, async (req, res, next) => {
     error: "",
   });
 });
+
+
+router.post("/getFollowersById", verifyAccessToken, async (req, res, next) => {
+  const user = await User.findOne({_id: mongoose.Types.ObjectId(req.body.userId)});
+  if (!user) {
+    return res.status(409).json({
+      error: "User DNE",
+    });
+  }
+  const followers = user.Followers;
+  let results = {error: "", results: []};
+  for(let i = followers.length - 1; i >= 0; i--){
+    const follower = await User.findOne({_id: mongoose.Types.ObjectId(followers[i])}).select(["_id","Firstname", "Lastname", "Username", "Pic", "Followers", "Following"]);
+    if(!follower){
+      await User.updateOne({_id: mongoose.Types.ObjectId(req.body.userId)}, { $pull: {Followers: mongoose.Types.ObjectId(followers[i])}})
+      likes.splice(i, 1);
+    } else {
+      results.results.push(follower);
+    }
+  }
+  return res.status(201).json(results);
+})
+
+router.post("/getFollowingsById", verifyAccessToken, async (req, res, next) => {
+  const user = await User.findOne({_id: mongoose.Types.ObjectId(req.body.userId)});
+  if (!user) {
+    return res.status(409).json({
+      error: "User DNE",
+    });
+  }
+  const followings = user.Following;
+  let results = {error: "", results: []};
+  for(let i = followings.length - 1; i >= 0; i--){
+    const following = await User.findOne({_id: mongoose.Types.ObjectId(followings[i])}).select(["_id","Firstname", "Lastname", "Username", "Pic", "Followers", "Following"]);
+    if(!following){
+      await User.updateOne({_id: mongoose.Types.ObjectId(req.body.userId)}, { $pull: {Following: mongoose.Types.ObjectId(followings[i])}})
+      likes.splice(i, 1);
+    } else {
+      results.results.push(following);
+    }
+  }
+  return res.status(201).json(results);
+})
 // router.post("/catch", async (req, res, next) => {
 //   const { token } = req.body;
 //   await axios.post(
