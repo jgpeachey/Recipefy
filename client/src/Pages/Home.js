@@ -61,6 +61,10 @@ export default function Home() {
 
   const [followingArray, setFollowingArray] = useState([]);
 
+  const [newRecipes, setNewRecipes] = useState([]);
+  const [newRecipes2, setNewRecipes2] = useState([]);
+
+
   const appbarToHome = (appbardata) => {
     console.log(appbardata);
     setSearcher(appbardata);
@@ -175,6 +179,35 @@ export default function Home() {
     });
   }
 
+  function getNewRecipes(){
+    Axios.post(
+      buildPath(`recipe/findAllRecipe?search&page&count`),
+      null,
+      {
+        headers: {
+          authorization: cookies.token,
+        },
+      }
+    )
+    .then((response) => {
+      var res = [];
+      var res2 = [];
+      let length = response.data.results.length;
+
+      for(let i = length - 1; i > length - 6; i--){
+        res.push(response.data.results[i].Pic)
+        res2.push(response.data.results[i])
+      }
+
+      setNewRecipes2(res2);
+      setNewRecipes(res);
+    })
+    .catch((error) => {
+      console.log(error);
+      console.log(error.response.data.error);
+    });
+  }
+
   function getRecipes() {
     setPage(page + 1);
     console.log(page);
@@ -276,6 +309,7 @@ export default function Home() {
     console.log(page);
     getRecipes();
     getFollowingList();
+    getNewRecipes();
   }, [searcher, change, likeChange]);
 
   return (
@@ -283,7 +317,7 @@ export default function Home() {
       <ThemeProvider theme={theme}>
         <HomeAppBar appbarToHome={appbarToHome} />
 
-        <ImageCarousel slides={SliderData} />
+        <ImageCarousel slides={newRecipes} info={newRecipes2} />
         {/* <Button
           onClick={(event) => {
             setOpenProfile(true);
