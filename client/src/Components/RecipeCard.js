@@ -71,7 +71,6 @@ export default function RecipeCard({
   const [idToFollow, setIdToFollow] = useState("");
   const [followChange, setFollowChange] = useState(false);
 
-
   // console.log(recipe);
   const app_name = "recipefy-g1";
   const [cookies, setCookie] = useCookies(["user"]);
@@ -141,7 +140,8 @@ export default function RecipeCard({
     )
       .then((response) => {
         console.log(response);
-        likeChange();
+        if (response.data.error !== "Already Liked") setLiked(liked + 1);
+        // likeChange();
       })
       .catch((error) => {
         console.log(error);
@@ -222,7 +222,7 @@ export default function RecipeCard({
     )
       .then((response) => {
         console.log(response);
-        likeChange();
+        if (response.data.error !== "Recipe never liked") setLiked(liked - 1);
       })
       .catch((error) => {
         console.log(error);
@@ -471,7 +471,7 @@ export default function RecipeCard({
                 marginBottom={0.5}
               >
                 <Typography variant="body1" component="p" marginTop={1}>
-                  {recipe.Likes} likes
+                  {liked} likes
                 </Typography>
                 <FavoriteIcon
                   sx={{
