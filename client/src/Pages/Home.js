@@ -16,15 +16,15 @@ import { maxWidth } from "@mui/system";
 import Avatar from "@mui/material/Avatar";
 import { BottomScrollListener } from "react-bottom-scroll-listener";
 
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import Divider from "@mui/material/Divider";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 import CssBaseline from "@mui/material/CssBaseline";
-
+import { useCounter, useDeepCompareEffect } from "react-use";
 
 import Axios from "axios";
 
@@ -60,10 +60,10 @@ export default function Home() {
   const [username, setUsername] = useState("");
 
   const [followingArray, setFollowingArray] = useState([]);
+  const [followlistchange, setFollowingListChange] = useState(false);
 
   const [newRecipes, setNewRecipes] = useState([]);
   const [newRecipes2, setNewRecipes2] = useState([]);
-
 
   const appbarToHome = (appbardata) => {
     console.log(appbardata);
@@ -80,6 +80,10 @@ export default function Home() {
 
   const handleClose = () => {
     setOpenProfile(false);
+  };
+
+  const handlefollowchange = () => {
+    setFollowingListChange(true);
   };
 
   function buildPath(route) {
@@ -153,59 +157,51 @@ export default function Home() {
     console.log("pee");
   }
 
-  function getFollowingList(){
-    Axios.post(
-      buildPath("user/getFollowing"),
-      null,
-      {
-        headers: {
-          authorization: cookies.token,
-        },
-      }
-    )
-    .then((response) => {
-      console.log(response);
-      var res = [];
-
-      for(let i = 0; i < response.data.results.length; i++){
-        res.push(response.data.results[i])
-      }
-
-      setFollowingArray(res);
+  function getFollowingList() {
+    Axios.post(buildPath("user/getFollowing"), null, {
+      headers: {
+        authorization: cookies.token,
+      },
     })
-    .catch((error) => {
-      console.log(error);
-      console.log(error.response.data.error);
-    });
+      .then((response) => {
+        console.log(response);
+        var res = [];
+
+        for (let i = 0; i < response.data.results.length; i++) {
+          res.push(response.data.results[i]);
+        }
+
+        setFollowingArray(res);
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log(error.response.data.error);
+      });
   }
 
-  function getNewRecipes(){
-    Axios.post(
-      buildPath(`recipe/findAllRecipe?search&page&count`),
-      null,
-      {
-        headers: {
-          authorization: cookies.token,
-        },
-      }
-    )
-    .then((response) => {
-      var res = [];
-      var res2 = [];
-      let length = response.data.results.length;
-
-      for(let i = length - 1; i > length - 6; i--){
-        res.push(response.data.results[i].Pic)
-        res2.push(response.data.results[i])
-      }
-
-      setNewRecipes2(res2);
-      setNewRecipes(res);
+  function getNewRecipes() {
+    Axios.post(buildPath(`recipe/findAllRecipe?search&page&count`), null, {
+      headers: {
+        authorization: cookies.token,
+      },
     })
-    .catch((error) => {
-      console.log(error);
-      console.log(error.response.data.error);
-    });
+      .then((response) => {
+        var res = [];
+        var res2 = [];
+        let length = response.data.results.length;
+
+        for (let i = length - 1; i > length - 6; i--) {
+          res.push(response.data.results[i].Pic);
+          res2.push(response.data.results[i]);
+        }
+
+        setNewRecipes2(res2);
+        setNewRecipes(res);
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log(error.response.data.error);
+      });
   }
 
   function getRecipes() {
@@ -310,7 +306,13 @@ export default function Home() {
     getRecipes();
     getFollowingList();
     getNewRecipes();
-  }, [searcher, change, likeChange]);
+    setFollowingListChange(false);
+  }, [searcher, change, followlistchange]);
+
+  // useDeepCompareEffect(() => {
+  //   console.log("called");
+  //   getFollowingList();
+  // }, [followingArray]);
 
   return (
     <BottomScrollListener onBottom={getRecipes}>
@@ -331,7 +333,10 @@ export default function Home() {
         <Container>
           <Grid container spacing={11} marginTop={-8.5}>
             {recipeCardsArray.map((recipe) => (
-              <RecipeCard recipe={recipe} likeChange={likeChanger} />
+              <RecipeCard
+                recipe={recipe}
+                handlefollowchange={handlefollowchange}
+              />
             ))}
           </Grid>
         </Container>
@@ -363,7 +368,10 @@ export default function Home() {
           <Container>
             <Grid container spacing={11} marginTop={-8.5} marginBottom={3}>
               {userCards.map((recipe) => (
-                <RecipeCard recipe={recipe} />
+                <RecipeCard
+                  recipe={recipe}
+                  handlefollowchange={handlefollowchange}
+                />
               ))}
             </Grid>
           </Container>
@@ -372,33 +380,32 @@ export default function Home() {
         <Drawer
           variant="permanent"
           anchor="left"
-          PaperProps={{sx:{width:"12%"}}}
+          PaperProps={{ sx: { width: "12%" } }}
         >
-        <HomeAppBar/>
-        <Divider />
-        <Button sx={{mt:9}}>Following:</Button> 
-        {/* will end up navigating to following page */}
-        <Divider />
-        <List sx={{}}>
-          {followingArray.map((person) => (
-            <ListItem key={person.Username} disablePadding>
-              <ListItemButton>
-              <Avatar
-                  src={person.Pic}
-                  sx={{
-                    width: 24,
-                    height: 24,
-                    mr:2
-                  }}
-                  onMouseDown={(event) => event.stopPropagation()}
-                />
-                <ListItemText primary={person.Username} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-
+          <HomeAppBar />
+          <Divider />
+          <Button sx={{ mt: 9 }}>Following:</Button>
+          {/* will end up navigating to following page */}
+          <Divider />
+          <List sx={{}}>
+            {followingArray.map((person) => (
+              <ListItem key={person.Username} disablePadding>
+                <ListItemButton>
+                  <Avatar
+                    src={person.Pic}
+                    sx={{
+                      width: 24,
+                      height: 24,
+                      mr: 2,
+                    }}
+                    onMouseDown={(event) => event.stopPropagation()}
+                  />
+                  <ListItemText primary={person.Username} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
       </ThemeProvider>
     </BottomScrollListener>
   );

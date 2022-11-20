@@ -55,7 +55,7 @@ export default function RecipeCard({
   recipe,
   getLikedRecipes,
   onFavoritePage,
-  likeChange,
+  handlefollowchange,
 }) {
   const [open, setOpen] = useState(false);
   const [username, setUsername] = useState("");
@@ -230,65 +230,56 @@ export default function RecipeCard({
       });
   }
 
-  function getRecipesId(){
-    Axios.post(
-      buildPath(`recipe/findAllRecipe?search&page&count`),
-        null,
-        {
-          headers: {
-            authorization: cookies.token,
-          },
-        }
-    )
-    .then((response) => {
-      console.log(response);
-      var res = [];
-
-      for(let i = 0; i < response.data.results.length; i++){
-        res.push(response.data.results[i]._id)
-      }
-
-      setId(res);
+  function getRecipesId() {
+    Axios.post(buildPath(`recipe/findAllRecipe?search&page&count`), null, {
+      headers: {
+        authorization: cookies.token,
+      },
     })
-    .catch((error) => {
-      console.log(error);
-      console.log(error.response.data.error);
-    });
+      .then((response) => {
+        console.log(response);
+        var res = [];
+
+        for (let i = 0; i < response.data.results.length; i++) {
+          res.push(response.data.results[i]._id);
+        }
+
+        setId(res);
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log(error.response.data.error);
+      });
   }
 
-  function getLikedRecipes(){
-    Axios.post(
-      buildPath(`recipe/getLikedRecipes`),
-        null,
-        {
-          headers: {
-            authorization: cookies.token,
-          },
-        }
-    )
-    .then((response) => {
-      console.log(response);
-      var res = [];
-
-      for(let i = 0; i < response.data.results.length; i++){
-        res.push(response.data.results[i]._id)
-      }
-
-      setLikedId(res);
+  function getLikedRecipes() {
+    Axios.post(buildPath(`recipe/getLikedRecipes`), null, {
+      headers: {
+        authorization: cookies.token,
+      },
     })
-    .catch((error) => {
-      console.log(error);
-      console.log(error.response.data.error);
-    });
+      .then((response) => {
+        console.log(response);
+        var res = [];
+
+        for (let i = 0; i < response.data.results.length; i++) {
+          res.push(response.data.results[i]._id);
+        }
+
+        setLikedId(res);
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log(error.response.data.error);
+      });
   }
 
-  function getLikedStatus(){
-    for(let i = 0; i < likedId.length; i++){
-      for(let j = 0; j < id.length; j++){
-        if(likedId[i] == id[j])
-          setLiked2(true);
-          console.log(liked2);
-          return;
+  function getLikedStatus() {
+    for (let i = 0; i < likedId.length; i++) {
+      for (let j = 0; j < id.length; j++) {
+        if (likedId[i] == id[j]) setLiked2(true);
+        console.log(liked2);
+        return;
       }
     }
 
@@ -312,6 +303,7 @@ export default function RecipeCard({
       .then((response) => {
         console.log(response);
         followChanger();
+        handlefollowchange();
       })
       .catch((error) => {
         console.log(error);
@@ -333,50 +325,41 @@ export default function RecipeCard({
       .then((response) => {
         console.log(response);
         followChanger();
+        handlefollowchange();
       })
       .catch((error) => {
         console.log(error);
       });
   }
 
-  function getFollowerCount(){
-    Axios.post(
-      buildPath(`user/getFollowers`),
-        null,
-        {
-          headers: {
-            authorization: cookies.token,
-          },
-        }
-    )
-    .then((response) => {
-      console.log(response);
-      
+  function getFollowerCount() {
+    Axios.post(buildPath(`user/getFollowers`), null, {
+      headers: {
+        authorization: cookies.token,
+      },
     })
-    .catch((error) => {
-      console.log(error);
-      console.log(error.response.data.error);
-    });
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log(error.response.data.error);
+      });
   }
 
-  function getFollowingList(){
-    Axios.post(
-      buildPath("user/getFollowing"),
-      null,
-      {
-        headers: {
-          authorization: cookies.token,
-        },
-      }
-    )
-    .then((response) => {
-      console.log(response);
-      
+  function getFollowingList() {
+    Axios.post(buildPath("user/getFollowing"), null, {
+      headers: {
+        authorization: cookies.token,
+      },
     })
-    .catch((error) => {
-      console.log(error);
-      console.log(error.response.data.error);
-    });
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log(error.response.data.error);
+      });
   }
 
   return (
@@ -586,8 +569,12 @@ export default function RecipeCard({
               }}
               onMouseDown={(event) => event.stopPropagation()}
             />
-            <Button sx={{ color: "white", pl: 2 }} onClick={followPerson}>Follow+</Button>
-            <Button sx={{ color: "white", pl: 2 }} onClick={unfollowPerson}>Unfollow</Button>
+            <Button sx={{ color: "white", pl: 2 }} onClick={followPerson}>
+              Follow+
+            </Button>
+            <Button sx={{ color: "white", pl: 2 }} onClick={unfollowPerson}>
+              Unfollow
+            </Button>
           </div>
 
           <DialogContentText className="profileBio">
