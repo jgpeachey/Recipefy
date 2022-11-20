@@ -16,6 +16,8 @@ import { maxWidth } from "@mui/system";
 import Avatar from "@mui/material/Avatar";
 import { BottomScrollListener } from "react-bottom-scroll-listener";
 
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+
 import Axios from "axios";
 
 const theme = createTheme({});

@@ -63,10 +63,11 @@ export default function RecipeCard({
   const [userCards, setUserCards] = useState([]);
   const [clickedUser, setClickedUser] = useState(0);
   const [openProfile, setOpenProfile] = useState(false);
+  const [liked, setLiked] = useState(recipe.Likes);
 
   const [id, setId] = useState([]); // all recipe ids
   const [likedId, setLikedId] = useState([]); // all liked recipe ids
-  const [liked, setLiked] = useState(false); // if recipe is liked or not
+  const [liked2, setLiked2] = useState(false); // if recipe is liked or not
 
   const [idToFollow, setIdToFollow] = useState("");
   const [followChange, setFollowChange] = useState(false);
@@ -285,11 +286,15 @@ export default function RecipeCard({
     for(let i = 0; i < likedId.length; i++){
       for(let j = 0; j < id.length; j++){
         if(likedId[i] == id[j])
-          setLiked(true);
+          setLiked2(true);
+          console.log(liked2);
+          return;
       }
     }
 
-    console.log(liked);
+    setLiked2(false);
+
+    console.log(liked2);
   }
 
   function followPerson() {
