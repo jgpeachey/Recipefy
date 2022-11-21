@@ -518,16 +518,18 @@ export default function RecipeCard({
               sx={{ color: "red", ml: 2, backgroundColor: "white" }}
               endIcon={<FavoriteIcon />}
               onClick={likeRecipe}
+              disabled={liked2}
             >
               Like
             </Button>
             <Button
               variant="contained"
-              sx={{ color: "white", ml: 2 }}
+              sx={{ color: "white", ml: 2, backgroundColor: "red" }}
               endIcon={<FavoriteIcon />}
               onClick={unlikeRecipe}
+              disabled={!liked2}
             >
-              UnLike
+              Unlike
             </Button>
             {/* lemme know how you feel about this button, I was thinking we could change the color and all that nonsense.
             We can put the follow when you click on that persons username instead cause idk where else we would put the like
