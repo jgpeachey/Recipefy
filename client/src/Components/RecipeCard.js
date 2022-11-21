@@ -72,6 +72,8 @@ export default function RecipeCard({
   const [idToFollow, setIdToFollow] = useState("");
   const [followChange, setFollowChange] = useState(false);
 
+  var likedornot = false;
+
   // console.log(recipe);
   const app_name = "recipefy-g1";
   const [cookies, setCookie] = useCookies(["user"]);
@@ -142,6 +144,7 @@ export default function RecipeCard({
       .then((response) => {
         console.log(response);
         if (response.data.error !== "Already Liked") setLiked(liked + 1);
+        setLiked2(true);
         // likeChange();
       })
       .catch((error) => {
@@ -224,34 +227,34 @@ export default function RecipeCard({
       .then((response) => {
         console.log(response);
         if (response.data.error !== "Recipe never liked") setLiked(liked - 1);
+        setLiked2(false);
       })
       .catch((error) => {
         console.log(error);
       });
   }
 
-  function getRecipesId() {
-    Axios.post(buildPath(`recipe/findAllRecipe?search&page&count`), null, {
-      headers: {
-        authorization: cookies.token,
-      },
-    })
-      .then((response) => {
-        console.log(response);
-        var res = [];
+  // function getRecipesId() {
+  //   Axios.post(buildPath(`recipe/findAllRecipe?search&page&count`), null, {
+  //     headers: {
+  //       authorization: cookies.token,
+  //     },
+  //   })
+  //     .then((response) => {
+  //       console.log(response);
+  //       var res = [];
 
-        for (let i = 0; i < response.data.results.length; i++) {
-          res.push(response.data.results[i]._id);
-        }
+  //       for (let i = 0; i < response.data.results.length; i++) {
+  //         res.push(response.data.results[i]._id);
+  //       }
 
-        setId(res);
-        console.log(id);
-      })
-      .catch((error) => {
-        console.log(error);
-        console.log(error.response.data.error);
-      });
-  }
+  //       setId(res);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       console.log(error.response.data.error);
+  //     });
+  // }
 
   function getLikedRecipes2() {
     Axios.post(buildPath(`recipe/getLikedRecipes`), null, {
@@ -268,7 +271,6 @@ export default function RecipeCard({
         }
 
         setLikedId(res);
-        console.log(likedId);
       })
       .catch((error) => {
         console.log(error);
@@ -277,21 +279,31 @@ export default function RecipeCard({
   }
 
   function getLikedStatus() {
-    console.log(id);
-    console.log(likedId);
+    // console.log(id);
+    // console.log(likedId);
+    // for (let i = 0; i < likedId.length; i++) {
+    //   for (let j = 0; j < id.length; j++) {
+    //     if (likedId[i] == id[j]) {
+    //       likedornot = true;
+    //       // setLiked2(true);
+    //       console.log(likedornot);
+    //       return;
+    //     }
+    //   }
+    //   setLiked2(false);
+    //   likedornot = false;
+    //   console.log(likedornot);
+    // }
+
     for (let i = 0; i < likedId.length; i++) {
-      for (let j = 0; j < id.length; j++) {
-        if (likedId[i] == id[j]) {
-          setLiked2(true);
-          console.log(liked2);
-          return;
-        }
+      if (likedId[i] === recipe._id) {
+        setLiked2(true);
+        console.log("true");
+        return;
       }
-
-      setLiked2(false);
-
-      console.log(liked2);
     }
+    setLiked2(false);
+    console.log("false");
   }
 
   function followPerson() {
@@ -370,7 +382,7 @@ export default function RecipeCard({
 
   useEffect(() => {
     getLikedStatus();
-  }, [likedId, id]);
+  }, [likedId, liked2, liked]);
 
   return (
     <Grid item xs={4}>
@@ -383,7 +395,7 @@ export default function RecipeCard({
                 event.stopPropagation();
                 event.preventDefault();
                 getLikedRecipes2();
-                getRecipesId();
+                // getRecipesId();
                 getLikedStatus();
                 getFollowingList();
 
@@ -518,16 +530,18 @@ export default function RecipeCard({
               sx={{ color: "red", ml: 2, backgroundColor: "white" }}
               endIcon={<FavoriteIcon />}
               onClick={likeRecipe}
+              disabled={liked2}
             >
               Like
             </Button>
             <Button
               variant="contained"
-              sx={{ color: "white", ml: 2 }}
+              sx={{ color: "white", ml: 2, backgroundColor: "red" }}
               endIcon={<FavoriteIcon />}
               onClick={unlikeRecipe}
+              disabled={!liked2}
             >
-              UnLike
+              Unlike
             </Button>
             {/* lemme know how you feel about this button, I was thinking we could change the color and all that nonsense.
             We can put the follow when you click on that persons username instead cause idk where else we would put the like
