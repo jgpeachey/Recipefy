@@ -232,27 +232,27 @@ export default function RecipeCard({
       });
   }
 
-  function getRecipesId() {
-    Axios.post(buildPath(`recipe/findAllRecipe?search&page&count`), null, {
-      headers: {
-        authorization: cookies.token,
-      },
-    })
-      .then((response) => {
-        console.log(response);
-        var res = [];
+  // function getRecipesId() {
+  //   Axios.post(buildPath(`recipe/findAllRecipe?search&page&count`), null, {
+  //     headers: {
+  //       authorization: cookies.token,
+  //     },
+  //   })
+  //     .then((response) => {
+  //       console.log(response);
+  //       var res = [];
 
-        for (let i = 0; i < response.data.results.length; i++) {
-          res.push(response.data.results[i]._id);
-        }
+  //       for (let i = 0; i < response.data.results.length; i++) {
+  //         res.push(response.data.results[i]._id);
+  //       }
 
-        setId(res);
-      })
-      .catch((error) => {
-        console.log(error);
-        console.log(error.response.data.error);
-      });
-  }
+  //       setId(res);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       console.log(error.response.data.error);
+  //     });
+  // }
 
   function getLikedRecipes2() {
     Axios.post(buildPath(`recipe/getLikedRecipes`), null, {
@@ -277,21 +277,30 @@ export default function RecipeCard({
   }
 
   function getLikedStatus() {
-    console.log(id);
-    console.log(likedId);
+    // console.log(id);
+    // console.log(likedId);
+    // for (let i = 0; i < likedId.length; i++) {
+    //   for (let j = 0; j < id.length; j++) {
+    //     if (likedId[i] == id[j]) {
+    //       likedornot = true;
+    //       // setLiked2(true);
+    //       console.log(likedornot);
+    //       return;
+    //     }
+    //   }
+    //   setLiked2(false);
+    //   likedornot = false;
+    //   console.log(likedornot);
+    // }
+
     for (let i = 0; i < likedId.length; i++) {
-      for (let j = 0; j < id.length; j++) {
-        if (likedId[i] == id[j]) {
-          likedornot = true;
-          // setLiked2(true);
-          console.log(likedornot);
-          return;
-        }
+      if (likedId[i] === recipe._id) {
+        setLiked2(true);
+        console.log("true");
+        return;
       }
-      setLiked2(false);
-      likedornot = false;
-      console.log(likedornot);
     }
+    console.log("false");
   }
 
   function followPerson() {
@@ -370,7 +379,7 @@ export default function RecipeCard({
 
   useEffect(() => {
     getLikedStatus();
-  }, [likedId, id]);
+  }, [likedId]);
 
   return (
     <Grid item xs={4}>
@@ -383,7 +392,7 @@ export default function RecipeCard({
                 event.stopPropagation();
                 event.preventDefault();
                 getLikedRecipes2();
-                getRecipesId();
+                // getRecipesId();
                 getLikedStatus();
                 getFollowingList();
 
