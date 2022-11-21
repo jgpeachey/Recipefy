@@ -382,7 +382,7 @@ export default function Home() {
           anchor="left"
           PaperProps={{ sx: { width: "12%" } }}
         >
-          <HomeAppBar />
+          <HomeAppBar appbarToHome={appbarToHome} />
           <Divider />
           <Button sx={{ mt: 9 }}>Following:</Button>
           {/* will end up navigating to following page */}
