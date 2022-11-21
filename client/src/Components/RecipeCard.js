@@ -277,23 +277,22 @@ export default function RecipeCard({
   }
 
   function getLikedStatus() {
-    console.log("cum")
-    console.log(likedId)
+    console.log(id);
+    console.log(likedId);
     for (let i = 0; i < likedId.length; i++) {
-      console.log("cum2")
       for (let j = 0; j < id.length; j++) {
         if (likedId[i] == id[j]) {
-        setLiked2(true);
-        console.log(likedId[i]);
-        return;
+          setLiked2(true);
+          console.log(likedId[i]);
+          return;
+        }
       }
+
+      setLiked2(false);
+
+      console.log(liked2);
     }
-
-    setLiked2(false);
-
-    console.log(liked2);
   }
-}
 
   function followPerson() {
     Axios.post(
@@ -369,6 +368,10 @@ export default function RecipeCard({
       });
   }
 
+  useEffect(() => {
+    getLikedStatus();
+  }, [likedId, id]);
+
   return (
     <Grid item xs={4}>
       <ThemeProvider theme={theme}>
@@ -380,11 +383,12 @@ export default function RecipeCard({
                 event.stopPropagation();
                 event.preventDefault();
                 getLikedRecipes2();
-                setOpen(true);
                 getRecipesId();
                 getLikedStatus();
                 getFollowingList();
+
                 console.log(recipe);
+                setOpen(true);
               }}
             >
               <Box
