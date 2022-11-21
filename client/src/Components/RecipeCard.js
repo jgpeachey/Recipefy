@@ -144,6 +144,7 @@ export default function RecipeCard({
       .then((response) => {
         console.log(response);
         if (response.data.error !== "Already Liked") setLiked(liked + 1);
+        setLiked2(true);
         // likeChange();
       })
       .catch((error) => {
@@ -226,6 +227,7 @@ export default function RecipeCard({
       .then((response) => {
         console.log(response);
         if (response.data.error !== "Recipe never liked") setLiked(liked - 1);
+        setLiked2(false);
       })
       .catch((error) => {
         console.log(error);
@@ -300,6 +302,7 @@ export default function RecipeCard({
         return;
       }
     }
+    setLiked2(false);
     console.log("false");
   }
 
@@ -379,7 +382,7 @@ export default function RecipeCard({
 
   useEffect(() => {
     getLikedStatus();
-  }, [likedId]);
+  }, [likedId, liked2, liked]);
 
   return (
     <Grid item xs={4}>
