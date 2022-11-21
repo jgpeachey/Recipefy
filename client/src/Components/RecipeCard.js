@@ -72,6 +72,8 @@ export default function RecipeCard({
   const [idToFollow, setIdToFollow] = useState("");
   const [followChange, setFollowChange] = useState(false);
 
+  var likedornot = false;
+
   // console.log(recipe);
   const app_name = "recipefy-g1";
   const [cookies, setCookie] = useCookies(["user"]);
@@ -245,7 +247,6 @@ export default function RecipeCard({
         }
 
         setId(res);
-        console.log(id);
       })
       .catch((error) => {
         console.log(error);
@@ -268,7 +269,6 @@ export default function RecipeCard({
         }
 
         setLikedId(res);
-        console.log(likedId);
       })
       .catch((error) => {
         console.log(error);
@@ -282,15 +282,15 @@ export default function RecipeCard({
     for (let i = 0; i < likedId.length; i++) {
       for (let j = 0; j < id.length; j++) {
         if (likedId[i] == id[j]) {
-          setLiked2(true);
-          console.log(liked2);
+          likedornot = true;
+          // setLiked2(true);
+          console.log(likedornot);
           return;
         }
       }
-
       setLiked2(false);
-
-      console.log(liked2);
+      likedornot = false;
+      console.log(likedornot);
     }
   }
 
