@@ -65,4 +65,56 @@ class RemoteService {
     Error err = errorFromJson(response.body);
     throw Exception(err.message);
   }
+
+  Future<dynamic> deleteUser(String email, String password) async {
+    Map<String, String> parameters = {
+      "Email": email,
+      "Password": password,
+    };
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/user/delete',
+    );
+    var response = await http.post(uri, body: parameters);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return response.body;
+    }
+    Error err = errorFromJson(response.body);
+    throw Exception(err.message);
+  }
+
+  Future<dynamic> addRecipe(String title, List ingredients, List instructions,
+      String calories, String sodium, String pic) async {
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/recipes/addrecipe',
+    );
+    Map parameters = {
+      "Title": title,
+      "Ingredients": ingredients,
+      "Instructions": instructions,
+      "Calories": calories,
+      "Sodium": sodium,
+      "Pic": pic,
+    };
+    var response = await http.post(uri, body: parameters);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return response.body;
+    }
+    Error err = errorFromJson(response.body);
+    throw Exception(err.message);
+  }
+
+  Future<dynamic> removeRecipe(String id) async {
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/recipes/removerecipe',
+    );
+    Map parameters = {"_id": id};
+    var response = await http.post(uri, body: parameters);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return response.body;
+    }
+    Error err = errorFromJson(response.body);
+    throw Exception(err.message);
+  }
+
+  Future<dynamic> updateRecipe() async {}
 }
