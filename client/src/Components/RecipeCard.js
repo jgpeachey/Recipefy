@@ -68,7 +68,7 @@ export default function RecipeCard({
   const [id, setId] = useState([]); // all recipe ids
   const [likedId, setLikedId] = useState([]); // all liked recipe ids
   const [liked2, setLiked2] = useState(false); // if recipe is liked or not
-
+  
   const [idToFollow, setIdToFollow] = useState("");
   const [followChange, setFollowChange] = useState(false);
 
@@ -245,7 +245,7 @@ export default function RecipeCard({
         }
 
         setId(res);
-        console.log(id);
+        // console.log(id);
       })
       .catch((error) => {
         console.log(error);
@@ -284,7 +284,7 @@ export default function RecipeCard({
       for (let j = 0; j < id.length; j++) {
         if (likedId[i] == id[j]) {
         setLiked2(true);
-        console.log(liked2);
+        console.log(likedId[i]);
         return;
       }
     }
@@ -514,16 +514,18 @@ export default function RecipeCard({
               sx={{ color: "red", ml: 2, backgroundColor: "white" }}
               endIcon={<FavoriteIcon />}
               onClick={likeRecipe}
+              disabled={liked2}
             >
               Like
             </Button>
             <Button
               variant="contained"
-              sx={{ color: "white", ml: 2 }}
+              sx={{ color: "white", ml: 2, backgroundColor:"red" }}
               endIcon={<FavoriteIcon />}
               onClick={unlikeRecipe}
+              disabled={!liked2}
             >
-              UnLike
+              Unlike
             </Button>
             {/* lemme know how you feel about this button, I was thinking we could change the color and all that nonsense.
             We can put the follow when you click on that persons username instead cause idk where else we would put the like
