@@ -74,7 +74,7 @@ class RemoteService {
     var uri = Uri.parse(
       'https://recipefy-g1.herokuapp.com/user/delete',
     );
-    var response = await http.post(uri, body: parameters);
+    var response = await http.delete(uri, body: parameters);
     if (response.statusCode == 200 || response.statusCode == 201) {
       return response.body;
     }
@@ -96,6 +96,32 @@ class RemoteService {
   }
 
   Future<dynamic> searchUsers() async {}
+
+  Future<dynamic> followUser(String id) async {
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/user/followUser',
+    );
+    Map parameters = {"userId": id};
+    var response = await http.post(uri, body: parameters);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return response.body;
+    }
+    Error err = errorFromJson(response.body);
+    throw Exception(err.message);
+  }
+
+  Future<dynamic> unfollowUser(String id) async {
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/user/unfollowUser',
+    );
+    Map parameters = {"userId": id};
+    var response = await http.post(uri, body: parameters);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return response.body;
+    }
+    Error err = errorFromJson(response.body);
+    throw Exception(err.message);
+  }
 
   Future<dynamic> updateUser(String email, String password, String pic) async {
     var uri = Uri.parse(
@@ -175,11 +201,22 @@ class RemoteService {
       'https://recipefy-g1.herokuapp.com/recipes/removerecipe',
     );
     Map parameters = {"_id": id};
-    var response = await http.post(uri, body: parameters);
+    var response = await http.delete(uri, body: parameters);
     if (response.statusCode == 200 || response.statusCode == 201) {
       return response.body;
     }
     Error err = errorFromJson(response.body);
     throw Exception(err.message);
   }
+
+  Future<dynamic> findRecipe() async {}
+
+  Future<dynamic> getUserRecipe() async {
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/recipes/removerecipe',
+    );
+    var response = await http.get(uri);
+  }
+
+  Future<dynamic> findAllRecipe() async {}
 }
