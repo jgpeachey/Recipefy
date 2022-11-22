@@ -209,14 +209,19 @@ class RemoteService {
     throw Exception(err.message);
   }
 
-  Future<dynamic> findRecipe() async {}
-
-  Future<dynamic> getUserRecipe() async {
+  Future<dynamic> findRecipe() async {
     var uri = Uri.parse(
-      'https://recipefy-g1.herokuapp.com/recipes/removerecipe',
+      'https://recipefy-g1.herokuapp.com/recipes/findRecipe',
     );
     var response = await http.get(uri);
+    if (response.statusCode != 500) {
+      return response.body;
+    }
+    Error err = errorFromJson(response.body);
+    throw Exception(err.message);
   }
+
+  Future<dynamic> getUserRecipe() async {}
 
   Future<dynamic> findAllRecipe() async {}
 }
