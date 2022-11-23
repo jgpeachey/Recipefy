@@ -84,7 +84,7 @@ export default function Home() {
   };
 
   const handlefollowchange = () => {
-    setFollowingListChange(true);
+    setFollowingListChange(!followlistchange);
   };
 
   function buildPath(route) {
@@ -390,7 +390,10 @@ export default function Home() {
           <Divider />
           <List sx={{}}>
             {followingArray.map((person) => (
-                <FollowItem person={person} handlefollowchange={handlefollowchange}/>
+              <FollowItem
+                person={person}
+                handlefollowchange={handlefollowchange}
+              />
             ))}
           </List>
         </Drawer>
