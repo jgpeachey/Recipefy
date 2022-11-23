@@ -1,5 +1,4 @@
 import 'package:recipefy_mobile/utils/colors.dart';
-// import 'package:recipefy_mobile/utils/dimensions.dart';
 import 'package:recipefy_mobile/widgets/app_column.dart';
 import 'package:recipefy_mobile/widgets/icon_and_text_widget.dart';
 import 'package:recipefy_mobile/widgets/small_text.dart';
@@ -19,7 +18,8 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   PageController pageController = PageController(viewportFraction: 0.85);
   var _currPageValue = 0.0;
   double _scaleFactor = 0.8;
-  double _height = 320;
+  // double _height = 0;
+  
 
   @override
   void initState() {
@@ -34,6 +34,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   @override
   void dispose() {
     pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -42,7 +43,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
       children: [
         Container(
           // color: Colors.redAccent,
-          height: 320,
+          height: MediaQuery.of(context).size.height * 0.35,
           child: PageView.builder(
             controller: pageController,
             itemCount: 5,
@@ -62,112 +63,102 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                 borderRadius: BorderRadius.circular(5.0)),
           ),
         ),
-        SizedBox(height: 30),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.03),
         Container(
-          margin: EdgeInsets.only(left: 30),
+          // color: Colors.redAccent,
+          margin:
+              EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.08),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              BigText(text: "Popular"),
-              SizedBox(width: 10),
-              Container(
-                margin: const EdgeInsets.only(bottom: 3),
-                child: BigText(text: ".", color: Colors.black26),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Container(
-                margin: const EdgeInsets.only(bottom: 2),
-                child: SmallText(text: "Food pairing"),
-              ),
-            ],
-          ),
+            BigText(text: "Popular"),
+          ],)
         ),
-        ListView.builder(
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: 10,
-          itemBuilder: (context, index) {
-            return Container(
-              margin: EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                  bottom: 10),
-              child: Row(
-                children: [
-                  // image section
-                  Container(
-                    width: 140,
-                    height: 220,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.red,
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: AssetImage("assets/images/pasta.jpg"),
+        Container(
+          // color: Colors.redAccent,
+          child: ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: 10,
+            itemBuilder: (context, index) {
+              return Container(
+                margin: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.05,
+                    right: MediaQuery.of(context).size.width * 0.05,
+                    bottom: MediaQuery.of(context).size.height * 0.03),
+                child: Row(
+                  children: [
+                    // image section
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          bottomLeft: Radius.circular(30),
+                        ),
+                        color: Colors.red,
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: AssetImage("assets/images/pasta.jpg"),
+                        ),
                       ),
                     ),
-                  ),
-                  // text section
-                  Expanded(
-                    child: Container(
-                        height: 220,
-                        // width: 200,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
+                    // text section
+                    Expanded(
+                      child: Container(
+                          height: MediaQuery.of(context).size.height * 0.15,
+                          // width: 200,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(MediaQuery.of(context).size.width * 0.05),
+                              bottomRight: Radius.circular(MediaQuery.of(context).size.width * 0.05),
+                            ),
+                            color: AppColors.titleColor,
                           ),
-                          color: AppColors.titleColor,
-                        ),
-                        child: Padding(
-                            padding: EdgeInsets.only(
-                                left: 10,
-                                right: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                BigText(text: "Nutritious fruit meal in Italy"),
-                                SizedBox(height: 10),
-                                SmallText(
-                                    text: "With sicilian characteristics"),
-                                SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    IconAndTextWdiget(
-                                        icon: Icons.house,
-                                        text: 'abc',
-                                        color: AppColors.mainColor,
-                                        iconColor: AppColors.iconColor),
-                                    IconAndTextWdiget(
-                                        icon: Icons.person,
-                                        text: 'person',
-                                        color: AppColors.mainColor,
-                                        iconColor: Colors.deepPurple),
-                                    IconAndTextWdiget(
-                                        icon: Icons.food_bank,
-                                        text: 'food',
-                                        color: AppColors.mainColor,
-                                        iconColor: Colors.pinkAccent),
-                                  ],
-                                ),
-                              ],
-                            ))),
-                  ),
-                ],
-              ),
-            );
-          },
+                          child: Padding(
+                              padding: EdgeInsets.only(
+                                  left: MediaQuery.of(context).size.width * 0.02,
+                                  right: MediaQuery.of(context).size.width * 0.02),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  BigText(text: "Nutritious fruit meal in Italy"),
+                                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                                  SmallText(
+                                      text: "With sicilian characteristics"),
+                                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      IconAndTextWdiget(
+                                          icon: Icons.house,
+                                          text: 'Date posted',
+                                          color: AppColors.mainColor,
+                                          iconColor: AppColors.iconColor),
+                                      SizedBox(width: 20),
+                                      IconAndTextWdiget(
+                                          icon: Icons.person,
+                                          text: 'User',
+                                          color: AppColors.mainColor,
+                                          iconColor: Colors.deepPurple),
+                                    ],
+                                  ),
+                                ],
+                              ))),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ],
     );
   }
 
   Widget _buildPageItem(int index) {
+    double _height = MediaQuery.of(context).size.height * 0.25;
     Matrix4 matrix = new Matrix4.identity();
     if (index == _currPageValue.floor()) {
       var currScale = 1 - (_currPageValue - index) * (1 - _scaleFactor);
@@ -199,14 +190,14 @@ class _FoodPageBodyState extends State<FoodPageBody> {
         children: [
           GestureDetector(
             onTap: () {
-              // Navigator.pushNamed(context, '/popular');
+              Navigator.pushNamed(context, '/popular');
             },
             child: Container(
-              height: 240,
+              height: MediaQuery.of(context).size.height * 0.3,
               margin: EdgeInsets.only(
-                  left: 10, right: 10),
+                  left: MediaQuery.of(context).size.width * 0.02, right: MediaQuery.of(context).size.width * 0.02),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.07),
                 color: index.isEven ? Color(0xFF69C5DF) : Color(0xFF9294CC),
                 image: DecorationImage(
                   fit: BoxFit.cover,
@@ -218,13 +209,13 @@ class _FoodPageBodyState extends State<FoodPageBody> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              height: 120,
+              height: MediaQuery.of(context).size.height * 0.12,
               margin: EdgeInsets.only(
-                  left: 30,
-                  right: 30,
-                  bottom: 30),
+                  left: MediaQuery.of(context).size.width * 0.07,
+                  right: MediaQuery.of(context).size.width * 0.07,
+                  bottom: MediaQuery.of(context).size.width * 0.05),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.05),
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
@@ -246,9 +237,9 @@ class _FoodPageBodyState extends State<FoodPageBody> {
               ),
               child: Container(
                 padding: EdgeInsets.only(
-                    top: 15,
-                    left: 15,
-                    right: 15),
+                    top: MediaQuery.of(context).size.height * 0.015,
+                    left: MediaQuery.of(context).size.height * 0.015,
+                    right: MediaQuery.of(context).size.height * 0.015),
                 child: AppColumn(text: "Strawberry Smoothie"),
               ),
             ),

@@ -1,5 +1,6 @@
 import 'package:recipefy_mobile/services/remote_services.dart';
 import 'package:recipefy_mobile/views/home.dart';
+import 'package:recipefy_mobile/views/main_page.dart';
 import 'register.dart';
 
 import 'package:flutter/material.dart';
