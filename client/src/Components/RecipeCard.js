@@ -20,6 +20,8 @@ import { DialogActions } from "@mui/material";
 import Axios from "axios";
 import { cookies, useCookies } from "react-cookie";
 import axios from "axios";
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 const theme = createTheme({
   typography: {
@@ -78,6 +80,9 @@ export default function RecipeCard({
   const [id, setId] = useState([]); // all recipe ids
   const [likedId, setLikedId] = useState([]); // all liked recipe ids
   const [liked2, setLiked2] = useState(false); // if recipe is liked or not
+
+  const [followingId, setFollowingId] = useState([]);
+  const [following, setFollowing] = useState(false);
 
   const [idToFollow, setIdToFollow] = useState("");
   const [followChange, setFollowChange] = useState(false);
@@ -409,7 +414,14 @@ export default function RecipeCard({
       },
     })
       .then((response) => {
-        console.log(response);
+        //console.log(response);
+        var res = [];
+        for(let i = 0; i < response.data.results.length; i++){
+          res.push(response.data.results[i]._id)
+        }
+
+        console.log(res)
+        setFollowingId(res);
       })
       .catch((error) => {
         console.log(error);
@@ -417,9 +429,22 @@ export default function RecipeCard({
       });
   }
 
+  function getFollowingStatus(){
+    for(let i = 0; i < followingId.length; i++){
+      if(followingId[i] === idToFollow){
+        setFollowing(true);
+        return;
+      }
+    }
+
+    setFollowing(false);
+    console.log("poo");
+  }
+
   useEffect(() => {
     getLikedStatus();
-  }, [likedId]);
+    getFollowingStatus();
+  }, [likedId, followingId]);
 
   return (
     <Grid item xs={4}>
@@ -453,10 +478,12 @@ export default function RecipeCard({
                   onClick={(event) => {
                     event.stopPropagation();
                     event.preventDefault();
-                    setOpenProfile(true);
                     setClickedUser(clickedUser + 1);
                     getUserRecipes(event.target.innerText);
                     getFollowerCount();
+                    getFollowingList();
+                    getFollowingStatus();
+                    setOpenProfile(true);
                   }}
                 >
                   <Avatar
@@ -664,10 +691,22 @@ export default function RecipeCard({
               }}
               onMouseDown={(event) => event.stopPropagation()}
             />
-            <Button sx={{ color: "white", pl: 2 }} onClick={followPerson}>
-              Follow+
+            <Button 
+              sx={{ color: "white", backgroundColor:"blue", pl: 2, ml: 2 }} 
+              onClick={() => {followPerson(); setFollowing(true)}} 
+              endIcon={<AddIcon/>}
+              variant="contained" 
+              disabled={following}
+            >
+              Follow
             </Button>
-            <Button sx={{ color: "white", pl: 2 }} onClick={unfollowPerson}>
+            <Button 
+              sx={{ color: "blue", backgroundColor:"white", pl: 2, ml: 2 }} 
+              onClick={() => {unfollowPerson(); setFollowing(false)}}
+              endIcon={<RemoveIcon/>}
+              variant="contained" 
+              disabled={!following}
+            >
               Unfollow
             </Button>
           </div>

@@ -13,6 +13,8 @@ import { cookies, useCookies } from "react-cookie";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import RecipeCard from "./RecipeCard";
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 const theme = createTheme({
     typography: {
@@ -23,92 +25,181 @@ const theme = createTheme({
 });
 
 export default function FollowItem(person){
-    const [open, setOpen] = useState(false);
-    const [username, setUsername] = useState("");
-    const [pfp, setPfp] = useState("");
-    const [userCards, setUserCards] = useState([]);
-    const [clickedUser, setClickedUser] = useState(0);
-    const [openProfile, setOpenProfile] = useState(false);
-    //const [liked, setLiked] = useState(recipe.Likes);
-    const [deleterecipeopen, setDeleteRecipeOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [username, setUsername] = useState("");
+  const [pfp, setPfp] = useState("");
+  const [userCards, setUserCards] = useState([]);
+  const [clickedUser, setClickedUser] = useState(0);
+  const [openProfile, setOpenProfile] = useState(false);
+  //const [liked, setLiked] = useState(recipe.Likes);
+  const [deleterecipeopen, setDeleteRecipeOpen] = useState(false);
+
+  const [id, setId] = useState([]); // all recipe ids
+  const [likedId, setLikedId] = useState([]); // all liked recipe ids
+  const [liked2, setLiked2] = useState(false); // if recipe is liked or not
+
+  const [idToFollow, setIdToFollow] = useState("");
+  const [followChange, setFollowChange] = useState(false);
+  const [followlistchange, setFollowingListChange] = useState(false);
+
+  const [followingId, setFollowingId] = useState([]);
+  const [following, setFollowing] = useState(false);
+
+  const app_name = "recipefy-g1";
+  const [cookies, setCookie] = useCookies(["user"]);
+
+  const handleClose = () => {
+      setOpenProfile(false);
+  };
+
+  const handlefollowchange = () => {
+      setFollowingListChange(true);
+  };
+
+  const followChanger = () => {
+    setFollowChange(!followChange);
+  };
+
+  function buildPath(route) {
+      if (process.env.NODE_ENV === "production") {
+        return "https://" + app_name + ".herokuapp.com/" + route;
+      } else {
+        return "http://localhost:3001/" + route;
+      }
+    }
+
+  function getUserRecipes(name) {
+      var userToGet;
+      if (clickedUser >= 1) return;
   
-    const [id, setId] = useState([]); // all recipe ids
-    const [likedId, setLikedId] = useState([]); // all liked recipe ids
-    const [liked2, setLiked2] = useState(false); // if recipe is liked or not
+      setUsername(name);
   
-    const [idToFollow, setIdToFollow] = useState("");
-    const [followChange, setFollowChange] = useState(false);
-    const [followlistchange, setFollowingListChange] = useState(false);
+      Axios.post(
+        buildPath(`user/searchUsers?page=${1}&count=${9}&search=${name}`),
+        null,
+        {
+          headers: {
+            authorization: cookies.token,
+          },
+        }
+      )
+        .then((response) => {
+          userToGet = response.data.results[0]._id;
+          setPfp(response.data.results[0].Pic);
+          setIdToFollow(response.data.results[0]._id);
+  
+          Axios.post(
+            buildPath("recipe/getUserRecipe"),
+            {
+              userId: userToGet,
+            },
+            {
+              headers: {
+                authorization: cookies.token,
+              },
+            }
+          )
+            .then((response) => {
+              var res = [];
+              for (let q = 0; q < response.data.results.length; q++) {
+                res.push(response.data.results[q]);
+              }
+              if (res.length != 0) {
+                setUserCards((current) => [...userCards, ...res]);
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+              console.log(error.response.data.error);
+            });
+        })
+        .catch((error) => {
+          console.log(error);
+          console.log(error.response.data.error);
+        });
+    }
 
-    const app_name = "recipefy-g1";
-    const [cookies, setCookie] = useCookies(["user"]);
+    function followPerson() {
+      Axios.post(
+        buildPath("user/followUser"),
+        {
+          userId: idToFollow,
+        },
+        {
+          headers: {
+            authorization: cookies.token,
+          },
+        }
+      )
+        .then((response) => {
+          console.log(response);
+          followChanger();
+          handlefollowchange();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  
+    function unfollowPerson() {
+      Axios.post(
+        buildPath("user/unfollowUser"),
+        {
+          userId: idToFollow,
+        },
+        {
+          headers: {
+            authorization: cookies.token,
+          },
+        }
+      )
+        .then((response) => {
+          console.log(response);
+          followChanger();
+          handlefollowchange();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
 
-    const handleClose = () => {
-        setOpenProfile(false);
-    };
+    function getFollowingList() {
+      Axios.post(buildPath("user/getFollowing"), null, {
+        headers: {
+          authorization: cookies.token,
+        },
+      })
+        .then((response) => {
+          //console.log(response);
+          var res = [];
+          for(let i = 0; i < response.data.results.length; i++){
+            res.push(response.data.results[i]._id)
+          }
+  
+          console.log(res)
+          setFollowingId(res);
+        })
+        .catch((error) => {
+          console.log(error);
+          console.log(error.response.data.error);
+        });
+    }
 
-    const handlefollowchange = () => {
-        setFollowingListChange(true);
-    };
-
-    function buildPath(route) {
-        if (process.env.NODE_ENV === "production") {
-          return "https://" + app_name + ".herokuapp.com/" + route;
-        } else {
-          return "http://localhost:3001/" + route;
+    function getFollowingStatus(){
+      for(let i = 0; i < followingId.length; i++){
+        if(followingId[i] === idToFollow){
+          setFollowing(true);
+          return;
         }
       }
-
-    function getUserRecipes(name) {
-        var userToGet;
-        if (clickedUser >= 1) return;
-    
-        setUsername(name);
-    
-        Axios.post(
-          buildPath(`user/searchUsers?page=${1}&count=${9}&search=${name}`),
-          null,
-          {
-            headers: {
-              authorization: cookies.token,
-            },
-          }
-        )
-          .then((response) => {
-            userToGet = response.data.results[0]._id;
-            setPfp(response.data.results[0].Pic);
-            setIdToFollow(response.data.results[0]._id);
-    
-            Axios.post(
-              buildPath("recipe/getUserRecipe"),
-              {
-                userId: userToGet,
-              },
-              {
-                headers: {
-                  authorization: cookies.token,
-                },
-              }
-            )
-              .then((response) => {
-                var res = [];
-                for (let q = 0; q < response.data.results.length; q++) {
-                  res.push(response.data.results[q]);
-                }
-                if (res.length != 0) {
-                  setUserCards((current) => [...userCards, ...res]);
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-                console.log(error.response.data.error);
-              });
-          })
-          .catch((error) => {
-            console.log(error);
-            console.log(error.response.data.error);
-          });
-      }
+  
+      setFollowing(false);
+      console.log("poo");
+    }
+  
+    useEffect(() => {
+      getFollowingStatus();
+    }, [followingId]);
 
     return(
         <ThemeProvider theme={theme}>
@@ -116,6 +207,8 @@ export default function FollowItem(person){
                 setOpenProfile(true);
                 setClickedUser(clickedUser + 1);
                 getUserRecipes(person.person.Username);
+                getFollowingList();
+                getFollowingStatus();
             }}>
                 <Avatar
                     src={person.person.Pic}
@@ -145,8 +238,24 @@ export default function FollowItem(person){
               }}
               onMouseDown={(event) => event.stopPropagation()}
             />
-            <Button sx={{ color: "white", pl: 2 }}>Follow+</Button>
-            <Button sx={{ color: "white", pl: 2 }}>Unfollow</Button>
+            <Button 
+              sx={{ color: "white", backgroundColor:"blue", pl: 2, ml: 2 }} 
+              onClick={() => {followPerson(); setFollowing(true)}} 
+              endIcon={<AddIcon/>}
+              variant="contained" 
+              disabled={following}
+            >
+              Follow
+            </Button>
+            <Button 
+              sx={{ color: "blue", backgroundColor:"white", pl: 2, ml: 2 }} 
+              onClick={() => {unfollowPerson(); setFollowing(false)}}
+              endIcon={<RemoveIcon/>}
+              variant="contained" 
+              disabled={!following}
+            >
+              Unfollow
+            </Button>
           </div>
 
           <DialogContentText className="profileBio">
