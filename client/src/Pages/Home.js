@@ -315,7 +315,7 @@ export default function Home() {
   // }, [followingArray]);
 
   return (
-    <BottomScrollListener offset={5} onBottom={getRecipes}>
+    <BottomScrollListener offset={2} onBottom={getRecipes}>
       <ThemeProvider theme={theme}>
         <HomeAppBar appbarToHome={appbarToHome} />
 

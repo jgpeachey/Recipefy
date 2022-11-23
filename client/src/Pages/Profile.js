@@ -50,6 +50,7 @@ export default function Profile() {
   const [newpassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [updateOpen, setUpdateOpen] = useState(false);
+  const [deleteProfileRecipe, setDeleteProfileRecipe] = useState(true);
 
   const handleUpdateOpen = () => {
     setUpdateOpen(true);
@@ -747,7 +748,10 @@ export default function Profile() {
         <Container sx={{ py: 8 }} maxWidth="md">
           <Grid container spacing={4}>
             {recipeCardsArray.map((recipe) => (
-              <RecipeCard recipe={recipe} />
+              <RecipeCard
+                recipe={recipe}
+                deleteProfileRecipe={deleteProfileRecipe}
+              />
             ))}
           </Grid>
         </Container>

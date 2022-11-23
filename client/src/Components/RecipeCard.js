@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -8,14 +9,14 @@ import CardActionArea from "@mui/material/CardActionArea";
 import RestaurantMenuOutlinedIcon from "@mui/icons-material/RestaurantMenuOutlined";
 import { createTheme, ThemeProvider } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-
+import Slide from "@mui/material/Slide";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { maxWidth } from "@mui/system";
 import Container from "@mui/system/Container";
-
+import { DialogActions } from "@mui/material";
 import Axios from "axios";
 import { cookies, useCookies } from "react-cookie";
 import axios from "axios";
@@ -51,11 +52,19 @@ const theme = createTheme({
   },
 });
 
+const deleterecipetransition = React.forwardRef(function Transition(
+  props,
+  ref
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 export default function RecipeCard({
   recipe,
   getLikedRecipes,
   onFavoritePage,
   handlefollowchange,
+  deleteProfileRecipe,
 }) {
   const [open, setOpen] = useState(false);
   const [username, setUsername] = useState("");
@@ -64,6 +73,7 @@ export default function RecipeCard({
   const [clickedUser, setClickedUser] = useState(0);
   const [openProfile, setOpenProfile] = useState(false);
   const [liked, setLiked] = useState(recipe.Likes);
+  const [deleterecipeopen, setDeleteRecipeOpen] = useState(false);
 
   const [id, setId] = useState([]); // all recipe ids
   const [likedId, setLikedId] = useState([]); // all liked recipe ids
@@ -87,6 +97,15 @@ export default function RecipeCard({
   const handleClose = () => {
     if (onFavoritePage) getLikedRecipes();
     setOpen(false);
+  };
+
+  const handledeleterecipeopen = () => {
+    console.log("what");
+    setDeleteRecipeOpen(true);
+  };
+
+  const handledeleterecipeclose = () => {
+    setDeleteRecipeOpen(false);
   };
 
   const handleClose2 = () => {
@@ -128,6 +147,24 @@ export default function RecipeCard({
   //       console.log(error.response.data.error);
   //     });
   // }
+
+  const deleteRecipe = (event) => {
+    Axios.delete(buildPath("recipe/removerecipe"), {
+      headers: {
+        authorization: cookies.token,
+      },
+      data: {
+        _id: recipe._id,
+      },
+    })
+      .then((response) => {
+        console.log("Recipe Deleted");
+        window.location.reload(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   function likeRecipe() {
     Axios.post(
@@ -496,6 +533,27 @@ export default function RecipeCard({
         </Paper>
 
         <Dialog
+          open={deleterecipeopen}
+          TransitionComponent={deleterecipetransition}
+          keepMounted
+          onClose={handleClose}
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <DialogTitle>{"Delete Account"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-slide-description">
+              Are you sure you want to delete this recipe?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={deleteRecipe}>Yes</Button>
+            <Button onClick={handledeleterecipeclose}>Cancel</Button>
+
+            {/* <Button onClick={deleteSubmit}>Yes</Button> */}
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
           open={open}
           keepMounted
           onClose={handleClose}
@@ -543,10 +601,22 @@ export default function RecipeCard({
             >
               Unlike
             </Button>
-            {/* lemme know how you feel about this button, I was thinking we could change the color and all that nonsense.
-            We can put the follow when you click on that persons username instead cause idk where else we would put the like
-          unless we put it all the way at the end of the modal screen area.  @ ALEX */}
-            {/* THESE ARE TEMPORARY LIKE AND UNLIKE BUTTONS,IN THE FUTURE MAKE IT ONE BUTTON @ALEX */}
+            {deleteProfileRecipe && (
+              <Button
+                variant="contained"
+                color="error"
+                sx={{
+                  ml: 2,
+                }}
+                onClick={() => {
+                  handledeleterecipeopen();
+                  handleClose();
+                  handleClose2();
+                }}
+              >
+                Delete Recipe?
+              </Button>
+            )}
 
             {/* <Button sx={{ color: "white", pl: 2 }}>Favorite+</Button> */}
           </div>
