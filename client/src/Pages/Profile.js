@@ -745,8 +745,8 @@ export default function Profile() {
         <Typography variant="h5" align="center" color="black" paragraph>
           Your Recipes
         </Typography>
-        <Container sx={{ py: 8 }} maxWidth="md">
-          <Grid container spacing={4}>
+        <Container sx={{ py: 8 }} maxWidth="lg">
+          <Grid container spacing={11}>
             {recipeCardsArray.map((recipe) => (
               <RecipeCard
                 recipe={recipe}
