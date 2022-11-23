@@ -390,7 +390,7 @@ export default function Home() {
           <Divider />
           <List sx={{}}>
             {followingArray.map((person) => (
-                <FollowItem person={person}/>
+                <FollowItem person={person} handlefollowchange={handlefollowchange}/>
             ))}
           </List>
         </Drawer>

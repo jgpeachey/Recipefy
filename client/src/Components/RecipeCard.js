@@ -419,7 +419,7 @@ export default function RecipeCard({
 
   useEffect(() => {
     getLikedStatus();
-  }, [likedId, liked2, liked]);
+  }, [likedId]);
 
   return (
     <Grid item xs={4}>
@@ -587,7 +587,7 @@ export default function RecipeCard({
               variant="contained"
               sx={{ color: "red", ml: 2, backgroundColor: "white" }}
               endIcon={<FavoriteIcon />}
-              onClick={() => {likeRecipe();}}
+              onClick={() => {likeRecipe(); setLiked2(true)}}
               disabled={liked2}
             >
               Like

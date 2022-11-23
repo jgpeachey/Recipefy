@@ -26,7 +26,7 @@ const theme = createTheme({
   },
 });
 
-const ImageCarousel = ({slides, info}) => {
+const ImageCarousel = ({slides, info, handlefollowchange}) => {
   const[current, setCurrent] = useState(0)
   const length = slides.length
   const [open, setOpen] = useState(false);
@@ -40,16 +40,13 @@ const ImageCarousel = ({slides, info}) => {
   const [followlistchange, setFollowingListChange] = useState(false);
   const [followingIds, setFollowingIds] = useState([]);
   const [followStatus, setFollowStatus] = useState(false);
+  const [followChange, setFollowChange] = useState(false);
 
   const app_name = "recipefy-g1";
   const [cookies, setCookie] = useCookies(["user"]);
 
     const handleCloseProfile = () => {
         setOpenProfile(false);
-    };
-
-    const handlefollowchange = () => {
-        setFollowingListChange(true);
     };
 
     function buildPath(route) {
@@ -74,6 +71,10 @@ const ImageCarousel = ({slides, info}) => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const followChanger = () => {
+    setFollowChange(!followChange);
   };
 
   if(!Array.isArray(slides) || slides.length <= 0){
@@ -167,6 +168,54 @@ const ImageCarousel = ({slides, info}) => {
     console.log("poo");
     setFollowStatus(false);
   }
+
+  function followPerson() {
+    Axios.post(
+      buildPath("user/followUser"),
+      {
+        userId: idToFollow,
+      },
+      {
+        headers: {
+          authorization: cookies.token,
+        },
+      }
+    )
+      .then((response) => {
+        console.log(response);
+        followChanger();
+        handlefollowchange();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  function unfollowPerson() {
+    Axios.post(
+      buildPath("user/unfollowUser"),
+      {
+        userId: idToFollow,
+      },
+      {
+        headers: {
+          authorization: cookies.token,
+        },
+      }
+    )
+      .then((response) => {
+        console.log(response);
+        followChanger();
+        handlefollowchange();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  // useEffect(() => {
+
+  // })
 
   return (
     <ThemeProvider theme={theme}>
@@ -284,8 +333,24 @@ const ImageCarousel = ({slides, info}) => {
               }}
               onMouseDown={(event) => event.stopPropagation()}
             />
-            <Button sx={{ color: "white", backgroundColor:"blue", pl: 2, ml: 2}} endIcon={<AddIcon/>} disabled={followStatus} variant="contained">Follow</Button>
-            <Button sx={{ color: "blue", backgroundColor:"white", pl: 2, ml: 2}} endIcon={<RemoveIcon/>} disabled={!followStatus} varuabt="contained">Unfollow</Button>
+            <Button 
+              sx={{ color: "white", backgroundColor:"blue", pl: 2, ml: 2}} 
+              endIcon={<AddIcon/>} 
+              disabled={followStatus} 
+              variant="contained" 
+              onClick={followPerson}
+            >
+              Follow
+            </Button>
+            <Button 
+              sx={{ color: "blue", backgroundColor:"white", pl: 2, ml: 2}} 
+              endIcon={<RemoveIcon/>} 
+              disabled={!followStatus} 
+              variant="contained" 
+              onClick={unfollowPerson}
+            >
+              Unfollow
+            </Button>
           </div>
 
           <DialogContentText className="profileBio">
