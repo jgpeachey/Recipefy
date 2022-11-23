@@ -6,6 +6,7 @@ import { Container } from "@mui/material";
 import { useCookies } from "react-cookie";
 import RecipeCard from "../Components/RecipeCard";
 import ImageCarousel from "../Components/ImageCarousel";
+import FollowItem from "../Components/FollowItem";
 
 import { SliderData } from "../Components/SliderData";
 import { useNavigate, Link } from "react-router-dom";
@@ -389,19 +390,23 @@ export default function Home() {
           <Divider />
           <List sx={{}}>
             {followingArray.map((person) => (
-              <ListItem key={person.Username} disablePadding>
-                <ListItemButton>
-                  <Avatar
-                    src={person.Pic}
-                    sx={{
-                      width: 24,
-                      height: 24,
-                      mr: 2,
-                    }}
-                  />
-                  <ListItemText primary={person.Username} />
-                </ListItemButton>
-              </ListItem>
+                // <ListItemButton onClick={() =>{
+                //   setOpenProfile(true);
+                //   setClickedUser(clickedUser + 1);
+                //   getUserRecipes(person.Username);
+                //   //getFollowerCount();
+                // }}>
+                //   <Avatar
+                //     src={person.Pic}
+                //     sx={{
+                //       width: 24,
+                //       height: 24,
+                //       mr: 2,
+                //     }}
+                //   />
+                //   <ListItemText primary={person.Username} />
+                // </ListItemButton>
+                <FollowItem person={person}/>
             ))}
           </List>
         </Drawer>
