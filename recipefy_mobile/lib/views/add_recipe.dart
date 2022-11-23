@@ -47,7 +47,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text("Share Recipe"),
+        title: const Text("Add Recipe"),
         centerTitle: true,
       ),
       body: Center(
@@ -71,7 +71,14 @@ class _AddRecipePageState extends State<AddRecipePage> {
                   titleInput = text;
                 },
               ),
+              const SizedBox(height: 20.0),
+              const Text(
+                "Ingredients",
+                style: const TextStyle(fontSize: 18),
+              ),
+              const SizedBox(height: 10.0),
               ListView.builder(
+                shrinkWrap: true,
                 itemCount: ingredientsInput.length,
                 itemBuilder: (context, index) {
                   String item = ingredientsInput[index];
@@ -82,21 +89,27 @@ class _AddRecipePageState extends State<AddRecipePage> {
               ),
               Row(
                 children: <Widget>[
-                  TextField(
-                    obscureText: false,
-                    decoration: InputDecoration(
-                        contentPadding:
-                            const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                        hintText: "Ingredient",
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(32.0))),
-                    onChanged: (text) {
-                      currentIngredientInput = text;
-                    },
+                  Expanded(
+                    child: TextField(
+                      obscureText: false,
+                      decoration: InputDecoration(
+                          contentPadding:
+                              const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                          hintText: "Ingredient",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(32.0))),
+                      onChanged: (text) {
+                        currentIngredientInput = text;
+                      },
+                    ),
                   ),
+                  const SizedBox(width: 10.0),
                   MaterialButton(
                       color: Colors.blue,
-                      child: const Icon(Icons.add),
+                      child: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
                       onPressed: () {
                         setState(() {
                           ingredientsInput.add(currentIngredientInput);
@@ -105,7 +118,13 @@ class _AddRecipePageState extends State<AddRecipePage> {
                 ],
               ),
               const SizedBox(height: 20.0),
+              const Text(
+                "Instructions",
+                style: const TextStyle(fontSize: 18),
+              ),
+              const SizedBox(height: 20.0),
               ListView.builder(
+                shrinkWrap: true,
                 itemCount: instructionsInput.length,
                 itemBuilder: (context, index) {
                   String item = instructionsInput[index];
@@ -116,21 +135,27 @@ class _AddRecipePageState extends State<AddRecipePage> {
               ),
               Row(
                 children: <Widget>[
-                  TextField(
-                    obscureText: false,
-                    decoration: InputDecoration(
-                        contentPadding:
-                            const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                        hintText: "Instruction",
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(32.0))),
-                    onChanged: (text) {
-                      currentInstructionInput = text;
-                    },
+                  Expanded(
+                    child: TextField(
+                      obscureText: false,
+                      decoration: InputDecoration(
+                          contentPadding:
+                              const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                          hintText: "Instruction",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(32.0))),
+                      onChanged: (text) {
+                        currentInstructionInput = text;
+                      },
+                    ),
                   ),
+                  const SizedBox(width: 10.0),
                   MaterialButton(
                       color: Colors.blue,
-                      child: const Icon(Icons.add),
+                      child: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
                       onPressed: () {
                         setState(() {
                           instructionsInput.add(currentInstructionInput);
@@ -180,6 +205,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
                 borderRadius: BorderRadius.circular(30.0),
                 color: Colors.green,
                 child: MaterialButton(
+                  child: const Text("Add Recipe"),
                   minWidth: MediaQuery.of(context).size.width,
                   padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                   onPressed: () async {
