@@ -390,22 +390,6 @@ export default function Home() {
           <Divider />
           <List sx={{}}>
             {followingArray.map((person) => (
-                // <ListItemButton onClick={() =>{
-                //   setOpenProfile(true);
-                //   setClickedUser(clickedUser + 1);
-                //   getUserRecipes(person.Username);
-                //   //getFollowerCount();
-                // }}>
-                //   <Avatar
-                //     src={person.Pic}
-                //     sx={{
-                //       width: 24,
-                //       height: 24,
-                //       mr: 2,
-                //     }}
-                //   />
-                //   <ListItemText primary={person.Username} />
-                // </ListItemButton>
                 <FollowItem person={person}/>
             ))}
           </List>

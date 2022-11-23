@@ -1,29 +1,16 @@
 import { useState, useEffect } from "react";
 import * as React from "react";
-import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
 import { Avatar, Button } from "@mui/material";
-import Box from "@mui/material/Box";
-import CardActionArea from "@mui/material/CardActionArea";
-import RestaurantMenuOutlinedIcon from "@mui/icons-material/RestaurantMenuOutlined";
 import { createTheme, ThemeProvider } from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import Slide from "@mui/material/Slide";
 import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { maxWidth } from "@mui/system";
 import Container from "@mui/system/Container";
-import { DialogActions } from "@mui/material";
 import Axios from "axios";
 import { cookies, useCookies } from "react-cookie";
-import axios from "axios";
-
-import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import RecipeCard from "./RecipeCard";
 

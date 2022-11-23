@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react'
 import { SliderData } from './SliderData';
 import {FaArrowAltCircleRight, FaArrowAltCircleLeft} from 'react-icons/fa'
 import { Avatar, Button, Box, Grid } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import Dialog from "@mui/material/Dialog";
@@ -14,6 +13,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Container from '@mui/system/Container';
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
+import RecipeCard from './RecipeCard';
 
 import Axios from "axios";
 import { cookies, useCookies } from "react-cookie";
@@ -29,13 +29,34 @@ const theme = createTheme({
 const ImageCarousel = ({slides, info}) => {
   const[current, setCurrent] = useState(0)
   const length = slides.length
-  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
-  // const [newRecipes, setNewRecipes] = useState([]);
+  const [username, setUsername] = useState("");
+  const [pfp, setPfp] = useState("");
+  const [userCards, setUserCards] = useState([]);
+  const [clickedUser, setClickedUser] = useState(0);
+  const [openProfile, setOpenProfile] = useState(false);
+  const [idToFollow, setIdToFollow] = useState("");
+  const [followlistchange, setFollowingListChange] = useState(false);
 
   const app_name = "recipefy-g1";
   const [cookies, setCookie] = useCookies(["user"]);
+
+    const handleCloseProfile = () => {
+        setOpenProfile(false);
+    };
+
+    const handlefollowchange = () => {
+        setFollowingListChange(true);
+    };
+
+    function buildPath(route) {
+        if (process.env.NODE_ENV === "production") {
+          return "https://" + app_name + ".herokuapp.com/" + route;
+        } else {
+          return "http://localhost:3001/" + route;
+        }
+      }
 
   const nextSlide = () => {
     setCurrent(current === length - 1 ? 0 : current + 1)
@@ -57,6 +78,57 @@ const ImageCarousel = ({slides, info}) => {
     return
   }
 
+  function getUserRecipes(name) {
+    var userToGet;
+    if (info[current].Clicked > 1) return;
+
+    setUsername(name);
+
+    Axios.post(
+      buildPath(`user/searchUsers?page=${1}&count=${9}&search=${name}`),
+      null,
+      {
+        headers: {
+          authorization: cookies.token,
+        },
+      }
+    )
+      .then((response) => {
+        userToGet = response.data.results[0]._id;
+        setPfp(response.data.results[0].Pic);
+        setIdToFollow(response.data.results[0]._id);
+
+        Axios.post(
+          buildPath("recipe/getUserRecipe"),
+          {
+            userId: userToGet,
+          },
+          {
+            headers: {
+              authorization: cookies.token,
+            },
+          }
+        )
+          .then((response) => {
+            var res = [];
+            for (let q = 0; q < response.data.results.length; q++) {
+              res.push(response.data.results[q]);
+            }
+            
+            setUserCards(res);
+            
+          })
+          .catch((error) => {
+            console.log(error);
+            console.log(error.response.data.error);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log(error.response.data.error);
+      });
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <section className="slider">
@@ -66,7 +138,7 @@ const ImageCarousel = ({slides, info}) => {
         {slides.map((slide, index) => {
           return(
             <div className={index === current ? 'slide active' : 'slide'} key={index}>
-              {index === current && (<img src={slide} alt='food' className='image' onClick={() => handleClickOpen()}/>)}
+              {index === current && (<img src={slide} alt='food' className='image' onClick={() => {handleClickOpen(); info[current].Clicked=0}}/>)}
             </div>
           )
         })}
@@ -85,10 +157,12 @@ const ImageCarousel = ({slides, info}) => {
               <Button
                 sx={{ color: "white" }}
                 onClick={(event) => {
-                  // setOpenProfile(true);
-                  // setClickedUser(clickedUser + 1);
-                  // getUserRecipes(event.target.innerText);
-                  // getFollowerCount();
+                  info[current].Clicked = info[current].Clicked + 1;
+                  console.log(info[current].Clicked);
+                  getUserRecipes(event.target.innerText);
+                  var temp = [];
+                  setUserCards(temp);
+                  setOpenProfile(true);
                 }}
               >
                 {info[current].Username}
@@ -150,6 +224,42 @@ const ImageCarousel = ({slides, info}) => {
               </Grid>
             </Container>
           </DialogContent>
+        </Dialog>
+
+        <Dialog
+          open={openProfile}
+          keepMounted
+          onClose={handleCloseProfile}
+          maxWidth={maxWidth}
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <div className="modalContainerTop">
+            <DialogTitle sx={{ color: "white" }}>{username}</DialogTitle>
+            <Avatar
+              src={pfp}
+              sx={{
+                width: 24,
+                height: 24,
+              }}
+              onMouseDown={(event) => event.stopPropagation()}
+            />
+            <Button sx={{ color: "white", pl: 2 }}>Follow+</Button>
+          </div>
+
+          <DialogContentText className="profileBio">
+            List of posted recipes:
+          </DialogContentText>
+
+          <Container>
+            <Grid container spacing={11} marginTop={-8.5} marginBottom={3}>
+              {userCards.map((recipe) => (
+                <RecipeCard
+                  recipe={recipe}
+                  handlefollowchange={handlefollowchange}
+                />
+              ))}
+            </Grid>
+          </Container>
         </Dialog>
 
     </ThemeProvider>
