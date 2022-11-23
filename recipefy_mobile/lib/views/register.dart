@@ -1,6 +1,9 @@
 import 'package:recipefy_mobile/services/remote_services.dart';
 import 'package:recipefy_mobile/views/register_confirm.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'dart:convert';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -14,14 +17,47 @@ class _RegisterPageState extends State<RegisterPage> {
   String lastNameInput = "";
   String emailInput = "";
   String usernameInput = "";
+  String imageInput = "";
   String passwordInput = "";
   String repPasswordInput = "";
   String errorText = "";
+
+  File? image;
 
   bool isValidEmail(String email) {
     return RegExp(
             r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
         .hasMatch(email);
+  }
+
+  bool isValidPassword(String password) {
+    if (!RegExp("/[a-z]+/").hasMatch(password) ||
+        !RegExp("/[A-Z]+/").hasMatch(password) ||
+        !RegExp("/[0-9]+/").hasMatch(password) ||
+        !RegExp("/[\$@#&!]+/").hasMatch(password) ||
+        password.length < 8) {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future selectImage() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) {
+        return;
+      }
+      final imageTemp = File(image.path);
+      List<int> imageBytes = await image.readAsBytes();
+      String imageBase64Temp = base64Encode(imageBytes);
+      setState(() {
+        this.image = imageTemp;
+        imageInput = imageBase64Temp;
+      });
+    } on Exception catch (error) {
+      debugPrint("Failed to select image: $error");
+    }
   }
 
   @override
@@ -127,10 +163,20 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                       ),
                       const SizedBox(height: 20.0),
+                      MaterialButton(
+                        color: Colors.blue,
+                        child: const Text(
+                          "Select Image from Gallery",
+                        ),
+                        onPressed: () {
+                          selectImage();
+                        },
+                      ),
+                      const SizedBox(height: 20.0),
                       Text(
                         errorText,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.red,
                           fontSize: 18,
                         ),
@@ -188,6 +234,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                 setState(() {});
                                 return;
                               }
+                              if (!isValidPassword(passwordInput)) {
+                                debugPrint(
+                                    "Your password must contain a minimum of 8 characters, a lowercase letter, an uppercase letter, a number, and a symbol");
+                                errorText =
+                                    "Your password must contain a minimum of 8 characters, a lowercase letter, an uppercase letter, a number, and a symbol";
+                                setState(() {});
+                                return;
+                              }
                               // Call API to attempt to register user
                               try {
                                 var response = await RemoteService().register(
@@ -195,7 +249,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     lastNameInput,
                                     usernameInput,
                                     emailInput,
-                                    "",
+                                    imageInput,
                                     passwordInput);
 
                                 debugPrint("$usernameInput registered.");
