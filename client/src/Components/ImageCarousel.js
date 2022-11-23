@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react'
-import { SliderData } from './SliderData';
 import {FaArrowAltCircleRight, FaArrowAltCircleLeft} from 'react-icons/fa'
 import { Avatar, Button, Box, Grid } from '@mui/material';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -9,9 +8,10 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { maxWidth } from '@mui/system';
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Container from '@mui/system/Container';
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 import RecipeCard from './RecipeCard';
 
@@ -38,6 +38,8 @@ const ImageCarousel = ({slides, info}) => {
   const [openProfile, setOpenProfile] = useState(false);
   const [idToFollow, setIdToFollow] = useState("");
   const [followlistchange, setFollowingListChange] = useState(false);
+  const [followingIds, setFollowingIds] = useState([]);
+  const [followStatus, setFollowStatus] = useState(false);
 
   const app_name = "recipefy-g1";
   const [cookies, setCookie] = useCookies(["user"]);
@@ -83,6 +85,8 @@ const ImageCarousel = ({slides, info}) => {
     if (info[current].Clicked > 1) return;
 
     setUsername(name);
+    var res = [];
+    setUserCards(res);
 
     Axios.post(
       buildPath(`user/searchUsers?page=${1}&count=${9}&search=${name}`),
@@ -97,6 +101,7 @@ const ImageCarousel = ({slides, info}) => {
         userToGet = response.data.results[0]._id;
         setPfp(response.data.results[0].Pic);
         setIdToFollow(response.data.results[0]._id);
+        console.log(response.data.results[0]._id)
 
         Axios.post(
           buildPath("recipe/getUserRecipe"),
@@ -127,6 +132,40 @@ const ImageCarousel = ({slides, info}) => {
         console.log(error);
         console.log(error.response.data.error);
       });
+  }
+
+  function getFollowingList() {
+    Axios.post(buildPath("user/getFollowing"), null, {
+      headers: {
+        authorization: cookies.token,
+      },
+    })
+      .then((response) => {
+        var res = [];
+        for(let i = 0; i < response.data.results.length; i++){
+          res.push(response.data.results[i]._id)
+        }
+
+        setFollowingIds(res);
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log(error.response.data.error);
+      });
+  }
+
+  function getFollowStatus(){
+    for(let i = 0; i < followingIds.length; i++){
+      if(followingIds[i] === idToFollow){
+        setFollowStatus(true);
+        console.log("pee")
+        return;
+      }
+    }
+
+    console.log("poo");
+    setFollowStatus(false);
   }
 
   return (
@@ -160,9 +199,11 @@ const ImageCarousel = ({slides, info}) => {
                   info[current].Clicked = info[current].Clicked + 1;
                   console.log(info[current].Clicked);
                   getUserRecipes(event.target.innerText);
-                  var temp = [];
-                  setUserCards(temp);
+                  // var temp = [];
+                  // setUserCards(temp);
                   setOpenProfile(true);
+                  getFollowingList();
+                  getFollowStatus();
                 }}
               >
                 {info[current].Username}
@@ -243,7 +284,8 @@ const ImageCarousel = ({slides, info}) => {
               }}
               onMouseDown={(event) => event.stopPropagation()}
             />
-            <Button sx={{ color: "white", pl: 2 }}>Follow+</Button>
+            <Button sx={{ color: "white", backgroundColor:"blue", pl: 2, ml: 2}} endIcon={<AddIcon/>} disabled={followStatus} variant="contained">Follow</Button>
+            <Button sx={{ color: "blue", backgroundColor:"white", pl: 2, ml: 2}} endIcon={<RemoveIcon/>} disabled={!followStatus} varuabt="contained">Unfollow</Button>
           </div>
 
           <DialogContentText className="profileBio">
