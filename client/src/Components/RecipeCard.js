@@ -20,8 +20,8 @@ import { DialogActions } from "@mui/material";
 import Axios from "axios";
 import { cookies, useCookies } from "react-cookie";
 import axios from "axios";
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 
 const theme = createTheme({
   typography: {
@@ -416,11 +416,11 @@ export default function RecipeCard({
       .then((response) => {
         //console.log(response);
         var res = [];
-        for(let i = 0; i < response.data.results.length; i++){
-          res.push(response.data.results[i]._id)
+        for (let i = 0; i < response.data.results.length; i++) {
+          res.push(response.data.results[i]._id);
         }
 
-        console.log(res)
+        console.log(res);
         setFollowingId(res);
       })
       .catch((error) => {
@@ -429,9 +429,9 @@ export default function RecipeCard({
       });
   }
 
-  function getFollowingStatus(){
-    for(let i = 0; i < followingId.length; i++){
-      if(followingId[i] === idToFollow){
+  function getFollowingStatus() {
+    for (let i = 0; i < followingId.length; i++) {
+      if (followingId[i] === idToFollow) {
         setFollowing(true);
         return;
       }
@@ -591,7 +591,7 @@ export default function RecipeCard({
             <DialogTitle sx={{ color: "white" }}>{recipe.Title}</DialogTitle>
             <DialogContentText sx={{ color: "white" }}>
               <Button
-                sx={{ color: "white" }}
+                sx={{ color: "white", fontSize: 20 }}
                 onClick={(event) => {
                   setOpenProfile(true);
                   setClickedUser(clickedUser + 1);
@@ -614,7 +614,10 @@ export default function RecipeCard({
               variant="contained"
               sx={{ color: "red", ml: 2, backgroundColor: "white" }}
               endIcon={<FavoriteIcon />}
-              onClick={() => {likeRecipe(); setLiked2(true)}}
+              onClick={() => {
+                likeRecipe();
+                setLiked2(true);
+              }}
               disabled={liked2}
             >
               Like
@@ -691,20 +694,26 @@ export default function RecipeCard({
               }}
               onMouseDown={(event) => event.stopPropagation()}
             />
-            <Button 
-              sx={{ color: "white", backgroundColor:"blue", pl: 2, ml: 2 }} 
-              onClick={() => {followPerson(); setFollowing(true)}} 
-              endIcon={<AddIcon/>}
-              variant="contained" 
+            <Button
+              sx={{ color: "white", backgroundColor: "blue", pl: 2, ml: 2 }}
+              onClick={() => {
+                followPerson();
+                setFollowing(true);
+              }}
+              endIcon={<AddIcon />}
+              variant="contained"
               disabled={following}
             >
               Follow
             </Button>
-            <Button 
-              sx={{ color: "blue", backgroundColor:"white", pl: 2, ml: 2 }} 
-              onClick={() => {unfollowPerson(); setFollowing(false)}}
-              endIcon={<RemoveIcon/>}
-              variant="contained" 
+            <Button
+              sx={{ color: "blue", backgroundColor: "white", pl: 2, ml: 2 }}
+              onClick={() => {
+                unfollowPerson();
+                setFollowing(false);
+              }}
+              endIcon={<RemoveIcon />}
+              variant="contained"
               disabled={!following}
             >
               Unfollow
