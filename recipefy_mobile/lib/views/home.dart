@@ -8,19 +8,24 @@ import '../../utils/colors.dart';
 // import '../../utils/dimensions.dart';
 import '../../widgets/small_text.dart';
 
-class MainFoodPage extends StatefulWidget {
-  const MainFoodPage({super.key});
-
-  @override
-  State<MainFoodPage> createState() => _MainFoodPageState();
+void main() {
+  runApp(
+    HomePage()
+  );
 }
 
-class _MainFoodPageState extends State<MainFoodPage> {
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage>{
+
   @override
   Widget build(BuildContext context) {
-    // print("current height is"+MediaQuery.of(context).size.height.toString());
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
       body: Column(
         children: [
           Container(
@@ -35,13 +40,16 @@ class _MainFoodPageState extends State<MainFoodPage> {
                   Column(
                     children: [
                       BigText(
-                          text: "United States",
+                          text: "Recipefy",
                           color: AppColors.mainColor,
                           size: 30),
                       Row(
+                        // ADD CONNECTION TO API HERE
+                        // PROFILE PICTURE AND FIRST NAME
+                        // DELETE THIS COMMENT
                         children: [
-                          SmallText(text: 'Orlando'),
-                          Icon(Icons.arrow_drop_down_rounded),
+                          Icon(Icons.person),
+                          Text('User'),
                         ],
                       ),
                     ],
