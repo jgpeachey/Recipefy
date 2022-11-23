@@ -74,6 +74,86 @@ class RemoteService {
     var uri = Uri.parse(
       'https://recipefy-g1.herokuapp.com/user/delete',
     );
+    var response = await http.delete(uri, body: parameters);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return response.body;
+    }
+    Error err = errorFromJson(response.body);
+    throw Exception(err.message);
+  }
+
+  Future<dynamic> verify(String id) async {
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/user/verify',
+    );
+    Map parameters = {"_id": id};
+    var response = await http.post(uri, body: parameters);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return response.body;
+    }
+    Error err = errorFromJson(response.body);
+    throw Exception(err.message);
+  }
+
+  Future<dynamic> searchUsers() async {}
+
+  Future<dynamic> followUser(String id) async {
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/user/followUser',
+    );
+    Map parameters = {"userId": id};
+    var response = await http.post(uri, body: parameters);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return response.body;
+    }
+    Error err = errorFromJson(response.body);
+    throw Exception(err.message);
+  }
+
+  Future<dynamic> unfollowUser(String id) async {
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/user/unfollowUser',
+    );
+    Map parameters = {"userId": id};
+    var response = await http.post(uri, body: parameters);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return response.body;
+    }
+    Error err = errorFromJson(response.body);
+    throw Exception(err.message);
+  }
+
+  Future<dynamic> updateUser(String email, String password, String pic) async {
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/user/updateuser',
+    );
+    Map parameters = {"Email": email, "Password": password, "Pic": pic};
+    var response = await http.post(uri, body: parameters);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return response.body;
+    }
+    Error err = errorFromJson(response.body);
+    throw Exception(err.message);
+  }
+
+  Future<dynamic> resetPasswordRequest(String email) async {
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/user/verify',
+    );
+    Map parameters = {"Email": email};
+    var response = await http.post(uri, body: parameters);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return response.body;
+    }
+    Error err = errorFromJson(response.body);
+    throw Exception(err.message);
+  }
+
+  Future<dynamic> resetPassword(String id, String token) async {
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/user/resetPassword',
+    );
+    Map parameters = {"userId": id, "token": token};
     var response = await http.post(uri, body: parameters);
     if (response.statusCode == 200 || response.statusCode == 201) {
       return response.body;
@@ -103,9 +183,9 @@ class RemoteService {
     throw Exception(err.message);
   }
 
-  Future<dynamic> removeRecipe(String id) async {
+  Future<dynamic> updateRecipe(String id) async {
     var uri = Uri.parse(
-      'https://recipefy-g1.herokuapp.com/recipes/removerecipe',
+      'https://recipefy-g1.herokuapp.com/recipe/updaterecipe',
     );
     Map parameters = {"_id": id};
     var response = await http.post(uri, body: parameters);
@@ -116,5 +196,32 @@ class RemoteService {
     throw Exception(err.message);
   }
 
-  Future<dynamic> updateRecipe() async {}
+  Future<dynamic> removeRecipe(String id) async {
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/recipes/removerecipe',
+    );
+    Map parameters = {"_id": id};
+    var response = await http.delete(uri, body: parameters);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return response.body;
+    }
+    Error err = errorFromJson(response.body);
+    throw Exception(err.message);
+  }
+
+  Future<dynamic> findRecipe() async {
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/recipes/findRecipe',
+    );
+    var response = await http.get(uri);
+    if (response.statusCode != 500) {
+      return response.body;
+    }
+    Error err = errorFromJson(response.body);
+    throw Exception(err.message);
+  }
+
+  Future<dynamic> getUserRecipe() async {}
+
+  Future<dynamic> findAllRecipe() async {}
 }
