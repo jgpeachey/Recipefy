@@ -587,7 +587,7 @@ export default function RecipeCard({
               variant="contained"
               sx={{ color: "red", ml: 2, backgroundColor: "white" }}
               endIcon={<FavoriteIcon />}
-              onClick={likeRecipe}
+              onClick={() => {likeRecipe();}}
               disabled={liked2}
             >
               Like

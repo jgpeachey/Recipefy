@@ -398,7 +398,6 @@ export default function Home() {
                       height: 24,
                       mr: 2,
                     }}
-                    onMouseDown={(event) => event.stopPropagation()}
                   />
                   <ListItemText primary={person.Username} />
                 </ListItemButton>
