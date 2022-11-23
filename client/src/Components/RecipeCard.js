@@ -681,6 +681,7 @@ export default function RecipeCard({
           open={openProfile}
           keepMounted
           onClose={handleClose2}
+          PaperProps={{ sx: { width: "80%" } }}
           maxWidth={maxWidth}
           aria-describedby="alert-dialog-slide-description"
         >

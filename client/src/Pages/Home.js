@@ -66,6 +66,12 @@ export default function Home() {
   const [newRecipes, setNewRecipes] = useState([]);
   const [newRecipes2, setNewRecipes2] = useState([]);
 
+  const [likeChangeCarousel, setLikeChangeCarousel] = useState(false);
+
+  const likeChangeImageCarousel = () => {
+    setLikeChangeCarousel(!likeChangeCarousel);
+  }
+
   const appbarToHome = (appbardata) => {
     console.log(appbardata);
     setSearcher(appbardata);
@@ -320,7 +326,7 @@ export default function Home() {
       <ThemeProvider theme={theme}>
         <HomeAppBar appbarToHome={appbarToHome} />
 
-        <ImageCarousel slides={newRecipes} info={newRecipes2} />
+        <ImageCarousel slides={newRecipes} info={newRecipes2} handlefollowchange={handlefollowchange}/>
         {/* <Button
           onClick={(event) => {
             setOpenProfile(true);
