@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:recipefy_mobile/models/user.dart';
 import 'package:recipefy_mobile/models/recipe.dart';
 import 'package:recipefy_mobile/models/error.dart';
@@ -39,7 +41,7 @@ class RemoteService {
     );
     var response = await http.post(uri, body: parameters);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return response.body;
+      return User.fromJson(jsonDecode(response.body));
     }
     Error err = errorFromJson(response.body);
     throw Exception(err.message);
@@ -60,7 +62,7 @@ class RemoteService {
     );
     var response = await http.post(uri, body: parameters);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return response.body;
+      return User.fromJson(jsonDecode(response.body));
     }
     Error err = errorFromJson(response.body);
     throw Exception(err.message);
@@ -76,7 +78,7 @@ class RemoteService {
     );
     var response = await http.delete(uri, body: parameters);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return response.body;
+      return User.fromJson(jsonDecode(response.body));
     }
     Error err = errorFromJson(response.body);
     throw Exception(err.message);
@@ -89,13 +91,28 @@ class RemoteService {
     Map parameters = {"_id": id};
     var response = await http.post(uri, body: parameters);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return response.body;
+      return User.fromJson(jsonDecode(response.body));
     }
     Error err = errorFromJson(response.body);
     throw Exception(err.message);
   }
 
-  Future<dynamic> searchUsers() async {}
+  Future<List<User>> searchUsers() async {
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/user/findRecipe',
+    );
+    var response = await http.get(uri);
+    var users = List.empty(growable: true);
+    if (response.statusCode != 201) {
+      var usersJson = jsonDecode(response.body);
+      for (var userJson in usersJson) {
+        users.add(User.fromJson(userJson));
+      }
+      return usersJson;
+    }
+    Error err = errorFromJson(response.body);
+    throw Exception(err.message);
+  }
 
   Future<dynamic> followUser(String id) async {
     var uri = Uri.parse(
@@ -104,7 +121,7 @@ class RemoteService {
     Map parameters = {"userId": id};
     var response = await http.post(uri, body: parameters);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return response.body;
+      return User.fromJson(jsonDecode(response.body));
     }
     Error err = errorFromJson(response.body);
     throw Exception(err.message);
@@ -117,7 +134,7 @@ class RemoteService {
     Map parameters = {"userId": id};
     var response = await http.post(uri, body: parameters);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return response.body;
+      return User.fromJson(jsonDecode(response.body));
     }
     Error err = errorFromJson(response.body);
     throw Exception(err.message);
@@ -130,7 +147,7 @@ class RemoteService {
     Map parameters = {"Email": email, "Password": password, "Pic": pic};
     var response = await http.post(uri, body: parameters);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return response.body;
+      return User.fromJson(jsonDecode(response.body));
     }
     Error err = errorFromJson(response.body);
     throw Exception(err.message);
@@ -143,7 +160,7 @@ class RemoteService {
     Map parameters = {"Email": email};
     var response = await http.post(uri, body: parameters);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return response.body;
+      return User.fromJson(jsonDecode(response.body));
     }
     Error err = errorFromJson(response.body);
     throw Exception(err.message);
@@ -156,7 +173,7 @@ class RemoteService {
     Map parameters = {"userId": id, "token": token};
     var response = await http.post(uri, body: parameters);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return response.body;
+      return User.fromJson(jsonDecode(response.body));
     }
     Error err = errorFromJson(response.body);
     throw Exception(err.message);

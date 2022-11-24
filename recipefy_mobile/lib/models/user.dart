@@ -1,12 +1,19 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
-List<User> userFromJson(String str) =>
-    List<User>.from(jsonDecode(str).map((x) => User.fromJson(x)));
+part 'user.g.dart';
 
-String userToJson(List<User> data) =>
-    jsonEncode(List<dynamic>.from(data.map((x) => x.toJson())));
-
+@JsonSerializable()
 class User {
+  String firstName;
+  String lastName;
+  String profilePic;
+  String username;
+  String email;
+  String password;
+  String? emailToken;
+  String? refreshToken;
+  String? isVerified;
+
   User({
     required this.firstName,
     required this.lastName,
@@ -19,37 +26,7 @@ class User {
     this.isVerified,
   });
 
-  String firstName;
-  String lastName;
-  String profilePic;
-  String username;
-  String email;
-  String password;
-  String? emailToken;
-  String? refreshToken;
-  String? isVerified;
+  factory User.fromJson(Map<String, dynamic> data) => _$UserFromJson(data);
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
-        firstName: json["firstName"],
-        lastName: json["lastName"],
-        profilePic: json["profilePic"],
-        username: json["username"],
-        email: json["email"],
-        password: json["password"],
-        emailToken: json["emailToken"],
-        refreshToken: json["refreshToken"],
-        isVerified: json["isVerified"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "firstName": firstName,
-        "lastName": lastName,
-        "profilePic": profilePic,
-        "username": username,
-        "email": email,
-        "password": password,
-        "emailToken": emailToken,
-        "refreshToken": refreshToken,
-        "isVerified": isVerified,
-      };
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 }
