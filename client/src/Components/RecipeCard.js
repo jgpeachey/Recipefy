@@ -651,6 +651,8 @@ export default function RecipeCard({
             {/* <Button sx={{ color: "white", pl: 2 }}>Favorite+</Button> */}
           </div>
           <DialogContent>
+            <DialogTitle sx={{mb:0, fontSize: 15}}>Recipe Description:</DialogTitle>
+            <DialogContentText sx={{mb:2}} className="recipeDescription">{recipe.Description}</DialogContentText>
             <Container>
               <Grid container spacing={1}>
                 <div className="modalContainer">
@@ -670,6 +672,8 @@ export default function RecipeCard({
                         <DialogContentText>-{instruction}</DialogContentText>
                       ))}
                     </DialogContentText>
+                    <DialogTitle sx={{pb:0, fontSize:15}}>{recipe.Calories} Calories</DialogTitle>
+                    <DialogTitle sx={{pt:0, fontSize:15}}>{recipe.Sodium} mg Sodium</DialogTitle>
                   </DialogContent>
                 </div>
               </Grid>

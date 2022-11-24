@@ -382,6 +382,8 @@ const ImageCarousel = ({slides, info, handlefollowchange, likeChangeImageCarouse
             {/* <Button sx={{ color: "white", pl: 2 }}>Favorite+</Button> */}
           </div>
           <DialogContent>
+          <DialogTitle sx={{mb:0, fontSize: 15}}>Recipe Description:</DialogTitle>
+          <DialogContentText sx={{mb:2}} className="recipeDescription">{info[current].Description}</DialogContentText>
             <Container>
               <Grid container spacing={1}>
                 <div className="modalContainer">
@@ -401,6 +403,8 @@ const ImageCarousel = ({slides, info, handlefollowchange, likeChangeImageCarouse
                         <DialogContentText>-{instruction}</DialogContentText>
                       ))}
                     </DialogContentText>
+                    <DialogTitle sx={{pb:0, fontSize:15}}>{info[current].Calories} Calories</DialogTitle>
+                    <DialogTitle sx={{pt:0, fontSize:15}}>{info[current].Sodium} mg Sodium</DialogTitle>
                   </DialogContent>
                 </div>
               </Grid>
