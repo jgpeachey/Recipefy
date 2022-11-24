@@ -195,7 +195,6 @@ export default function FollowItem({ person, handlefollowchange }) {
     }
 
     setFollowing(false);
-    console.log("poo");
   }
 
   useDeepCompareEffect(() => {
@@ -232,6 +231,7 @@ export default function FollowItem({ person, handlefollowchange }) {
         open={openProfile}
         keepMounted
         onClose={handleClose}
+        PaperProps={{ sx: { width: "80%" } }}
         maxWidth={maxWidth}
         aria-describedby="alert-dialog-slide-description"
       >
