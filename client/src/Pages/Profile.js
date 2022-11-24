@@ -26,6 +26,7 @@ import TextField from "@mui/material/TextField";
 import { Avatar, DialogActions } from "@mui/material";
 import RecipeCard from "../Components/RecipeCard";
 import { useEffect } from "react";
+import { useCounter, useDeepCompareEffect } from "react-use";
 
 const theme = createTheme();
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -156,6 +157,11 @@ export default function Profile() {
     }
   }
 
+  const appbarToHome = (appbardata) => {
+    console.log(appbardata);
+    setSearcher(appbardata);
+  };
+
   const [base64Picture, setBase64Picture] = useState("");
   const [pictureError, setPictureError] = useState("");
   const [pictureSuccess, setPictureSuccess] = useState("");
@@ -206,6 +212,64 @@ export default function Profile() {
 
   const [page, setPage] = useState(1);
   const [recipeCardsArray, setRecipeCardsArray] = useState([]);
+  const [searcher, setSearcher] = useState("");
+  const [pageTitle, setPageTitle] = useState("");
+  const [change, setChange] = useState(false);
+  var counter = 0;
+  var refresh = 0;
+  let prevSearch;
+  const [tempRes, setTempRes] = useState([]);
+
+  function getFilteredRecipes() {
+    setPageTitle("Search Result");
+    setPage(1);
+    console.log("We are searching for " + searcher);
+    console.log(recipeCardsArray);
+    if (recipeCardsArray) {
+      Axios.post(
+        buildPath("recipe/findRecipe"),
+        {
+          page: page,
+          count: 9,
+          search: "",
+          filter: cookies.id,
+        },
+        {
+          headers: {
+            authorization: cookies.token,
+          },
+        }
+      )
+        .then((response) => {
+          console.log(response);
+          var res = [];
+          counter = recipeCardsArray.length;
+          for (let q = 0; q < response.data.results.length; q++) {
+            response.data.results[q].index = counter;
+            counter++;
+            res.push(response.data.results[q]);
+          }
+          console.log("cheese");
+          setTempRes(res);
+          console.log("temp res----> " + tempRes);
+          setChange(!change);
+          console.log(recipeCardsArray);
+        })
+        .catch((error) => {
+          console.log(error);
+          console.log(error.response.data.error);
+        });
+      var finalRes = [];
+      for (let q = 0; q < tempRes.length; q++) {
+        if (tempRes[q].Title.toLowerCase().match(searcher.toLowerCase())) {
+          finalRes.push(tempRes[q]);
+        }
+      }
+      setRecipeCardsArray(finalRes);
+      console.log(searcher);
+      console.log(recipeCardsArray);
+    }
+  }
 
   function getRecipes() {
     setPage(page + 1);
@@ -238,11 +302,19 @@ export default function Profile() {
       .then((response) => {
         console.log(response);
         var res = [];
+        counter = recipeCardsArray.length;
         for (let q = 0; q < response.data.results.length; q++) {
+          response.data.results[q].index = counter;
+          counter++;
           res.push(response.data.results[q]);
         }
+        if (page === 1) {
+          console.log("cheese");
+          setRecipeCardsArray(res);
+          setChange(!change);
+        }
         if (res.length != 0) {
-          setRecipeCardsArray((current) => [...recipeCardsArray, ...res]);
+          setRecipeCardsArray(res);
         }
         console.log(recipeCardsArray);
       })
@@ -250,6 +322,12 @@ export default function Profile() {
         console.log(error);
         console.log(error.response.data.error);
       });
+    if (searcher === "") {
+      setPageTitle(cookies.first + "'s Recipes");
+    } else {
+      setPageTitle("Search Result");
+      setPage(1);
+    }
     // Axios.get(buildPath("recipe/findRecipe"), config)
     //   .then((response) => {
     //     var res = [];
@@ -265,9 +343,28 @@ export default function Profile() {
     //     console.log(error.response.data.error);
     //   });
   }
-  useEffect(() => {
-    getRecipes();
-  }, []);
+  useDeepCompareEffect(() => {
+    if (refresh === 0) {
+      prevSearch = "";
+      refresh++;
+    }
+    console.log("called");
+    console.log(prevSearch);
+    console.log(searcher);
+    if (!(searcher === "")) {
+      if (prevSearch != searcher) {
+        console.log("CHANGEE");
+        prevSearch = searcher;
+        getFilteredRecipes() && getRecipes();
+      }
+    } else {
+      prevSearch = "";
+    }
+    if (prevSearch === "") {
+      console.log("EMPTY");
+      getRecipes();
+    }
+  }, [searcher, recipeCardsArray, tempRes]);
 
   const updatePassword = (event) => {
     if (!(newpassword === confirmPassword)) {
@@ -442,7 +539,7 @@ export default function Profile() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <HomeAppBar />
+      <HomeAppBar appbarToHome={appbarToHome} />
       <main>
         <Box
           sx={{
@@ -743,7 +840,7 @@ export default function Profile() {
           </Container>
         </Box>
         <Typography variant="h5" align="center" color="black" paragraph>
-          Your Recipes
+          {pageTitle}
         </Typography>
         <Container sx={{ py: 8 }} maxWidth="lg">
           <Grid container spacing={11}>
