@@ -14,45 +14,27 @@ class AppColumn extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        BigText(text: text, size: 26,),
+        BigText(
+          text: text,
+          size: 26,
+        ),
         SizedBox(height: 10),
         Row(
-          // mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Wrap(
-              children: List.generate(
-                5,
-                ((index) =>
-                    Icon(Icons.star, color: AppColors.mainColor, size: 15)),
-              ),
-            ),
-            SizedBox(width: 10),
-            SmallText(text: "4.5"),
-            SizedBox(width: 20),
-            SmallText(text: "1287"),
-            SizedBox(width: 10),
-            SmallText(text: "comments"),
-          ],
-        ),
-        SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+            // ADD CONNECTION TO API HERE
+            // DELETE THIS COMMENT
             IconAndTextWdiget(
                 icon: Icons.house,
-                text: 'abc',
+                text: '10-27-22',
                 color: AppColors.mainColor,
                 iconColor: AppColors.iconColor),
+            SizedBox(width: 20,),
             IconAndTextWdiget(
                 icon: Icons.person,
-                text: 'person',
+                text: 'User',
                 color: AppColors.mainColor,
                 iconColor: Colors.deepPurple),
-            IconAndTextWdiget(
-                icon: Icons.food_bank,
-                text: 'food',
-                color: AppColors.mainColor,
-                iconColor: Colors.pinkAccent),
           ],
         ),
       ],

@@ -72,6 +72,18 @@ test("HomeAppBar showing correctly", () => {
   const logoutElement = screen.getAllByText(/Logout/i);
   expect(logoutElement).toBeTruthy();
 });
+test("NewAppBar showing correctly", () => {
+  render(
+    <BrowserRouter>
+      <NewAppBar />
+    </BrowserRouter>
+  );
+  const loginElement = screen.getAllByText(/Login/i);
+  expect(loginElement).toBeTruthy();
+
+  const registerElement = screen.getAllByText(/Register/i);
+  expect(registerElement).toBeTruthy();
+});
 
 test("Recipe Card showing correctly", () => {
   render(
@@ -247,6 +259,97 @@ describe("API tests from frontend", () => {
             Info: {
               Firstname: "tester",
             },
+          },
+        });
+      }
+    });
+  });
+  test("deleteuser", () => {
+    axios.get.mockImplementation((url) => {
+      if (url === "/user/deleteuser") {
+        return Promise.resolve({
+          data: {
+            Email: "test@test.com",
+            Password: "123456",
+          },
+        });
+      }
+    });
+  });
+  test("searchUsers", () => {
+    axios.get.mockImplementation((url) => {
+      if (url === "/user/searchUsers") {
+        return Promise.resolve({
+          data: {
+            page: 1,
+            count: 9,
+            search: "cheese",
+          },
+        });
+      }
+    });
+  });
+  test("getFollowers", () => {
+    axios.get.mockImplementation((url) => {
+      if (url === "/user/getFollowers") {
+        return Promise.resolve({
+          data: {
+            _id: "63729fc72304b9f55f466529",
+          },
+        });
+      }
+    });
+  });
+  test("getFollowing", () => {
+    axios.get.mockImplementation((url) => {
+      if (url === "/user/getFollowing") {
+        return Promise.resolve({
+          data: {
+            _id: "63729fc72304b9f55f466529",
+          },
+        });
+      }
+    });
+  });
+  test("followUser", () => {
+    axios.get.mockImplementation((url) => {
+      if (url === "/user/followUser") {
+        return Promise.resolve({
+          data: {
+            _id: "63729fc72304b9f55f466529",
+          },
+        });
+      }
+    });
+  });
+  test("unfollowUser", () => {
+    axios.get.mockImplementation((url) => {
+      if (url === "/user/unfollowUser") {
+        return Promise.resolve({
+          data: {
+            _id: "63729fc72304b9f55f466529",
+          },
+        });
+      }
+    });
+  });
+  test("getFollowersById", () => {
+    axios.get.mockImplementation((url) => {
+      if (url === "/user/getFollowersById") {
+        return Promise.resolve({
+          data: {
+            _id: "63729fc72304b9f55f466529",
+          },
+        });
+      }
+    });
+  });
+  test("getFollowingsById", () => {
+    axios.get.mockImplementation((url) => {
+      if (url === "/user/getFollowingsById") {
+        return Promise.resolve({
+          data: {
+            _id: "63729fc72304b9f55f466529",
           },
         });
       }

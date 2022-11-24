@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -8,17 +9,19 @@ import CardActionArea from "@mui/material/CardActionArea";
 import RestaurantMenuOutlinedIcon from "@mui/icons-material/RestaurantMenuOutlined";
 import { createTheme, ThemeProvider } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-
+import Slide from "@mui/material/Slide";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { maxWidth } from "@mui/system";
 import Container from "@mui/system/Container";
-
+import { DialogActions } from "@mui/material";
 import Axios from "axios";
 import { cookies, useCookies } from "react-cookie";
 import axios from "axios";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 
 const theme = createTheme({
   typography: {
@@ -51,11 +54,19 @@ const theme = createTheme({
   },
 });
 
+const deleterecipetransition = React.forwardRef(function Transition(
+  props,
+  ref
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 export default function RecipeCard({
   recipe,
   getLikedRecipes,
   onFavoritePage,
   handlefollowchange,
+  deleteProfileRecipe,
 }) {
   const [open, setOpen] = useState(false);
   const [username, setUsername] = useState("");
@@ -64,10 +75,14 @@ export default function RecipeCard({
   const [clickedUser, setClickedUser] = useState(0);
   const [openProfile, setOpenProfile] = useState(false);
   const [liked, setLiked] = useState(recipe.Likes);
+  const [deleterecipeopen, setDeleteRecipeOpen] = useState(false);
 
   const [id, setId] = useState([]); // all recipe ids
   const [likedId, setLikedId] = useState([]); // all liked recipe ids
   const [liked2, setLiked2] = useState(false); // if recipe is liked or not
+
+  const [followingId, setFollowingId] = useState([]);
+  const [following, setFollowing] = useState(false);
 
   const [idToFollow, setIdToFollow] = useState("");
   const [followChange, setFollowChange] = useState(false);
@@ -87,6 +102,15 @@ export default function RecipeCard({
   const handleClose = () => {
     if (onFavoritePage) getLikedRecipes();
     setOpen(false);
+  };
+
+  const handledeleterecipeopen = () => {
+    console.log("what");
+    setDeleteRecipeOpen(true);
+  };
+
+  const handledeleterecipeclose = () => {
+    setDeleteRecipeOpen(false);
   };
 
   const handleClose2 = () => {
@@ -128,6 +152,24 @@ export default function RecipeCard({
   //       console.log(error.response.data.error);
   //     });
   // }
+
+  const deleteRecipe = (event) => {
+    Axios.delete(buildPath("recipe/removerecipe"), {
+      headers: {
+        authorization: cookies.token,
+      },
+      data: {
+        _id: recipe._id,
+      },
+    })
+      .then((response) => {
+        console.log("Recipe Deleted");
+        window.location.reload(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   function likeRecipe() {
     Axios.post(
@@ -372,7 +414,14 @@ export default function RecipeCard({
       },
     })
       .then((response) => {
-        console.log(response);
+        //console.log(response);
+        var res = [];
+        for (let i = 0; i < response.data.results.length; i++) {
+          res.push(response.data.results[i]._id);
+        }
+
+        console.log(res);
+        setFollowingId(res);
       })
       .catch((error) => {
         console.log(error);
@@ -380,9 +429,22 @@ export default function RecipeCard({
       });
   }
 
+  function getFollowingStatus() {
+    for (let i = 0; i < followingId.length; i++) {
+      if (followingId[i] === idToFollow) {
+        setFollowing(true);
+        return;
+      }
+    }
+
+    setFollowing(false);
+    console.log("poo");
+  }
+
   useEffect(() => {
     getLikedStatus();
-  }, [likedId, liked2, liked]);
+    getFollowingStatus();
+  }, [likedId, followingId]);
 
   return (
     <Grid item xs={4}>
@@ -416,10 +478,12 @@ export default function RecipeCard({
                   onClick={(event) => {
                     event.stopPropagation();
                     event.preventDefault();
-                    setOpenProfile(true);
                     setClickedUser(clickedUser + 1);
                     getUserRecipes(event.target.innerText);
                     getFollowerCount();
+                    getFollowingList();
+                    getFollowingStatus();
+                    setOpenProfile(true);
                   }}
                 >
                   <Avatar
@@ -496,6 +560,27 @@ export default function RecipeCard({
         </Paper>
 
         <Dialog
+          open={deleterecipeopen}
+          TransitionComponent={deleterecipetransition}
+          keepMounted
+          onClose={handleClose}
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <DialogTitle>{"Delete Account"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-slide-description">
+              Are you sure you want to delete this recipe?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={deleteRecipe}>Yes</Button>
+            <Button onClick={handledeleterecipeclose}>Cancel</Button>
+
+            {/* <Button onClick={deleteSubmit}>Yes</Button> */}
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
           open={open}
           keepMounted
           onClose={handleClose}
@@ -506,7 +591,7 @@ export default function RecipeCard({
             <DialogTitle sx={{ color: "white" }}>{recipe.Title}</DialogTitle>
             <DialogContentText sx={{ color: "white" }}>
               <Button
-                sx={{ color: "white" }}
+                sx={{ color: "white", fontSize: 20 }}
                 onClick={(event) => {
                   setOpenProfile(true);
                   setClickedUser(clickedUser + 1);
@@ -529,7 +614,10 @@ export default function RecipeCard({
               variant="contained"
               sx={{ color: "red", ml: 2, backgroundColor: "white" }}
               endIcon={<FavoriteIcon />}
-              onClick={likeRecipe}
+              onClick={() => {
+                likeRecipe();
+                setLiked2(true);
+              }}
               disabled={liked2}
             >
               Like
@@ -543,14 +631,28 @@ export default function RecipeCard({
             >
               Unlike
             </Button>
-            {/* lemme know how you feel about this button, I was thinking we could change the color and all that nonsense.
-            We can put the follow when you click on that persons username instead cause idk where else we would put the like
-          unless we put it all the way at the end of the modal screen area.  @ ALEX */}
-            {/* THESE ARE TEMPORARY LIKE AND UNLIKE BUTTONS,IN THE FUTURE MAKE IT ONE BUTTON @ALEX */}
+            {deleteProfileRecipe && (
+              <Button
+                variant="contained"
+                color="error"
+                sx={{
+                  ml: 2,
+                }}
+                onClick={() => {
+                  handledeleterecipeopen();
+                  handleClose();
+                  handleClose2();
+                }}
+              >
+                Delete Recipe?
+              </Button>
+            )}
 
             {/* <Button sx={{ color: "white", pl: 2 }}>Favorite+</Button> */}
           </div>
           <DialogContent>
+            <DialogTitle sx={{mb:0, fontSize: 15}}>Recipe Description:</DialogTitle>
+            <DialogContentText sx={{mb:2}} className="recipeDescription">{recipe.Description}</DialogContentText>
             <Container>
               <Grid container spacing={1}>
                 <div className="modalContainer">
@@ -570,6 +672,8 @@ export default function RecipeCard({
                         <DialogContentText>-{instruction}</DialogContentText>
                       ))}
                     </DialogContentText>
+                    <DialogTitle sx={{pb:0, fontSize:15}}>{recipe.Calories} Calories</DialogTitle>
+                    <DialogTitle sx={{pt:0, fontSize:15}}>{recipe.Sodium} mg Sodium</DialogTitle>
                   </DialogContent>
                 </div>
               </Grid>
@@ -581,6 +685,7 @@ export default function RecipeCard({
           open={openProfile}
           keepMounted
           onClose={handleClose2}
+          PaperProps={{ sx: { width: "80%" } }}
           maxWidth={maxWidth}
           aria-describedby="alert-dialog-slide-description"
         >
@@ -594,10 +699,28 @@ export default function RecipeCard({
               }}
               onMouseDown={(event) => event.stopPropagation()}
             />
-            <Button sx={{ color: "white", pl: 2 }} onClick={followPerson}>
-              Follow+
+            <Button
+              sx={{ color: "white", backgroundColor: "blue", pl: 2, ml: 2 }}
+              onClick={() => {
+                followPerson();
+                setFollowing(true);
+              }}
+              endIcon={<AddIcon />}
+              variant="contained"
+              disabled={following}
+            >
+              Follow
             </Button>
-            <Button sx={{ color: "white", pl: 2 }} onClick={unfollowPerson}>
+            <Button
+              sx={{ color: "blue", backgroundColor: "white", pl: 2, ml: 2 }}
+              onClick={() => {
+                unfollowPerson();
+                setFollowing(false);
+              }}
+              endIcon={<RemoveIcon />}
+              variant="contained"
+              disabled={!following}
+            >
               Unfollow
             </Button>
           </div>

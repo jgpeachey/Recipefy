@@ -26,6 +26,9 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 
 const theme = createTheme();
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export default function Register() {
   const [cookies, setCookie] = useCookies(["user"]);
@@ -33,10 +36,6 @@ export default function Register() {
   const [checkbox, setCheckBox] = useState(false);
   const app_name = "recipefy-g1";
   const [open, setOpen] = useState(false);
-
-  const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  });
 
   const handleClickOpen = () => {
     setOpen(true);
