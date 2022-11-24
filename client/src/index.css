@@ -175,6 +175,11 @@
   max-width: 350px;
 }
 
+.recipeDescription{
+  padding-left:23px;
+  max-width: 1100px;
+}
+
 .modalPFP{
   padding-left: 15px;
 }

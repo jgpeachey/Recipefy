@@ -26,15 +26,15 @@ const forgotTransition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 export default function Login() {
   const [cookies, setCookie] = useCookies(["user"]);
   const [open, setOpen] = useState(false);
   const [forgotOpen, setForgotOpen] = useState(false);
   const [forgotEmail, setforgotEmail] = useState("");
-
-  const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  });
 
   const handleForgotOpen = () => {
     setForgotOpen(true);

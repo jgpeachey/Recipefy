@@ -6,6 +6,7 @@ import { Container } from "@mui/material";
 import { useCookies } from "react-cookie";
 import RecipeCard from "../Components/RecipeCard";
 import ImageCarousel from "../Components/ImageCarousel";
+import FollowItem from "../Components/FollowItem";
 
 import { SliderData } from "../Components/SliderData";
 import { useNavigate, Link } from "react-router-dom";
@@ -65,6 +66,12 @@ export default function Home() {
   const [newRecipes, setNewRecipes] = useState([]);
   const [newRecipes2, setNewRecipes2] = useState([]);
 
+  const [likeChangeCarousel, setLikeChangeCarousel] = useState(false);
+
+  const likeChangeImageCarousel = () => {
+    setLikeChangeCarousel(!likeChangeCarousel);
+  }
+
   const appbarToHome = (appbardata) => {
     console.log(appbardata);
     setSearcher(appbardata);
@@ -83,7 +90,7 @@ export default function Home() {
   };
 
   const handlefollowchange = () => {
-    setFollowingListChange(true);
+    setFollowingListChange(!followlistchange);
   };
 
   function buildPath(route) {
@@ -315,11 +322,11 @@ export default function Home() {
   // }, [followingArray]);
 
   return (
-    <BottomScrollListener onBottom={getRecipes}>
+    <BottomScrollListener offset={2} onBottom={getRecipes}>
       <ThemeProvider theme={theme}>
         <HomeAppBar appbarToHome={appbarToHome} />
 
-        <ImageCarousel slides={newRecipes} info={newRecipes2} />
+        <ImageCarousel slides={newRecipes} info={newRecipes2} handlefollowchange={handlefollowchange}/>
         {/* <Button
           onClick={(event) => {
             setOpenProfile(true);
@@ -389,20 +396,10 @@ export default function Home() {
           <Divider />
           <List sx={{}}>
             {followingArray.map((person) => (
-              <ListItem key={person.Username} disablePadding>
-                <ListItemButton>
-                  <Avatar
-                    src={person.Pic}
-                    sx={{
-                      width: 24,
-                      height: 24,
-                      mr: 2,
-                    }}
-                    onMouseDown={(event) => event.stopPropagation()}
-                  />
-                  <ListItemText primary={person.Username} />
-                </ListItemButton>
-              </ListItem>
+              <FollowItem
+                person={person}
+                handlefollowchange={handlefollowchange}
+              />
             ))}
           </List>
         </Drawer>
