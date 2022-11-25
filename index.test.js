@@ -58,11 +58,11 @@ describe('POST Testing registration', () => {
     })
 })
 describe("POST testing /searchUser", () => {
-    test("This should return an array of length 1", async () => {
+    test("This should return an array of length 0", async () => {
         const response = await request(app).post("/user/searchUsers?search=paulo&count=6&page=1").send({
         }).set({authorization: authToken})
         expect(response.statusCode).toEqual(200);
-        expect(response.body.results.length).toEqual(1);
+        expect(response.body.results.length).toEqual(0);
     })
     test("This should return an empty array", async () => {
         const response = await request(app).post("/user/searchUsers?search=avbsadgafgdaf&count=6&page=1").send({
@@ -117,7 +117,7 @@ describe("POST testing verification", () => {
     })
     test("This should return user already verified", async () =>{
         const response = await request(app).post("/user/verify").send({
-            userId:"636beb7b8f8b58d6a8df3726",
+            userId:"637eacd23fa05758cc19cc2e",
             emailToken: "a0105f935e57562b15a6e5edcac5adb414f1f394173b371065b802eb240c9705"
         })
         expect(response.statusCode).toEqual(201);
@@ -173,7 +173,7 @@ describe("Post testing /addRecipe", () => {
 describe("Post testing /updaterecipe", () => {
     test("This should return a response of 201 recipe updated", async () => {
         const response = await request(app).post("/recipe/updaterecipe").send({
-            _id: "637531f79a2edf0e480305dd",
+            _id: "63811ee0ce011dad457478f5",
             Info: {
                 Description: "noDescription",
                 Ingredients: ["none"],
@@ -263,14 +263,14 @@ describe("Post testing /getLikedRecipes", () => {
 describe("POST testing /likerecipe", () => {
     test("This should return a response of 201 and an empty error", async () => {
         const response = await request(app).post("/recipe/likerecipe").send({
-            recipeId: "636fcc87dced3d921c73669f"
+            recipeId: "637eae81e05322011a8d3d5a"
         }).set({authorization: authToken})
         expect(response.statusCode).toEqual(201);
         expect(response.body.error).toEqual("");
     })
     test("This should return a response of 201 and that the user already liked the recipe", async () => {
         const response = await request(app).post("/recipe/likerecipe").send({
-            recipeId: "636fcc87dced3d921c73669f"
+            recipeId: "637eae81e05322011a8d3d5a"
         }).set({authorization: authToken})
         expect(response.statusCode).toEqual(201);
         expect(response.body.error).toEqual("Already Liked");
@@ -287,14 +287,14 @@ describe("POST testing /likerecipe", () => {
 describe("POST testing /unlikeRecipe", () => {
     test("This should return a response of 201 and an empty error", async () => {
         const response = await request(app).post("/recipe/unlikeRecipe").send({
-            recipeId: "636fcc87dced3d921c73669f"
+            recipeId: "637eae81e05322011a8d3d5a"
         }).set({authorization: authToken})
         expect(response.statusCode).toEqual(201);
         expect(response.body.error).toEqual("");
     })
     test("This should return a response of 201 and that the user never liked the recipe", async () => {
         const response = await request(app).post("/recipe/unlikeRecipe").send({
-            recipeId: "636fcc87dced3d921c73669f"
+            recipeId: "637eae81e05322011a8d3d5a"
         }).set({authorization: authToken})
         expect(response.statusCode).toEqual(201);
         expect(response.body.error).toEqual("Recipe never liked");
@@ -312,14 +312,14 @@ describe("POST testing /unlikeRecipe", () => {
 describe("POST testing /followUser", () => {
     test("This should return a response of 201 and an empty error", async () => {
         const response = await request(app).post("/user/followUser").send({
-            userId: "636beb7b8f8b58d6a8df3726"
+            userId: "637eacd23fa05758cc19cc2e"
         }).set({authorization: authToken})
         expect(response.statusCode).toEqual(201);
         expect(response.body.error).toEqual("");
     })
     test("This should return a response of 409 and that the user already followed the user", async () => {
         const response = await request(app).post("/user/followUser").send({
-            userId: "636beb7b8f8b58d6a8df3726"
+            userId: "637eacd23fa05758cc19cc2e"
         }).set({authorization: authToken})
         expect(response.statusCode).toEqual(409);
         expect(response.body.error).toEqual("Already following");    
@@ -343,14 +343,14 @@ describe("POST testing /followUser", () => {
 describe("POST testing /unfollowUser", () => {
     test("This should return a response of 201 and an empty error", async () => {
         const response = await request(app).post("/user/unfollowUser").send({
-            userId: "636beb7b8f8b58d6a8df3726"
+            userId: "637eacd23fa05758cc19cc2e"
         }).set({authorization: authToken})
         expect(response.statusCode).toEqual(201);
         expect(response.body.error).toEqual("");
     })
     test("This should return a response of 409 and Not following user already", async () => {
         const response = await request(app).post("/user/unfollowUser").send({
-            userId: "636beb7b8f8b58d6a8df3726"
+            userId: "637eacd23fa05758cc19cc2e"
         }).set({authorization: authToken})
         expect(response.statusCode).toEqual(409);
         expect(response.body.error).toEqual("Not following user already");
