@@ -26,7 +26,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
 
   Future selectImage() async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      final image = await ImagePicker().getImage(source: ImageSource.gallery);
       if (image == null) {
         return;
       }

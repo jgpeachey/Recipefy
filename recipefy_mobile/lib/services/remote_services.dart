@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:recipefy_mobile/models/user.dart';
 import 'package:recipefy_mobile/models/recipe.dart';
 import 'package:recipefy_mobile/models/error.dart';

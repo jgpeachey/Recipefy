@@ -2,10 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:recipefy_mobile/widgets/big_text.dart';
 import 'package:recipefy_mobile/views/food.dart';
-
-
 import '../../utils/colors.dart';
-// import '../../utils/dimensions.dart';
 import '../../widgets/small_text.dart';
 
 void main() {
@@ -26,6 +23,8 @@ class _HomePageState extends State<HomePage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Home page background color
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           Container(

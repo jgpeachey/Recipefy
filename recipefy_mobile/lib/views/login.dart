@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:recipefy_mobile/services/remote_services.dart';
 import 'package:recipefy_mobile/views/home.dart';
 import 'package:recipefy_mobile/views/main_page.dart';
@@ -110,9 +112,12 @@ class _LoginPageState extends State<LoginPage> {
                           var response = await RemoteService()
                               .login(emailInput, passwordInput);
                           errorText = "";
+                          // REMOVE DEBUG PRINT
+                          debugPrint(response);
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => const MainFoodPage()));
                         } catch (error) {
+                          debugPrint('error');
                           debugPrint(error.toString());
                           errorText = error.toString();
                           setState(() {});
@@ -120,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       child: const Text("Login", textAlign: TextAlign.center)),
                 ),
-                const SizedBox(height: 40.0),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 const Text("Don't Have an Account?",
                     textAlign: TextAlign.center),
                 const SizedBox(height: 15.0),

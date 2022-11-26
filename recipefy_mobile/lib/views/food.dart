@@ -113,7 +113,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                               topRight: Radius.circular(MediaQuery.of(context).size.width * 0.05),
                               bottomRight: Radius.circular(MediaQuery.of(context).size.width * 0.05),
                             ),
-                            color: AppColors.titleColor,
+                            color: Colors.cyan,
                           ),
                           child: Padding(
                               padding: EdgeInsets.only(
