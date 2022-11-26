@@ -185,7 +185,7 @@ class RemoteService {
       "count": count.toString(),
       "page": page.toString(),
     };
-    var uri = Uri.parse('https://recipefy-g1.herokuapp.com/user/findRecipe');
+    var uri = Uri.parse('https://recipefy-g1.herokuapp.com/recipe/findRecipe');
     String queryString = Uri(queryParameters: qParams).query;
     var requestUrl = '$uri?$queryString';
     var response = await http.post(Uri.parse(requestUrl), headers: headers);
@@ -204,7 +204,8 @@ class RemoteService {
       "count": count.toString(),
       "page": page.toString(),
     };
-    var uri = Uri.parse('https://recipefy-g1.herokuapp.com/user/getUserRecipe');
+    var uri =
+        Uri.parse('https://recipefy-g1.herokuapp.com/recipe/getUserRecipe');
     String queryString = Uri(queryParameters: qParams).query;
     var requestUrl = '$uri?$queryString';
     var response = await http.post(Uri.parse(requestUrl), headers: headers);
@@ -223,7 +224,8 @@ class RemoteService {
       "count": count.toString(),
       "page": page.toString(),
     };
-    var uri = Uri.parse('https://recipefy-g1.herokuapp.com/user/findAllRecipe');
+    var uri =
+        Uri.parse('https://recipefy-g1.herokuapp.com/recipe/findAllRecipe');
     String queryString = Uri(queryParameters: qParams).query;
     var requestUrl = '$uri?$queryString';
     var response = await http.post(Uri.parse(requestUrl), headers: headers);
@@ -237,7 +239,7 @@ class RemoteService {
 
   Future<List<RecipeResult>> getLikedRecipes() async {
     var uri = Uri.parse(
-      'https://recipefy-g1.herokuapp.com/user/getLikedRecipes',
+      'https://recipefy-g1.herokuapp.com/recipe/getLikedRecipes',
     );
     var response = await http.post(uri, headers: headers);
 
@@ -250,7 +252,7 @@ class RemoteService {
 
   likeRecipe(String id) async {
     var uri = Uri.parse(
-      'https://recipefy-g1.herokuapp.com/user/likeRecipe',
+      'https://recipefy-g1.herokuapp.com/recipe/likeRecipe',
     );
     Map parameters = {"recipeId": id};
     var response = await http.post(uri, body: parameters, headers: headers);
@@ -265,7 +267,7 @@ class RemoteService {
 
   unlikeRecipe(String id) async {
     var uri = Uri.parse(
-      'https://recipefy-g1.herokuapp.com/user/unlikeRecipe',
+      'https://recipefy-g1.herokuapp.com/recipe/unlikeRecipe',
     );
     Map parameters = {"recipeId": id};
     var response = await http.post(uri, body: parameters, headers: headers);
