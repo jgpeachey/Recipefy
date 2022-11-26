@@ -1,4 +1,6 @@
+import 'package:recipefy_mobile/services/remote_services.dart';
 import 'package:recipefy_mobile/utils/colors.dart';
+import 'package:recipefy_mobile/views/home.dart';
 import 'package:recipefy_mobile/widgets/app_column.dart';
 import 'package:recipefy_mobile/widgets/icon_and_text_widget.dart';
 import 'package:recipefy_mobile/widgets/small_text.dart';
@@ -39,6 +41,16 @@ class _FoodPageBodyState extends State<FoodPageBody> {
 
   @override
   Widget build(BuildContext context) {
+
+    String search = "";
+    var count = 0;
+    var page = 0;
+    var response = RemoteService().findAllRecipe(
+                            search,
+                            count,
+                            page);
+
+
     return Column(
       children: [
         Container(
