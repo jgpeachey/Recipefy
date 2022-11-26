@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recipefy_mobile/routes/routes.dart';
 import 'views/login.dart';
 
 void main() {
@@ -18,7 +19,8 @@ class MyApp extends StatelessWidget {
           // CHANGE LATER
           primarySwatch: Colors.blue),
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      routes: Routes.getroutes,
+      // home: LoginPage(),
     );
   }
 }

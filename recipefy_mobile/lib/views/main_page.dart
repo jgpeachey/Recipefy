@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:recipefy_mobile/views/add.dart';
+import 'package:recipefy_mobile/views/add_recipe.dart';
 import 'package:recipefy_mobile/views/favorites.dart';
 import 'package:recipefy_mobile/views/home.dart';
 import 'package:recipefy_mobile/views/profile.dart';
@@ -19,7 +20,7 @@ class _MainFoodPageState extends State<MainFoodPage> {
   List pages = [
     HomePage(),
     SearchPage(),
-    AddPage(),
+    AddRecipePage(),
     FavoritesPage(),
     ProfilePage(),
   ];
@@ -31,7 +32,7 @@ class _MainFoodPageState extends State<MainFoodPage> {
       body: pages[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.black,
           selectedItemColor: Colors.white,
           unselectedItemColor: Colors.white70,
           iconSize: 30,
