@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:recipefy_mobile/models/login_model.dart';
 import 'package:recipefy_mobile/models/search_user_model.dart';
@@ -8,8 +7,7 @@ import 'package:recipefy_mobile/models/search_recipe_model.dart';
 import 'package:http/http.dart' as http;
 
 class RemoteService {
-  var client = http.Client();
-  Map<String, String> header = <String, String>{"authorization": ""};
+  static Map<String, String> header = <String, String>{};
 
   login(String email, String password) async {
     Map<String, String> parameters = {
@@ -24,7 +22,6 @@ class RemoteService {
     if (response.statusCode == 201) {
       Login loginResponse = loginFromJson(response.body);
       header["authorization"] = loginResponse.auth!.accessToken;
-      // print(header["authorization"]);
       // print(header);
       return;
     }
@@ -231,8 +228,10 @@ class RemoteService {
         Uri.parse('https://recipefy-g1.herokuapp.com/recipe/findAllRecipe');
     String queryString = Uri(queryParameters: qParams).query;
     var requestUrl = '$uri?$queryString';
+    // print(header);
     var response = await http.post(Uri.parse(requestUrl), headers: header);
-    print("Code: ${response.statusCode}");
+    // print("Code: ${response.statusCode}");
+    // print(response.body);
     if (response.statusCode == 200) {
       SearchRecipe searchRecipe = searchRecipeFromJson(response.body);
       return searchRecipe.results;
