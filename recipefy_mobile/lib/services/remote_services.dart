@@ -194,7 +194,7 @@ class RemoteService {
       SearchRecipe searchRecipe = searchRecipeFromJson(response.body);
       return searchRecipe.results;
     }
-    throw Exception("Search failed");
+    throw Exception(jsonDecode(response.body)["error"]);
   }
 
   Future<List<RecipeResult>> getUserRecipe(
@@ -213,7 +213,7 @@ class RemoteService {
       SearchRecipe searchRecipe = searchRecipeFromJson(response.body);
       return searchRecipe.results;
     }
-    throw Exception("Search failed");
+    throw Exception(jsonDecode(response.body)["error"]);
   }
 
   Future<List<RecipeResult>> findAllRecipe(
@@ -223,7 +223,7 @@ class RemoteService {
       "count": count.toString(),
       "page": page.toString(),
     };
-    var uri = Uri.parse('https://recipefy-g1.herokuapp.com/user/getUserRecipe');
+    var uri = Uri.parse('https://recipefy-g1.herokuapp.com/user/findAllRecipe');
     String queryString = Uri(queryParameters: qParams).query;
     var requestUrl = '$uri?$queryString';
     var response = await http.post(Uri.parse(requestUrl), headers: headers);
@@ -232,7 +232,7 @@ class RemoteService {
       SearchRecipe searchRecipe = searchRecipeFromJson(response.body);
       return searchRecipe.results;
     }
-    throw Exception("Search failed");
+    throw Exception(jsonDecode(response.body)["error"]);
   }
 
   Future<List<RecipeResult>> getLikedRecipes() async {
@@ -245,7 +245,7 @@ class RemoteService {
       SearchRecipe searchRecipe = searchRecipeFromJson(response.body);
       return searchRecipe.results;
     }
-    throw Exception("Search failed");
+    throw Exception(jsonDecode(response.body)["error"]);
   }
 
   likeRecipe(String id) async {
