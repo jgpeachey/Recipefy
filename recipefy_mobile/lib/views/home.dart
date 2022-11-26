@@ -1,14 +1,12 @@
-
 import 'package:flutter/material.dart';
+import 'package:recipefy_mobile/services/remote_services.dart';
 import 'package:recipefy_mobile/widgets/big_text.dart';
 import 'package:recipefy_mobile/views/food.dart';
 import '../../utils/colors.dart';
 import '../../widgets/small_text.dart';
 
 void main() {
-  runApp(
-    HomePage()
-  );
+  runApp(HomePage());
 }
 
 class HomePage extends StatefulWidget {
@@ -18,10 +16,13 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>{
-
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    String search = "";
+    var count = 1;
+    var page = 1;
+
     return Scaffold(
       // Home page background color
       backgroundColor: Colors.white,
@@ -29,10 +30,8 @@ class _HomePageState extends State<HomePage>{
         children: [
           Container(
             child: Container(
-              margin: EdgeInsets.only(
-                  top: 45, bottom: 15),
-              padding: EdgeInsets.only(
-                  left: 20, right: 20),
+              margin: EdgeInsets.only(top: 45, bottom: 15),
+              padding: EdgeInsets.only(left: 20, right: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -54,18 +53,22 @@ class _HomePageState extends State<HomePage>{
                     ],
                   ),
                   Center(
-                    child: Container(
-                      width: 45,
-                      height: 45,
-                      child: Icon(Icons.search,
-                          color: Colors.white, size: 24),
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(15),
-                        color: AppColors.mainColor,
-                      ),
-                    ),
-                  )
+                      child: IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () async {
+                      try {
+                        var response = await RemoteService().findAllRecipe(
+                            search,
+                            count,
+                            page);
+
+                            debugPrint(response[0].title);
+                            Navigator.pop(context);
+                      } catch (error) {
+                        debugPrint(error.toString());
+                      }
+                    },
+                  )),
                 ],
               ),
             ),

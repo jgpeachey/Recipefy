@@ -37,11 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   http: ^0.13.5
   dots_indicator: ^2.1.0
-<<<<<<< HEAD
-  image_picker: ^0.7.2+1
-=======
   image_picker: ^0.8.6
->>>>>>> dbfc737b9ca8aec89fa74c116c89feba1f7aa939
 
 dev_dependencies:
   flutter_test:

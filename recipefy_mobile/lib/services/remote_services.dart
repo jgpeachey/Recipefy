@@ -1,14 +1,8 @@
 import 'dart:convert';
-<<<<<<< HEAD
-import 'package:recipefy_mobile/models/user.dart';
-import 'package:recipefy_mobile/models/recipe.dart';
-import 'package:recipefy_mobile/models/error.dart';
-=======
 
 import 'package:recipefy_mobile/models/login_model.dart';
 import 'package:recipefy_mobile/models/search_user_model.dart';
 import 'package:recipefy_mobile/models/search_recipe_model.dart';
->>>>>>> dbfc737b9ca8aec89fa74c116c89feba1f7aa939
 
 import 'package:http/http.dart' as http;
 
@@ -233,7 +227,7 @@ class RemoteService {
     String queryString = Uri(queryParameters: qParams).query;
     var requestUrl = '$uri?$queryString';
     var response = await http.post(Uri.parse(requestUrl), headers: headers);
-
+    print("Code: ${response.statusCode}");
     if (response.statusCode == 200) {
       SearchRecipe searchRecipe = searchRecipeFromJson(response.body);
       return searchRecipe.results;

@@ -22,7 +22,7 @@ class Routes {
 
   // routes of pages in the app
   static Map<String, Widget Function(BuildContext)> get getroutes => {
-    '/': (context) => MainFoodPage(),
+    '/': (context) => LoginPage(),
     MAINSCREEN: (context) => MainFoodPage(),
     FOODSCREEN: (context) => FoodPageBody(),
     POPULARSCREEN: (context) => PopularFoodDetail(),
