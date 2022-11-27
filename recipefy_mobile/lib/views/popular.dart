@@ -71,10 +71,11 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
                     child: Text('Unlike'),
                   ),
                   PopupMenuItem(
-                      child: Text('Delete'),
-                      onTap: () {
-                        Future.delayed(const Duration(), (() => _showDialog()));
-                      }),
+                    child: Text('Delete'),
+                    onTap: () {
+                      Future.delayed(const Duration(), (() => _showDialog()));
+                    },
+                  ),
                 ],
               ),
             ],
@@ -116,7 +117,8 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
                   margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
                   child: Expanded(
                     child: SingleChildScrollView(
-                      child: ExpandableTextWidget(string_array: widget.recipe.ingredients),
+                      child: ExpandableTextWidget(
+                          string_array: widget.recipe.ingredients),
                     ),
                   ),
                 ),
@@ -131,7 +133,9 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
                   margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
                   child: Expanded(
                     child: SingleChildScrollView(
-                      child: ExpandableTextWidget(string_array: widget.recipe.instructions,),
+                      child: ExpandableTextWidget(
+                        string_array: widget.recipe.instructions,
+                      ),
                     ),
                   ),
                 ),

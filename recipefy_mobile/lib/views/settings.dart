@@ -3,8 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:recipefy_mobile/models/login_model.dart';
 import 'package:recipefy_mobile/services/remote_services.dart';
+import 'package:recipefy_mobile/views/login.dart';
 import 'package:recipefy_mobile/widgets/profile_widget.dart';
 import 'package:recipefy_mobile/widgets/settings_profile_widget.dart';
 
@@ -38,6 +40,49 @@ class _SettingsPageState extends State<SettingsPage> {
     } on Exception catch (error) {
       debugPrint("Failed to select image: $error");
     }
+  }
+
+  void _showDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Delete account?'),
+            actions: [
+              TextField(
+                onChanged: (text) {
+                  passwordInput = text;
+                },
+                obscureText: false,
+                decoration: InputDecoration(
+                    contentPadding:
+                        const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+
+                    // API CONNECTION HERE
+                    // USER FIRST NAME
+                    hintText: widget.user!.firstName,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(0))),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'Cancel'),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      RemoteService()
+                          .deleteUser(widget.user!.email, passwordInput);
+                    },
+                    child: const Text('Yes'),
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
   }
 
   @override
@@ -104,7 +149,15 @@ class _SettingsPageState extends State<SettingsPage> {
             // SIGNS OUT OF APP
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/login');
+                Navigator.of(context, rootNavigator: true)
+                              .pushAndRemoveUntil(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return const LoginPage();
+                              },
+                            ),
+                            (_) => false,
+                          );
               },
               child: Text('Sign out'),
               style: ElevatedButton.styleFrom(
@@ -197,7 +250,9 @@ class _SettingsPageState extends State<SettingsPage> {
               // ADD API CONNECTION HERE
               // DELETE USER'S ACCOUNT
               // DELETE THIS COMMENT
-              onPressed: () {},
+              onPressed: () {
+                Future.delayed(const Duration(), (() => _showDialog()));
+              },
               child: Text('Delete account'),
               style: ElevatedButton.styleFrom(
                 primary: Colors.red,
