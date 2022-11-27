@@ -60,7 +60,11 @@ class RemoteService {
     var uri = Uri.parse(
       'https://recipefy-g1.herokuapp.com/user/delete',
     );
+    // print("Code: ${response.statusCode}");
+
     var response = await http.post(uri, body: parameters, headers: header);
+    print("Code: ${response.statusCode}");
+
     if (response.statusCode == 200) {
       return;
     }
@@ -233,7 +237,7 @@ class RemoteService {
     var response = await http.post(Uri.parse(requestUrl), headers: header);
     // print("Code: ${response.statusCode}");
     // print(response.body);
-    if (response.statusCode == 200 ) {
+    if (response.statusCode == 200) {
       SearchRecipe searchRecipe = searchRecipeFromJson(response.body);
       return searchRecipe.results;
     }
@@ -245,7 +249,7 @@ class RemoteService {
       'https://recipefy-g1.herokuapp.com/recipe/getLikedRecipes',
     );
     var response = await http.post(uri, headers: header);
-        // print("Code: ${response.statusCode}");
+    // print("Code: ${response.statusCode}");
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       SearchRecipe searchRecipe = searchRecipeFromJson(response.body);

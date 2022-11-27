@@ -73,8 +73,18 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   TextButton(
                     onPressed: () {
+                      String email = widget.user!.email;
                       RemoteService()
-                          .deleteUser(widget.user!.email, passwordInput);
+                          .deleteUser(email, passwordInput);
+                      Navigator.of(context, rootNavigator: true)
+                          .pushAndRemoveUntil(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) {
+                            return const LoginPage();
+                          },
+                        ),
+                        (_) => false,
+                      );
                     },
                     child: const Text('Yes'),
                   ),
@@ -149,15 +159,14 @@ class _SettingsPageState extends State<SettingsPage> {
             // SIGNS OUT OF APP
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context, rootNavigator: true)
-                              .pushAndRemoveUntil(
-                            MaterialPageRoute(
-                              builder: (BuildContext context) {
-                                return const LoginPage();
-                              },
-                            ),
-                            (_) => false,
-                          );
+                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return const LoginPage();
+                    },
+                  ),
+                  (_) => false,
+                );
               },
               child: Text('Sign out'),
               style: ElevatedButton.styleFrom(
