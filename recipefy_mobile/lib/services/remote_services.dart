@@ -120,11 +120,18 @@ class RemoteService {
     throw Exception(err);
   }
 
-  updateUser(String email, String password, String pic) async {
+  updateUser(String firstName, String lastName, String email, String password,
+      String pic) async {
     var uri = Uri.parse(
       'https://recipefy-g1.herokuapp.com/user/updateuser',
     );
-    Map parameters = {"Email": email, "Password": password, "Pic": pic};
+    Map parameters = {
+      "Firstname": firstName,
+      "Lastname": lastName,
+      "Email": email,
+      "Password": password,
+      "Pic": pic
+    };
     var response = await http.post(uri, body: parameters, headers: header);
     var body = jsonDecode(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
