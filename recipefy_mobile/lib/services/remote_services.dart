@@ -58,11 +58,11 @@ class RemoteService {
       "Password": password,
     };
     var uri = Uri.parse(
-      'https://recipefy-g1.herokuapp.com/user/delete',
+      'https://recipefy-g1.herokuapp.com/user/deleteuser',
     );
     // print("Code: ${response.statusCode}");
 
-    var response = await http.post(uri, body: parameters, headers: header);
+    var response = await http.delete(uri, body: parameters, headers: header);
     print("Code: ${response.statusCode}");
 
     if (response.statusCode == 200) {
@@ -125,12 +125,30 @@ class RemoteService {
     var uri = Uri.parse(
       'https://recipefy-g1.herokuapp.com/user/updateuser',
     );
+
+    // Map info = {
+    //   "Fistname": firstName,
+    //   "Lastname": lastName,
+    //   "Pic": pic,
+    // };
+
     Map parameters = {
       "Email": email,
       "Password": password,
-      "Info": {"Firstname": firstName, "Lastname": lastName, "Pic": pic}
+      "Pic" : pic,
+      // "Info": info
+      "Info": {
+        "Fistname": firstName,
+        "Lastname": lastName,
+        
+      }
     };
-    var response = await http.post(uri, body: parameters, headers: header);
+
+    var response =
+        await http.post(uri, body: json.encode(parameters), headers: header);
+
+    print("Code: ${response.statusCode}");
+
     var body = jsonDecode(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
       body["Firstname"] = firstName;

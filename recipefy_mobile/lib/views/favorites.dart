@@ -15,7 +15,7 @@ class FavoritesPage extends StatefulWidget {
 
 class _FavoritesPageState extends State<FavoritesPage> {
   Future<List<RecipeResult>> _calculation = Future<List<RecipeResult>>.delayed(
-    const Duration(seconds: 2),
+    const Duration(seconds: 1),
     RemoteService().getLikedRecipes,
   );
 

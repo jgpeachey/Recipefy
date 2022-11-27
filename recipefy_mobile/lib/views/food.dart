@@ -42,7 +42,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   }
 
   Future<List<RecipeResult>> _calculation = Future<List<RecipeResult>>.delayed(
-    const Duration(seconds: 2),
+    const Duration(seconds: 1),
     () async => await RemoteService().findAllRecipe("", 0, 0),
   );
 

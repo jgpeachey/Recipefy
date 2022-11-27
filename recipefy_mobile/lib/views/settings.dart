@@ -57,14 +57,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 onChanged: (text) {
                   passwordInput = text;
                 },
-                obscureText: false,
+                obscureText: true,
                 decoration: InputDecoration(
                     contentPadding:
                         const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
 
                     // API CONNECTION HERE
                     // USER FIRST NAME
-                    hintText: widget.user!.firstName,
+                    hintText: 'Password',
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(0))),
               ),
@@ -116,12 +116,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   // TEST THIS API ENDPOINT
                   // DELETE THIS COMMENT
                   onPressed: () {
-                    // RemoteService().updateUser(
-                    //     widget.user!.firstName,
-                    //     widget.user!.lastName,
-                    //     widget.user!.email,
-                    //     passwordInput,
-                    //     imageInput);
+                    RemoteService().updateUser(
+                        firstNameInput,
+                        lastNameInput,
+                        widget.user!.email,
+                        passwordInput,
+                        imageInput);
                   },
                   child: const Text('Save',
                       style: TextStyle(

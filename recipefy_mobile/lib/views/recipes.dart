@@ -16,7 +16,7 @@ class MyRecipesBody extends StatefulWidget {
 
 class _MyRecipesBodyState extends State<MyRecipesBody> {
   Future<List<RecipeResult>> _calculation = Future<List<RecipeResult>>.delayed(
-    const Duration(seconds: 2),
+    const Duration(seconds: 1),
     () async => await RemoteService().findRecipe("", 0, 0),
   );
 
