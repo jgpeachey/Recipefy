@@ -1,7 +1,7 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:recipefy_mobile/views/add.dart';
+import 'package:recipefy_mobile/models/login_model.dart';
 import 'package:recipefy_mobile/views/add_recipe.dart';
 import 'package:recipefy_mobile/views/favorites.dart';
 import 'package:recipefy_mobile/views/home.dart';
@@ -9,7 +9,9 @@ import 'package:recipefy_mobile/views/profile.dart';
 import 'package:recipefy_mobile/views/search.dart';
 
 class MainFoodPage extends StatefulWidget {
-  const MainFoodPage({super.key});
+  final User? user;
+
+  const MainFoodPage({super.key, this.user});
 
   @override
   State<MainFoodPage> createState() => _MainFoodPageState();
@@ -17,13 +19,15 @@ class MainFoodPage extends StatefulWidget {
 
 class _MainFoodPageState extends State<MainFoodPage> {
   int currentIndex = 0;
-  List pages = [
-    HomePage(),
+  late List pages = [
+    HomePage(user: widget.user),
     SearchPage(),
     AddRecipePage(),
     FavoritesPage(),
-    ProfilePage(),
+    ProfilePage(user: widget.user),
   ];
+
+  @override
 
   @override
   Widget build(BuildContext context) {

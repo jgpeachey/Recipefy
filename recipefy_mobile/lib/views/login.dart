@@ -115,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                           // REMOVE DEBUG PRINT
 
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const MainFoodPage()));
+                              builder: (context) => MainFoodPage(user: response)));
                         } catch (error) {
                           // debugPrint('error');
                           debugPrint(error.toString());

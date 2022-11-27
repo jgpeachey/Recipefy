@@ -47,6 +47,8 @@ class _AddRecipePageState extends State<AddRecipePage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        backgroundColor: Colors.black,
+        automaticallyImplyLeading: false,
         title: const Text("Add Recipe"),
         centerTitle: true,
       ),

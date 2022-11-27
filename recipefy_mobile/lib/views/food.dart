@@ -64,6 +64,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
             // SLIDE SHOW IF THERE IS DATA IN THE DATABASE
             if (snapshot.hasData) {
               children = [
+                SizedBox(height: 20),
                 Container(
                   // color: Colors.redAccent,
                   height: MediaQuery.of(context).size.height * 0.35,
@@ -116,18 +117,6 @@ class _FoodPageBodyState extends State<FoodPageBody> {
               ),
             );
           },
-          // SLIDE SHOW CODE
-          // child: Container(
-          //   // color: Colors.redAccent,
-          //   height: MediaQuery.of(context).size.height * 0.35,
-          //   child: PageView.builder(
-          //     controller: pageController,
-          //     itemCount: 5,
-          //     itemBuilder: (context, position) {
-          //       return _buildPageItem(position);
-          //     },
-          //   ),
-          // ),
         ),
 
         // DOTS INDICATOR
@@ -146,7 +135,6 @@ class _FoodPageBodyState extends State<FoodPageBody> {
 
         // POPULAR SUBTITLE
         Container(
-            // color: Colors.redAccent,
             margin:
                 EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.08),
             child: Row(
