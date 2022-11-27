@@ -1,6 +1,5 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:recipefy_mobile/models/login_model.dart';
 import 'package:recipefy_mobile/views/add_recipe.dart';
 import 'package:recipefy_mobile/views/favorites.dart';
@@ -19,61 +18,67 @@ class MainFoodPage extends StatefulWidget {
 
 class _MainFoodPageState extends State<MainFoodPage> {
   int currentIndex = 0;
-  late List pages = [
-    HomePage(user: widget.user),
-    SearchPage(),
-    AddRecipePage(),
-    FavoritesPage(),
-    ProfilePage(user: widget.user),
-  ];
-
-  @override
 
   @override
   Widget build(BuildContext context) {
     // print("current height is"+MediaQuery.of(context).size.height.toString());
     return Scaffold(
-      body: pages[currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.black,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.white70,
-          iconSize: 30,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          currentIndex: currentIndex,
-          onTap: (index) => setState(() {
-                currentIndex = index;
-              }),
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-              // backgroundColor: Colors.blue
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Search',
-              // backgroundColor: Colors.grey,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.add),
-              label: 'Add',
-              // backgroundColor: Colors.green,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.favorite),
-              label: 'Favorites',
-              // backgroundColor: Colors.red,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-              // backgroundColor: Colors.black,
-            ),
-          ]),
+      
+      // PERSISTENT BOTTOM NAVIGATION BAR
+      body: PersistentTabView(
+        backgroundColor: Colors.black,
+        context,
+        screens: screens(),
+        items: navBarItems(),
+      ),
       backgroundColor: Colors.white,
     );
+  }
+
+  // BOTTOM NAVIGATION BAR SCREENS
+  List<Widget> screens() {
+    return [
+      HomePage(user: widget.user),
+      SearchPage(),
+      AddRecipePage(),
+      FavoritesPage(),
+      ProfilePage(user: widget.user),
+    ];
+  }
+
+  // BOTTOM NAVIGATION BAR ITEMS
+  List<PersistentBottomNavBarItem> navBarItems() {
+    return [
+      PersistentBottomNavBarItem(
+          icon: Icon(
+            Icons.home,
+          ),
+          activeColorPrimary: Colors.white,
+          inactiveColorPrimary: Colors.grey),
+      PersistentBottomNavBarItem(
+          icon: Icon(
+            Icons.search,
+          ),
+          activeColorPrimary: Colors.white,
+          inactiveColorPrimary: Colors.grey),
+      PersistentBottomNavBarItem(
+          icon: Icon(
+            Icons.add,
+          ),
+          activeColorPrimary: Colors.white,
+          inactiveColorPrimary: Colors.grey),
+      PersistentBottomNavBarItem(
+          icon: Icon(
+            Icons.favorite,
+          ),
+          activeColorPrimary: Colors.white,
+          inactiveColorPrimary: Colors.grey),
+      PersistentBottomNavBarItem(
+          icon: Icon(
+            Icons.person,
+          ),
+          activeColorPrimary: Colors.white,
+          inactiveColorPrimary: Colors.grey)
+    ];
   }
 }
