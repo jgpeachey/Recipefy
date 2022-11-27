@@ -32,7 +32,13 @@ class _ProfilePageState extends State<ProfilePage> {
               IconButton(
                 icon: Icon(Icons.settings),
                 onPressed: () {
-              Navigator.pushNamed(context, '/settings');
+              Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SettingsPage(
+                                    user: widget.user),
+                              ),
+                            );
             },
               ),
             ],

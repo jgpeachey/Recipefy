@@ -24,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text("Recipefy"),
         centerTitle: true,
       ),
