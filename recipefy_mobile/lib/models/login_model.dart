@@ -11,13 +11,13 @@ String loginToJson(Login data) => json.encode(data.toJson());
 class Login {
   Login({
     required this.error,
-    this.user,
-    this.auth,
+    required this.user,
+    required this.auth,
   });
 
   String error;
-  User? user;
-  Auth? auth;
+  User user;
+  Auth auth;
 
   factory Login.fromJson(Map<String, dynamic> json) => Login(
         error: json["error"],
