@@ -126,21 +126,13 @@ class RemoteService {
       'https://recipefy-g1.herokuapp.com/user/updateuser',
     );
 
-    // Map info = {
-    //   "Fistname": firstName,
-    //   "Lastname": lastName,
-    //   "Pic": pic,
-    // };
-
     Map parameters = {
       "Email": email,
       "Password": password,
-      "Pic" : pic,
-      // "Info": info
+      "Pic": pic,
       "Info": {
         "Fistname": firstName,
         "Lastname": lastName,
-        
       }
     };
 
@@ -151,8 +143,6 @@ class RemoteService {
 
     var body = jsonDecode(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      body["Firstname"] = firstName;
-      body["Lastname"] = lastName;
       return User.fromJson(jsonDecode(response.body));
     }
     String err = body['error'];
@@ -309,6 +299,20 @@ class RemoteService {
       return;
     }
 
+    String err = body['error'];
+    throw Exception(err);
+  }
+
+  getFollowing() async {
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/recipe/getFollowing',
+    );
+    var response = await http.post(uri, headers: header);
+    var body = jsonDecode(response.body);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      SearchUser searchUser = searchUserFromJson(response.body);
+      return searchUser.results;
+    }
     String err = body['error'];
     throw Exception(err);
   }
