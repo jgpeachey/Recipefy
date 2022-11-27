@@ -126,15 +126,15 @@ class RemoteService {
       'https://recipefy-g1.herokuapp.com/user/updateuser',
     );
     Map parameters = {
-      "Firstname": firstName,
-      "Lastname": lastName,
       "Email": email,
       "Password": password,
-      "Pic": pic
+      "Info": {"Firstname": firstName, "Lastname": lastName, "Pic": pic}
     };
     var response = await http.post(uri, body: parameters, headers: header);
     var body = jsonDecode(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
+      body["Firstname"] = firstName;
+      body["Lastname"] = lastName;
       return User.fromJson(jsonDecode(response.body));
     }
     String err = body['error'];
