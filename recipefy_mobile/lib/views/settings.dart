@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:recipefy_mobile/models/login_model.dart';
+import 'package:recipefy_mobile/services/remote_services.dart';
 import 'package:recipefy_mobile/widgets/profile_widget.dart';
 import 'package:recipefy_mobile/widgets/settings_profile_widget.dart';
 
@@ -13,6 +18,28 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  String passwordInput = "";
+  String imageInput = "";
+  File? image;
+
+  Future selectImage() async {
+    try {
+      final image = await ImagePicker().getImage(source: ImageSource.gallery);
+      if (image == null) {
+        return;
+      }
+      final imageTemp = File(image.path);
+      List<int> imageBytes = await image.readAsBytes();
+      String imageBase64Temp = base64Encode(imageBytes);
+      setState(() {
+        this.image = imageTemp;
+        imageInput = imageBase64Temp;
+      });
+    } on Exception catch (error) {
+      debugPrint("Failed to select image: $error");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,8 +55,12 @@ class _SettingsPageState extends State<SettingsPage> {
 
                   // API CONNECTION HERE
                   // UPDATE THE USER INFORMATION
+                  // TEST THIS API ENDPOINT
                   // DELETE THIS COMMENT
-                  onPressed: () {},
+                  onPressed: () {
+                    RemoteService().updateUser(
+                        widget.user!.email, passwordInput, imageInput);
+                  },
                   child: const Text('Save',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -52,9 +83,13 @@ class _SettingsPageState extends State<SettingsPage> {
               thickness: 1,
             ),
 
-          // PROFILE PICTURE
-          // MAKE ON CLICK BRING UP THE IMAGE SELECTOR
-          SettingsProfileWidget(imagePath: widget.user!.pic, onClicked:() async{}),
+            // PROFILE PICTURE
+            // MAKE ON CLICK BRING UP THE IMAGE SELECTOR
+            SettingsProfileWidget(
+                imagePath: widget.user!.pic,
+                onClicked: () async {
+                  selectImage();
+                }),
 
             // THIS BUTTON MAKES A POPUP TO CONFIRM PASSWORD AND ENTER NEW PASSWORD
             ElevatedButton(
@@ -131,7 +166,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 SizedBox(width: 20),
                 Expanded(
                   child: TextField(
-                    onChanged: (text) {},
+                    onChanged: (text) {
+                      passwordInput = text;
+                    },
                     obscureText: false,
                     decoration: InputDecoration(
                         contentPadding:
@@ -155,7 +192,7 @@ class _SettingsPageState extends State<SettingsPage> {
             //     textStyle: TextStyle(fontSize: 20),
             //   ),
             // ),
-            SizedBox(height: 300),
+            SizedBox(height: 200),
             ElevatedButton(
               // ADD API CONNECTION HERE
               // DELETE USER'S ACCOUNT
