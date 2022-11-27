@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
                     fit: BoxFit.contain,
                   ),
                 ),
-                const SizedBox(height: 60.0),
+                const SizedBox(height: 30.0),
                 const Text(
                   "Sign In",
                   textAlign: TextAlign.center,
@@ -65,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                     emailInput = text;
                   },
                 ),
-                const SizedBox(height: 25.0),
+                const SizedBox(height: 20.0),
                 TextField(
                   obscureText: true,
                   decoration: InputDecoration(
@@ -116,9 +116,9 @@ class _LoginPageState extends State<LoginPage> {
                           // REMOVE DEBUG PRINT
 
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => MainFoodPage(user: response)));
+                              builder: (context) =>
+                                  MainFoodPage(user: response)));
                         } catch (error) {
-                          // debugPrint('error');
                           debugPrint(error.toString());
                           errorText = error.toString();
                           setState(() {});
