@@ -17,6 +17,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   @override
   Widget build(BuildContext context) {
     String search = "";
@@ -62,8 +63,8 @@ class _HomePageState extends State<HomePage> {
                             count,
                             page);
 
-                            debugPrint(response[0].title);
-                            Navigator.pop(context);
+                            // debugPrint(response[0].title);
+                            // Navigator.pop(context);
                       } catch (error) {
                         debugPrint(error.toString());
                       }
@@ -78,6 +79,8 @@ class _HomePageState extends State<HomePage> {
               child: FoodPageBody(),
             ),
           ),
+          // getRecipes(),
+          // SizedBox(width: 20),
         ],
       ),
     );

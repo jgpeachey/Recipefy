@@ -180,12 +180,13 @@ class RemoteService {
   }
 
   Future<List<RecipeResult>> findRecipe(
-      String search, int count, int page, String id) async {
+      String search, int count, int page) async {
     Map<String, String> qParams = {
       "search": search,
       "count": count.toString(),
       "page": page.toString(),
     };
+    // print(id);
     var uri = Uri.parse('https://recipefy-g1.herokuapp.com/recipe/findRecipe');
     String queryString = Uri(queryParameters: qParams).query;
     var requestUrl = '$uri?$queryString';
@@ -233,7 +234,7 @@ class RemoteService {
     var response = await http.post(Uri.parse(requestUrl), headers: header);
     // print("Code: ${response.statusCode}");
     // print(response.body);
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 ) {
       SearchRecipe searchRecipe = searchRecipeFromJson(response.body);
       return searchRecipe.results;
     }
@@ -245,8 +246,9 @@ class RemoteService {
       'https://recipefy-g1.herokuapp.com/recipe/getLikedRecipes',
     );
     var response = await http.post(uri, headers: header);
+        // print("Code: ${response.statusCode}");
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       SearchRecipe searchRecipe = searchRecipeFromJson(response.body);
       return searchRecipe.results;
     }

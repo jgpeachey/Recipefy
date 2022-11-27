@@ -25,7 +25,7 @@ class Routes {
     '/': (context) => LoginPage(),
     MAINSCREEN: (context) => MainFoodPage(),
     FOODSCREEN: (context) => FoodPageBody(),
-    POPULARSCREEN: (context) => PopularFoodDetail(),
+    // POPULARSCREEN: (context) => PopularFoodDetail(),
     ADDRECIPESCREEN: (context) => AddRecipePage(),
     FAVORITESCREEN: (context) => FavoritesPage(),
     PROFILESCREEN: (context) => ProfilePage(),

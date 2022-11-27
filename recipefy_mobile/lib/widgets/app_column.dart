@@ -1,39 +1,50 @@
+import 'package:flutter/material.dart';
+import 'package:recipefy_mobile/models/search_recipe_model.dart';
 import 'package:recipefy_mobile/utils/colors.dart';
-// import 'package:recipefy_mobile/utils/dimensions.dart';
 import 'package:recipefy_mobile/widgets/big_text.dart';
 import 'package:recipefy_mobile/widgets/icon_and_text_widget.dart';
-import 'package:recipefy_mobile/widgets/small_text.dart';
-import 'package:flutter/material.dart';
 
-class AppColumn extends StatelessWidget {
-  final String text;
-  const AppColumn({Key? key, required this.text}) : super(key: key);
+class AppColumn extends StatefulWidget {
+  final RecipeResult recipe;
 
+  const AppColumn({super.key, required this.recipe});
+
+  @override
+  State<AppColumn> createState() => _AppColumnState();
+}
+
+class _AppColumnState extends State<AppColumn> {
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         BigText(
-          text: text,
+
+          // API CONNECTION HERE
+          // RECIPE TITLE
+          text: widget.recipe.title,
           size: 26,
         ),
+        SizedBox(height: 2),
+        Text(widget.recipe.description),
         SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            // ADD CONNECTION TO API HERE
-            // DELETE THIS COMMENT
+            
+            // API CONNECTION HERE
+            // DATE AND USERNAME
             IconAndTextWdiget(
                 icon: Icons.house,
-                text: '10-27-22',
-                color: AppColors.mainColor,
-                iconColor: AppColors.iconColor),
+                text: "${widget.recipe.createdAt.month}-${widget.recipe.createdAt.day}-${widget.recipe.createdAt.year}",
+                color: Colors.black,
+                iconColor: Colors.blue),
             SizedBox(width: 20,),
             IconAndTextWdiget(
                 icon: Icons.person,
-                text: 'User',
-                color: AppColors.mainColor,
+                text: widget.recipe.username,
+                color: Colors.black,
                 iconColor: Colors.deepPurple),
           ],
         ),
