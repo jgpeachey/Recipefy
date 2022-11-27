@@ -22,7 +22,11 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   String passwordInput = "";
   String imageInput = "";
+  String firstNameInput = "";
+  String lastNameInput = "";
   File? image;
+
+  final _controller = new TextEditingController();
 
   Future selectImage() async {
     try {
@@ -74,8 +78,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   TextButton(
                     onPressed: () {
                       String email = widget.user!.email;
-                      RemoteService()
-                          .deleteUser(email, passwordInput);
+                      RemoteService().deleteUser(email, passwordInput);
                       Navigator.of(context, rootNavigator: true)
                           .pushAndRemoveUntil(
                         MaterialPageRoute(
@@ -113,8 +116,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   // TEST THIS API ENDPOINT
                   // DELETE THIS COMMENT
                   onPressed: () {
-                    RemoteService().updateUser(
-                        widget.user!.email, passwordInput, imageInput);
+                    // RemoteService().updateUser(
+                    //     widget.user!.firstName,
+                    //     widget.user!.lastName,
+                    //     widget.user!.email,
+                    //     passwordInput,
+                    //     imageInput);
                   },
                   child: const Text('Save',
                       style: TextStyle(
@@ -192,7 +199,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   // SHOW THE USER'S FIRST NAME IN THE LEFT FIELD
                   // DELETE THIS COMMENT
                   child: TextField(
-                    onChanged: (text) {},
+                    // controller:
+                    //     TextEditingController(text: widget.user!.firstName),
+                    onChanged: (text) {
+                      firstNameInput = text;
+                    },
+                    onTap: () {
+                      _controller.clear();
+                    },
                     obscureText: false,
                     decoration: InputDecoration(
                         contentPadding:
@@ -210,7 +224,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   // API CONNECTION HERE
                   // SHOW THE USER'S LAST NAME IN THE RIGHT FIELD
                   child: TextField(
-                    onChanged: (text) {},
+                    // controller:
+                    //     TextEditingController(text: widget.user!.lastName),
+                    onChanged: (text) {
+                      lastNameInput = text;
+                    },
                     obscureText: false,
                     decoration: InputDecoration(
                         contentPadding:

@@ -73,7 +73,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                     controller: pageController,
                     itemCount: 5,
                     itemBuilder: (context, position) {
-                      return _buildPageItem(position, snapshot.data![position]);
+                      return _buildPageItem(position, snapshot.data![snapshot.data!.length-position - 1]);
                     },
                   ),
                 )
