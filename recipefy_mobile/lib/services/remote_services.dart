@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:recipefy_mobile/models/login_model.dart';
 import 'package:recipefy_mobile/models/search_user_model.dart';
 import 'package:recipefy_mobile/models/search_recipe_model.dart';
@@ -10,7 +9,7 @@ import 'package:http/http.dart' as http;
 class RemoteService {
   static Map<String, String> header = <String, String>{};
 
-  login(String email, String password) async {
+  Future<User?> login(String email, String password) async {
     Map<String, String> parameters = {
       "Email": email,
       "Password": password,
@@ -22,9 +21,9 @@ class RemoteService {
 
     if (response.statusCode == 201) {
       Login loginResponse = loginFromJson(response.body);
-      header["authorization"] = loginResponse.auth!.accessToken;
+      header["authorization"] = loginResponse.auth.accessToken;
       // print(header);
-      return;
+      return loginResponse.user;
     }
     var body = jsonDecode(response.body);
     String err = body["error"];
@@ -53,7 +52,7 @@ class RemoteService {
     throw Exception(err);
   }
 
-  Future<dynamic> deleteUser(String email, String password) async {
+  deleteUser(String email, String password) async {
     Map<String, String> parameters = {
       "Email": email,
       "Password": password,
@@ -117,7 +116,7 @@ class RemoteService {
     throw Exception(err);
   }
 
-  Future<dynamic> updateUser(String email, String password, String pic) async {
+  updateUser(String email, String password, String pic) async {
     var uri = Uri.parse(
       'https://recipefy-g1.herokuapp.com/user/updateuser',
     );

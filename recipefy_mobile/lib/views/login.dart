@@ -113,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                               .login(emailInput, passwordInput);
                           errorText = "";
                           // REMOVE DEBUG PRINT
-                          debugPrint(response);
+
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => const MainFoodPage()));
                         } catch (error) {
