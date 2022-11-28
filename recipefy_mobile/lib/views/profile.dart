@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:recipefy_mobile/models/login_model.dart';
 import 'package:recipefy_mobile/views/recipes.dart';
 import 'package:recipefy_mobile/views/settings.dart';
+import 'package:recipefy_mobile/widgets/following.dart';
 import 'package:recipefy_mobile/widgets/profile_widget.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -52,12 +53,27 @@ class _ProfilePageState extends State<ProfilePage> {
             SizedBox(height: MediaQuery.of(context).size.height * 0.05),
             ProfileWidget(imagePath: widget.user!.pic, onClicked:() async{}),
             SizedBox(height: 10,),
+
+            // FOLLOWING SECTION
+            // SUBTITLE
+            Row(
+              children: [
+                SizedBox(width: MediaQuery.of(context).size.width * 0.05),
+                Text('Following', style: TextStyle(fontSize: 20.0)),
+              ],
+            ),
+            FollowingPage(user: widget.user),
+
+            // MY RECIPES SECTION
+            // SUBTITLE
             Row(
               children: [
                 SizedBox(width: MediaQuery.of(context).size.width * 0.05),
                 Text('My Recipes', style: TextStyle(fontSize: 20.0)),
               ],
             ),
+
+            // MY RECIPES BODY
             MyRecipesBody(),
           ]),)
         ],

@@ -19,7 +19,6 @@ class FoodPageBody extends StatefulWidget {
 }
 
 class _FoodPageBodyState extends State<FoodPageBody> {
-
   PageController pageController = PageController(viewportFraction: 0.85);
   var _currPageValue = 0.0;
   double _scaleFactor = 0.8;
@@ -41,7 +40,8 @@ class _FoodPageBodyState extends State<FoodPageBody> {
     super.dispose();
   }
 
-  Future<List<RecipeResult>> _calculation = Future<List<RecipeResult>>.delayed(
+  final Future<List<RecipeResult>> _calculation =
+      Future<List<RecipeResult>>.delayed(
     const Duration(seconds: 1),
     () async => await RemoteService().findAllRecipe("", 0, 0),
   );
@@ -73,7 +73,8 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                     controller: pageController,
                     itemCount: 5,
                     itemBuilder: (context, position) {
-                      return _buildPageItem(position, snapshot.data![snapshot.data!.length-position - 1]);
+                      return _buildPageItem(position,
+                          snapshot.data![snapshot.data!.length - position - 1]);
                     },
                   ),
                 )
