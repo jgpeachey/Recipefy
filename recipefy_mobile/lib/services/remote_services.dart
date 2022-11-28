@@ -58,9 +58,13 @@ class RemoteService {
       "Password": password,
     };
     var uri = Uri.parse(
-      'https://recipefy-g1.herokuapp.com/user/delete',
+      'https://recipefy-g1.herokuapp.com/user/deleteuser',
     );
-    var response = await http.post(uri, body: parameters, headers: header);
+    // print("Code: ${response.statusCode}");
+
+    var response = await http.delete(uri, body: parameters, headers: header);
+    print("Code: ${response.statusCode}");
+
     if (response.statusCode == 200) {
       return;
     }
@@ -116,12 +120,25 @@ class RemoteService {
     throw Exception(err);
   }
 
-  updateUser(String email, String password, String pic) async {
+  updateUser(String firstName, String lastName, String email, String password,
+      String pic) async {
     var uri = Uri.parse(
       'https://recipefy-g1.herokuapp.com/user/updateuser',
     );
-    Map parameters = {"Email": email, "Password": password, "Pic": pic};
-    var response = await http.post(uri, body: parameters, headers: header);
+    Map parameters = {
+      "Email": email,
+      "Password": password,
+      "Pic": pic,
+      "Info": {
+        "Fistname": firstName,
+        "Lastname": lastName,
+      }
+    };
+    var response =
+        await http.post(uri, body: json.encode(parameters), headers: header);
+
+    print("Code: ${response.statusCode}");
+
     var body = jsonDecode(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
       return User.fromJson(jsonDecode(response.body));
@@ -171,7 +188,7 @@ class RemoteService {
       'https://recipefy-g1.herokuapp.com/recipes/removerecipe',
     );
     Map parameters = {"_id": id};
-    var response = await http.post(uri, body: parameters, headers: header);
+    var response = await http.delete(uri, body: parameters, headers: header);
     if (response.statusCode == 200) {
       return;
     }
@@ -233,7 +250,7 @@ class RemoteService {
     var response = await http.post(Uri.parse(requestUrl), headers: header);
     // print("Code: ${response.statusCode}");
     // print(response.body);
-    if (response.statusCode == 200 ) {
+    if (response.statusCode == 200) {
       SearchRecipe searchRecipe = searchRecipeFromJson(response.body);
       return searchRecipe.results;
     }
@@ -245,7 +262,7 @@ class RemoteService {
       'https://recipefy-g1.herokuapp.com/recipe/getLikedRecipes',
     );
     var response = await http.post(uri, headers: header);
-        // print("Code: ${response.statusCode}");
+    // print("Code: ${response.statusCode}");
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       SearchRecipe searchRecipe = searchRecipeFromJson(response.body);
@@ -280,6 +297,20 @@ class RemoteService {
       return;
     }
 
+    String err = body['error'];
+    throw Exception(err);
+  }
+
+  Future<List<UserResult>> getFollowing() async {
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/recipe/getFollowing',
+    );
+    var response = await http.post(uri, headers: header);
+    var body = jsonDecode(response.body);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      SearchUser searchUser = searchUserFromJson(response.body);
+      return searchUser.results;
+    }
     String err = body['error'];
     throw Exception(err);
   }

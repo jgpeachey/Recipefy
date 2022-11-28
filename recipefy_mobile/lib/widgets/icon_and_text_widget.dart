@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recipefy_mobile/widgets/big_text.dart';
 
 import 'small_text.dart';
 
@@ -20,7 +21,7 @@ class IconAndTextWdiget extends StatelessWidget {
       children: [
         Icon(icon, color: iconColor),
         SizedBox(width: 5),
-        SmallText(text: text, color: color),
+        BigText(text: text, color: color, size: 12),
       ],
     );
   }

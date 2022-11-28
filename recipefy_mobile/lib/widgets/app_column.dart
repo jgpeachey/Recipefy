@@ -27,7 +27,7 @@ class _AppColumnState extends State<AppColumn> {
           size: 26,
         ),
         SizedBox(height: 2),
-        Text(widget.recipe.description),
+        BigText(text: widget.recipe.description, size: 16),
         SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -46,6 +46,8 @@ class _AppColumnState extends State<AppColumn> {
                 text: widget.recipe.username,
                 color: Colors.black,
                 iconColor: Colors.deepPurple),
+            SizedBox(width: 20),
+            IconAndTextWdiget(icon: Icons.favorite, text: "${widget.recipe.likes}", color: Colors.black, iconColor: Colors.red)
           ],
         ),
       ],

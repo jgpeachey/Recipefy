@@ -19,7 +19,6 @@ class FoodPageBody extends StatefulWidget {
 }
 
 class _FoodPageBodyState extends State<FoodPageBody> {
-
   PageController pageController = PageController(viewportFraction: 0.85);
   var _currPageValue = 0.0;
   double _scaleFactor = 0.8;
@@ -41,8 +40,9 @@ class _FoodPageBodyState extends State<FoodPageBody> {
     super.dispose();
   }
 
-  Future<List<RecipeResult>> _calculation = Future<List<RecipeResult>>.delayed(
-    const Duration(seconds: 2),
+  final Future<List<RecipeResult>> _calculation =
+      Future<List<RecipeResult>>.delayed(
+    const Duration(seconds: 1),
     () async => await RemoteService().findAllRecipe("", 0, 0),
   );
 
@@ -73,7 +73,8 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                     controller: pageController,
                     itemCount: 5,
                     itemBuilder: (context, position) {
-                      return _buildPageItem(position, snapshot.data![position]);
+                      return _buildPageItem(position,
+                          snapshot.data![snapshot.data!.length - position - 1]);
                     },
                   ),
                 )
@@ -198,88 +199,88 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                                   ),
                                 ),
                                 // text section
-                                Expanded(
-                                  child: Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.15,
-                                      // width: 200,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(
-                                              MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.05),
-                                          bottomRight: Radius.circular(
-                                              MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.05),
-                                        ),
-                                        color: Colors.cyan,
+                                Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.6,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.15,
+                                    // width: 200,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(
+                                            MediaQuery.of(context).size.width *
+                                                0.05),
+                                        bottomRight: Radius.circular(
+                                            MediaQuery.of(context).size.width *
+                                                0.05),
                                       ),
-                                      child: Padding(
-                                          padding: EdgeInsets.only(
-                                              left: MediaQuery.of(context)
+                                      color: Colors.cyan,
+                                    ),
+                                    child: Padding(
+                                        padding: EdgeInsets.only(
+                                            left: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.02,
+                                            right: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.02),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            BigText(
+                                                text: snapshot
+                                                    .data![index].title),
+                                            SizedBox(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.02),
+                                            Container(
+                                              width: MediaQuery.of(context)
                                                       .size
                                                       .width *
-                                                  0.02,
-                                              right: MediaQuery.of(context)
+                                                  0.6,
+                                              height: MediaQuery.of(context)
                                                       .size
-                                                      .width *
-                                                  0.02),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              BigText(
-                                                  text: snapshot
-                                                      .data![index].title),
-                                              SizedBox(
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.02),
-                                              Expanded(
-                                                child: SmallText(
-                                                    text: snapshot.data![index]
-                                                        .description),
-                                              ),
-                                              SizedBox(
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.02),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  IconAndTextWdiget(
-                                                      icon: Icons.house,
-                                                      text:
-                                                          '${snapshot.data![index].createdAt.month}-${snapshot.data![index].createdAt.day}-${snapshot.data![index].createdAt.year}',
-                                                      color:
-                                                          AppColors.mainColor,
-                                                      iconColor:
-                                                          AppColors.iconColor),
-                                                  SizedBox(width: 20),
-                                                  IconAndTextWdiget(
-                                                      icon: Icons.person,
-                                                      text: snapshot
-                                                          .data![index]
-                                                          .username,
-                                                      color:
-                                                          AppColors.mainColor,
-                                                      iconColor:
-                                                          Colors.deepPurple),
-                                                ],
-                                              ),
-                                            ],
-                                          ))),
-                                ),
+                                                      .height *
+                                                  0.05,
+                                              child: SmallText(
+                                                  text: snapshot.data![index]
+                                                      .description),
+                                            ),
+                                            SizedBox(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.02),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                IconAndTextWdiget(
+                                                    icon: Icons.house,
+                                                    text:
+                                                        '${snapshot.data![index].createdAt.month}-${snapshot.data![index].createdAt.day}-${snapshot.data![index].createdAt.year}',
+                                                    color: AppColors.mainColor,
+                                                    iconColor:
+                                                        AppColors.iconColor),
+                                                SizedBox(width: 20),
+                                                IconAndTextWdiget(
+                                                    icon: Icons.person,
+                                                    text: snapshot
+                                                        .data![index].username,
+                                                    color: AppColors.mainColor,
+                                                    iconColor:
+                                                        Colors.deepPurple),
+                                              ],
+                                            ),
+                                          ],
+                                        ))),
                               ],
                             ),
                           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recipefy_mobile/models/search_recipe_model.dart';
+import 'package:recipefy_mobile/services/remote_services.dart';
 import 'package:recipefy_mobile/widgets/app_column.dart';
 import 'package:recipefy_mobile/widgets/big_text.dart';
 import 'package:recipefy_mobile/widgets/expandable_text_widget.dart';
@@ -66,15 +67,30 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     child: Text('Like'),
+                    onTap: () async {
+                      try {
+                        await RemoteService().likeRecipe(widget.recipe.id);
+                      } catch (error) {
+                        debugPrint(error.toString());
+                      }
+                    },
                   ),
                   PopupMenuItem(
                     child: Text('Unlike'),
+                    onTap: () async {
+                      try {
+                        await RemoteService().unlikeRecipe(widget.recipe.id);
+                      } catch (error) {
+                        debugPrint(error.toString());
+                      }
+                    },
                   ),
                   PopupMenuItem(
-                      child: Text('Delete'),
-                      onTap: () {
-                        Future.delayed(const Duration(), (() => _showDialog()));
-                      }),
+                    child: Text('Delete'),
+                    onTap: () {
+                      Future.delayed(const Duration(), (() => _showDialog()));
+                    },
+                  ),
                 ],
               ),
             ],
@@ -116,7 +132,8 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
                   margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
                   child: Expanded(
                     child: SingleChildScrollView(
-                      child: ExpandableTextWidget(string_array: widget.recipe.ingredients),
+                      child: ExpandableTextWidget(
+                          string_array: widget.recipe.ingredients),
                     ),
                   ),
                 ),
@@ -131,7 +148,9 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
                   margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
                   child: Expanded(
                     child: SingleChildScrollView(
-                      child: ExpandableTextWidget(string_array: widget.recipe.instructions,),
+                      child: ExpandableTextWidget(
+                        string_array: widget.recipe.instructions,
+                      ),
                     ),
                   ),
                 ),

@@ -26,12 +26,18 @@ class _AddRecipePageState extends State<AddRecipePage> {
 
   Future selectImage() async {
     try {
-      final image = await ImagePicker().getImage(source: ImageSource.gallery);
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) {
         return;
       }
       final imageTemp = File(image.path);
       List<int> imageBytes = await image.readAsBytes();
+      final len = imageBytes.length;
+      final kb = len / 1024;
+      final mb = kb / 1024;
+      if (mb > 8) {
+        throw ("Image Too Big");
+      }
       String imageBase64Temp = base64Encode(imageBytes);
       setState(() {
         this.image = imageTemp;

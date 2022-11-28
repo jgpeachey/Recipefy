@@ -3,8 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:recipefy_mobile/models/login_model.dart';
 import 'package:recipefy_mobile/services/remote_services.dart';
+import 'package:recipefy_mobile/views/login.dart';
 import 'package:recipefy_mobile/widgets/profile_widget.dart';
 import 'package:recipefy_mobile/widgets/settings_profile_widget.dart';
 
@@ -20,17 +22,27 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   String passwordInput = "";
   String imageInput = "";
+  String firstNameInput = "";
+  String lastNameInput = "";
   File? image;
+
+  final _controller = new TextEditingController();
 
   Future selectImage() async {
     try {
-      final image = await ImagePicker().getImage(source: ImageSource.gallery);
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) {
         return;
       }
       final imageTemp = File(image.path);
       List<int> imageBytes = await image.readAsBytes();
       String imageBase64Temp = base64Encode(imageBytes);
+      final len = imageBytes.length;
+      final kb = len / 1024;
+      final mb = kb / 1024;
+      if (mb > 8) {
+        throw ("Image Too Big");
+      }
       setState(() {
         this.image = imageTemp;
         imageInput = imageBase64Temp;
@@ -38,6 +50,58 @@ class _SettingsPageState extends State<SettingsPage> {
     } on Exception catch (error) {
       debugPrint("Failed to select image: $error");
     }
+  }
+
+  void _showDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Delete account?'),
+            actions: [
+              TextField(
+                onChanged: (text) {
+                  passwordInput = text;
+                },
+                obscureText: true,
+                decoration: InputDecoration(
+                    contentPadding:
+                        const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+
+                    // API CONNECTION HERE
+                    // USER FIRST NAME
+                    hintText: 'Password',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(0))),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'Cancel'),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      String email = widget.user!.email;
+                      RemoteService().deleteUser(email, passwordInput);
+                      Navigator.of(context, rootNavigator: true)
+                          .pushAndRemoveUntil(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) {
+                            return const LoginPage();
+                          },
+                        ),
+                        (_) => false,
+                      );
+                    },
+                    child: const Text('Yes'),
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
   }
 
   @override
@@ -59,7 +123,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   // DELETE THIS COMMENT
                   onPressed: () {
                     RemoteService().updateUser(
-                        widget.user!.email, passwordInput, imageInput);
+                        firstNameInput,
+                        lastNameInput,
+                        widget.user!.email,
+                        passwordInput,
+                        imageInput);
                   },
                   child: const Text('Save',
                       style: TextStyle(
@@ -104,7 +172,14 @@ class _SettingsPageState extends State<SettingsPage> {
             // SIGNS OUT OF APP
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/login');
+                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return const LoginPage();
+                    },
+                  ),
+                  (_) => false,
+                );
               },
               child: Text('Sign out'),
               style: ElevatedButton.styleFrom(
@@ -130,7 +205,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   // SHOW THE USER'S FIRST NAME IN THE LEFT FIELD
                   // DELETE THIS COMMENT
                   child: TextField(
-                    onChanged: (text) {},
+                    // controller:
+                    //     TextEditingController(text: widget.user!.firstName),
+                    onChanged: (text) {
+                      firstNameInput = text;
+                    },
+                    onTap: () {
+                      _controller.clear();
+                    },
                     obscureText: false,
                     decoration: InputDecoration(
                         contentPadding:
@@ -148,7 +230,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   // API CONNECTION HERE
                   // SHOW THE USER'S LAST NAME IN THE RIGHT FIELD
                   child: TextField(
-                    onChanged: (text) {},
+                    // controller:
+                    //     TextEditingController(text: widget.user!.lastName),
+                    onChanged: (text) {
+                      lastNameInput = text;
+                    },
                     obscureText: false,
                     decoration: InputDecoration(
                         contentPadding:
@@ -197,7 +283,9 @@ class _SettingsPageState extends State<SettingsPage> {
               // ADD API CONNECTION HERE
               // DELETE USER'S ACCOUNT
               // DELETE THIS COMMENT
-              onPressed: () {},
+              onPressed: () {
+                Future.delayed(const Duration(), (() => _showDialog()));
+              },
               child: Text('Delete account'),
               style: ElevatedButton.styleFrom(
                 primary: Colors.red,
