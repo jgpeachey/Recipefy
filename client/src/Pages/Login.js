@@ -31,6 +31,37 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function Login() {
+  var SliderData = [
+    {
+      image:
+        "https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+    },
+    {
+      image:
+        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+    },
+    {
+      image:
+        "https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80",
+    },
+    {
+      image:
+        "https://i2.wp.com/www.downshiftology.com/wp-content/uploads/2015/11/shakshuka-11.jpg",
+    },
+    {
+      image:
+        "https://eadn-wc02-3894996.nxedge.io/wp-content/uploads/2018/01/pistachio-turmeric-rice-bowl6-scaled.jpg",
+    },
+    {
+      image:
+        "https://www.justonecookbook.com/wp-content/uploads/2020/03/Okonomiyaki-Recipe-5674-I-500x500.jpg",
+    },
+    {
+      image:
+        "http://del.h-cdn.co/assets/17/39/2048x1536/sd-aspect-1506456157-delish-honey-garlic-glazed-salmon-1.jpg",
+    },
+  ];
+
   const [cookies, setCookie] = useCookies(["user"]);
   const [open, setOpen] = useState(false);
   const [forgotOpen, setForgotOpen] = useState(false);
@@ -159,7 +190,9 @@ export default function Login() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: "url(https://source.unsplash.com/random/?food)",
+            backgroundImage: `url(${
+              SliderData[Math.floor(Math.random() * (7 - 0 + 1)) + 0].image
+            })`,
             backgroundRepeat: "no-repeat",
             backgroundColor: (t) =>
               t.palette.mode === "light"
