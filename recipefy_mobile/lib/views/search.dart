@@ -16,7 +16,13 @@ class _SearchPageState extends State<SearchPage> {
   final Future<List<RecipeResult>> _calculation =
       Future<List<RecipeResult>>.delayed(
     const Duration(seconds: 1),
-    () async => await RemoteService().findAllRecipe(inputSearch, 0, 0),
+    () async => await RemoteService().findAllRecipe("", 0, 0),
+  );
+
+  final Future<List<RecipeResult>> _specificCalculation =
+      Future<List<RecipeResult>>.delayed(
+    const Duration(seconds: 1),
+    () async => await RemoteService().findRecipe(inputSearch, 0, 0),
   );
 
   @override
@@ -91,7 +97,6 @@ class _SearchPageState extends State<SearchPage> {
 }
 
 class MySearchDelegate extends SearchDelegate {
-
   @override
   Widget? buildLeading(BuildContext context) {
     IconButton(icon: Icon(Icons.arrow_back), onPressed: () {});
@@ -113,9 +118,7 @@ class MySearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-
     // _SearchPageState.inputSearch = query;
-
 
     // ITEM COUNT IS SUPPOSED TO BE THE # OF RECIPES IN RETURN FROM THE SEARCH
     // recipes[index] is supposed to contain List<RecipeResult>
@@ -132,7 +135,7 @@ class MySearchDelegate extends SearchDelegate {
     //         });
     //   },
     // );
-    throw("implement build results");
+    throw ("implement build results");
   }
 
   @override
