@@ -84,13 +84,14 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
               ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: recipes.length,
                 itemBuilder: ((context, index) {
                   final recipe = recipes[index];
 
-                  return Stack(children: [
-                    GestureDetector(
+                  return Container(
+                    child: GestureDetector(
                       onTap: () {
                         Navigator.push(
                           context,
@@ -124,80 +125,70 @@ class _SearchPageState extends State<SearchPage> {
                               ),
                             ),
                             // text section
-                            Expanded(
-                              child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.15,
-                                  // width: 200,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(
-                                          MediaQuery.of(context).size.width *
-                                              0.05),
-                                      bottomRight: Radius.circular(
-                                          MediaQuery.of(context).size.width *
-                                              0.05),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.6,
+                              height: MediaQuery.of(context).size.height * 0.15,
+                              // width: 200,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(
+                                      MediaQuery.of(context).size.width * 0.05),
+                                  bottomRight: Radius.circular(
+                                      MediaQuery.of(context).size.width * 0.05),
+                                ),
+                                color: Colors.cyan,
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    left: MediaQuery.of(context).size.width *
+                                        0.02,
+                                    right: MediaQuery.of(context).size.width *
+                                        0.02),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    BigText(text: recipe.title),
+                                    SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.02),
+                                    Container(
+                                        width: MediaQuery.of(context).size.width * 0.6,
+                                        height: MediaQuery.of(context).size.height * 0.05,
+                                        child: SmallText(
+                                            text: recipe.description)),
+                                    SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.02),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        IconAndTextWdiget(
+                                            icon: Icons.house,
+                                            text:
+                                                '${recipe.createdAt.month}-${recipe.createdAt.day}-${recipe.createdAt.year}',
+                                            color: AppColors.mainColor,
+                                            iconColor: AppColors.iconColor),
+                                        SizedBox(width: 20),
+                                        IconAndTextWdiget(
+                                            icon: Icons.person,
+                                            text: recipe.username,
+                                            color: AppColors.mainColor,
+                                            iconColor: Colors.deepPurple),
+                                      ],
                                     ),
-                                    color: Colors.cyan,
-                                  ),
-                                  child: Padding(
-                                      padding: EdgeInsets.only(
-                                          left: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.02,
-                                          right: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.02),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          BigText(text: recipe.title),
-                                          SizedBox(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.02),
-                                          Expanded(
-                                            child: SmallText(
-                                                text: recipe.description),
-                                          ),
-                                          SizedBox(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.02),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              IconAndTextWdiget(
-                                                  icon: Icons.house,
-                                                  text:
-                                                      '${recipe.createdAt.month}-${recipe.createdAt.day}-${recipe.createdAt.year}',
-                                                  color: AppColors.mainColor,
-                                                  iconColor:
-                                                      AppColors.iconColor),
-                                              SizedBox(width: 20),
-                                              IconAndTextWdiget(
-                                                  icon: Icons.person,
-                                                  text: recipe.username,
-                                                  color: AppColors.mainColor,
-                                                  iconColor: Colors.deepPurple),
-                                            ],
-                                          ),
-                                        ],
-                                      ))),
+                                  ],
+                                ),
+                              ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                  ]);
+                  );
                 }),
               ),
             ]),
