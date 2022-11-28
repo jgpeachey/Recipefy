@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recipefy_mobile/widgets/big_text.dart';
 
-import 'small_text.dart';
-
 class IconAndTextWdiget extends StatelessWidget {
   final IconData icon;
   final String text;

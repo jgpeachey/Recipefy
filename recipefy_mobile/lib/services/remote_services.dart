@@ -1,15 +1,17 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 
 import 'package:recipefy_mobile/models/login_model.dart';
 import 'package:recipefy_mobile/models/search_user_model.dart';
 import 'package:recipefy_mobile/models/search_recipe_model.dart';
+import 'package:recipefy_mobile/models/following_model.dart';
 
 import 'package:http/http.dart' as http;
 
 class RemoteService {
   static Map<String, String> header = <String, String>{};
 
-  Future<User?> login(String email, String password) async {
+  Future<User> login(String email, String password) async {
     Map<String, String> parameters = {
       "Email": email,
       "Password": password,
@@ -63,7 +65,7 @@ class RemoteService {
     // print("Code: ${response.statusCode}");
 
     var response = await http.delete(uri, body: parameters, headers: header);
-    print("Code: ${response.statusCode}");
+    debugPrint("Code: ${response.statusCode}");
 
     if (response.statusCode == 200) {
       return;
@@ -83,6 +85,7 @@ class RemoteService {
     var requestUrl = '$uri?$queryString';
     var response = await http.post(Uri.parse(requestUrl), headers: header);
 
+    debugPrint("Response code: ${response.statusCode}");
     if (response.statusCode == 200) {
       SearchUser searchUser = searchUserFromJson(response.body);
       return searchUser.results;
@@ -137,7 +140,7 @@ class RemoteService {
     var response =
         await http.post(uri, body: json.encode(parameters), headers: header);
 
-    print("Code: ${response.statusCode}");
+    debugPrint("Code: ${response.statusCode}");
 
     var body = jsonDecode(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -301,14 +304,14 @@ class RemoteService {
     throw Exception(err);
   }
 
-  Future<List<UserResult>> getFollowing() async {
+  Future<List<Follower>> getFollowing() async {
     var uri = Uri.parse(
       'https://recipefy-g1.herokuapp.com/user/getFollowing',
     );
     var response = await http.post(uri, headers: header);
     var body = jsonDecode(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      SearchUser searchUser = searchUserFromJson(response.body);
+      FollowingModel searchUser = followingModelFromJson(response.body);
       return searchUser.results;
     }
     String err = body['error'];

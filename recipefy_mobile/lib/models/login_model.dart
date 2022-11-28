@@ -94,8 +94,8 @@ class User {
         "email": email,
         "isVerified": isVerified,
         "pic": pic,
-        "followers": List<String>.from(followers.map((x) => x)),
-        "following": List<String>.from(following.map((x) => x)),
-        "likes": List<String>.from(likes.map((x) => x)),
+        "followers": jsonEncode(followers),
+        "following": jsonEncode(following),
+        "likes": jsonEncode(likes),
       };
 }

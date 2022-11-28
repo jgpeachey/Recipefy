@@ -218,7 +218,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
                   padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                   onPressed: () async {
                     try {
-                      var response = await RemoteService().addRecipe(
+                      await RemoteService().addRecipe(
                           titleInput,
                           ingredientsInput,
                           instructionsInput,

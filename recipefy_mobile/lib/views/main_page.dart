@@ -9,11 +9,11 @@ import 'package:recipefy_mobile/views/profile.dart';
 import 'package:recipefy_mobile/views/search.dart';
 
 class MainFoodPage extends StatefulWidget {
-  final User? user;
+  final User user;
 
   MainFoodPage({
     super.key,
-    this.user,
+    required this.user,
   });
 
   set _hideNavBar(bool _hideNavBar) {}

@@ -44,7 +44,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future selectImage() async {
     try {
-      final image = await ImagePicker().getImage(source: ImageSource.gallery);
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) {
         return;
       }
@@ -242,7 +242,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               }
                               // Call API to attempt to register user
                               try {
-                                var response = await RemoteService().register(
+                                await RemoteService().register(
                                     firstNameInput,
                                     lastNameInput,
                                     usernameInput,

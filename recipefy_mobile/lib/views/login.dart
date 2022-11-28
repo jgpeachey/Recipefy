@@ -113,8 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                           var response = await RemoteService()
                               .login(emailInput, passwordInput);
                           errorText = "";
-                          // REMOVE DEBUG PRINT
-
+                          // debugPrint("ON LOGIN: ${response.toString()}");
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) =>
                                   MainFoodPage(user: response)));
