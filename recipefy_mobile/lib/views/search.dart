@@ -22,17 +22,18 @@ class _SearchPageState extends State<SearchPage> {
   int page = 1;
   List<RecipeResult> recipes = [];
 
+  // METHOD GETS THE RECIPES FROM THE DATA BASE
   getRecipes() async {
     try {
       var response =
           await RemoteService().findAllRecipe(inputSearch, count, page);
       recipes = response;
-      MySearchDelegate(recipes).recipes = recipes;
     } catch (error) {
       debugPrint(error.toString());
     }
   }
 
+  // HANDLES THE SUGGESTIONS WHILE SEARCHING
   void searchRecipe(String query) {
     final suggestions = recipes.where((recipes) {
       final recipeTitle = recipes.title.toLowerCase();
@@ -67,9 +68,9 @@ class _SearchPageState extends State<SearchPage> {
             delegate: SliverChildListDelegate([
               TextField(
                 onChanged: (value) {
-                  searchRecipe;
-                  inputSearch = value;
                   getRecipes();
+                  searchRecipe(value);
+                  inputSearch = value;
                 },
                 controller: controller,
                 decoration: InputDecoration(
@@ -207,104 +208,6 @@ class _SearchPageState extends State<SearchPage> {
           )
         ],
       ),
-    );
-
-    // void searchRecipe(String query) {
-    //   final suggestions = recipes.where((recipes) {
-    //     final recipeTitle = recipes.title.toLowerCase();
-    //     final input = query.toLowerCase();
-
-    //     return recipeTitle.contains(input);
-    //   }).toList();
-
-    //   setState(() {
-    //     recipes = suggestions;
-    //   });
-    // }
-  }
-}
-
-class MySearchDelegate extends SearchDelegate {
-  List<String> searchResults = [
-    'Pizza',
-    'Pasta',
-    'Chicken Tenders',
-    'Burger',
-    'Steak'
-  ];
-
-  List<RecipeResult> recipes;
-  // Map<String, dynamic> curMap = recipes['title'];
-
-  MySearchDelegate(this.recipes);
-
-  @override
-  Widget? buildLeading(BuildContext context) {
-    IconButton(icon: Icon(Icons.arrow_back), onPressed: () {});
-  }
-
-  @override
-  List<Widget>? buildActions(BuildContext context) {
-    IconButton(
-      icon: Icon(Icons.clear),
-      onPressed: () {
-        if (query.isEmpty) {
-          close(context, null);
-        } else {
-          query = '';
-        }
-      },
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    return Center(
-      child: Text('delete this'),
-      // ListView.builder(
-      //     itemCount: recipes.length,
-      //     itemBuilder: (context, index) {
-      //       RecipeResult item = recipes[index];
-      //       return ListTile(
-      //         title: Text(item.title),
-      //         onTap: () {
-      //           Navigator.push(
-      //             context,
-      //             MaterialPageRoute(
-      //               builder: (context) => PopularFoodDetail(recipe: item),
-      //             ),
-      //           );
-      //         },
-      //       );
-      //     }),
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    List<String> suggestions = searchResults.where((searchResults) {
-      final result = searchResults.toLowerCase();
-      final input = query.toLowerCase();
-
-      return result.contains(input);
-    }).toList();
-
-    return ListView.builder(
-      itemCount: suggestions.length,
-      itemBuilder: (context, index) {
-        final suggestion = suggestions[index];
-
-        return ListTile(
-            title: Text(suggestion),
-            onTap: () {
-              query = suggestion;
-              _SearchPageState.inputSearch = query;
-
-              _SearchPageState().getRecipes();
-
-              showResults(context);
-            });
-      },
     );
   }
 }
