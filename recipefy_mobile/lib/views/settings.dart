@@ -30,13 +30,19 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future selectImage() async {
     try {
-      final image = await ImagePicker().getImage(source: ImageSource.gallery);
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) {
         return;
       }
       final imageTemp = File(image.path);
       List<int> imageBytes = await image.readAsBytes();
       String imageBase64Temp = base64Encode(imageBytes);
+      final len = imageBytes.length;
+      final kb = len / 1024;
+      final mb = kb / 1024;
+      if (mb > 8) {
+        throw ("Image Too Big");
+      }
       setState(() {
         this.image = imageTemp;
         imageInput = imageBase64Temp;
