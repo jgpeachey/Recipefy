@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:recipefy_mobile/services/remote_services.dart';
 import 'package:recipefy_mobile/views/home.dart';
 import 'package:recipefy_mobile/views/main_page.dart';
@@ -22,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text("Recipefy"),
         centerTitle: true,
       ),
@@ -41,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
                     fit: BoxFit.contain,
                   ),
                 ),
-                const SizedBox(height: 60.0),
+                const SizedBox(height: 30.0),
                 const Text(
                   "Sign In",
                   textAlign: TextAlign.center,
@@ -62,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                     emailInput = text;
                   },
                 ),
-                const SizedBox(height: 25.0),
+                const SizedBox(height: 20.0),
                 TextField(
                   obscureText: true,
                   decoration: InputDecoration(
@@ -110,8 +113,10 @@ class _LoginPageState extends State<LoginPage> {
                           var response = await RemoteService()
                               .login(emailInput, passwordInput);
                           errorText = "";
+                          // debugPrint("ON LOGIN: ${response.toString()}");
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const MainFoodPage()));
+                              builder: (context) =>
+                                  MainFoodPage(user: response)));
                         } catch (error) {
                           debugPrint(error.toString());
                           errorText = error.toString();
@@ -120,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       child: const Text("Login", textAlign: TextAlign.center)),
                 ),
-                const SizedBox(height: 40.0),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 const Text("Don't Have an Account?",
                     textAlign: TextAlign.center),
                 const SizedBox(height: 15.0),

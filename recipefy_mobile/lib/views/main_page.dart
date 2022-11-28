@@ -1,74 +1,101 @@
-
-
 import 'package:flutter/material.dart';
-import 'package:recipefy_mobile/views/add.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:recipefy_mobile/models/login_model.dart';
+import 'package:recipefy_mobile/views/add_recipe.dart';
 import 'package:recipefy_mobile/views/favorites.dart';
 import 'package:recipefy_mobile/views/home.dart';
+import 'package:recipefy_mobile/views/login.dart';
 import 'package:recipefy_mobile/views/profile.dart';
 import 'package:recipefy_mobile/views/search.dart';
 
 class MainFoodPage extends StatefulWidget {
-  const MainFoodPage({super.key});
+  final User user;
+
+  MainFoodPage({
+    super.key,
+    required this.user,
+  });
+
+  set _hideNavBar(bool _hideNavBar) {}
 
   @override
   State<MainFoodPage> createState() => _MainFoodPageState();
 }
 
 class _MainFoodPageState extends State<MainFoodPage> {
-  int currentIndex = 0;
-  List pages = [
-    HomePage(),
-    SearchPage(),
-    AddPage(),
-    FavoritesPage(),
-    ProfilePage(),
-  ];
+  late bool _hideNavBar;
+
+  PersistentTabController _controller =
+      PersistentTabController(initialIndex: 0);
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = PersistentTabController();
+    _hideNavBar = false;
+  }
 
   @override
   Widget build(BuildContext context) {
     // print("current height is"+MediaQuery.of(context).size.height.toString());
     return Scaffold(
-      body: pages[currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.blue,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.white70,
-          iconSize: 30,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          currentIndex: currentIndex,
-          onTap: (index) => setState(() {
-                currentIndex = index;
-              }),
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-              // backgroundColor: Colors.blue
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Search',
-              // backgroundColor: Colors.grey,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.add),
-              label: 'Add',
-              // backgroundColor: Colors.green,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.favorite),
-              label: 'Favorites',
-              // backgroundColor: Colors.red,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-              // backgroundColor: Colors.black,
-            ),
-          ]),
+      // PERSISTENT BOTTOM NAVIGATION BAR
+      body: PersistentTabView(
+        controller: _controller,
+        resizeToAvoidBottomInset: true,
+        backgroundColor: Colors.black,
+        context,
+        screens: screens(),
+        items: navBarItems(),
+      ),
       backgroundColor: Colors.white,
     );
+  }
+
+  // BOTTOM NAVIGATION BAR SCREENS
+  List<Widget> screens() {
+    return [
+      HomePage(user: widget.user),
+      SearchPage(),
+      AddRecipePage(),
+      FavoritesPage(),
+      ProfilePage(user: widget.user),
+    ];
+  }
+
+  // BOTTOM NAVIGATION BAR ITEMS
+  List<PersistentBottomNavBarItem> navBarItems() {
+    return [
+      PersistentBottomNavBarItem(
+          icon: Icon(
+            Icons.home,
+          ),
+          activeColorPrimary: Colors.white,
+          inactiveColorPrimary: Colors.grey),
+      PersistentBottomNavBarItem(
+          icon: Icon(
+            Icons.search,
+          ),
+          activeColorPrimary: Colors.white,
+          inactiveColorPrimary: Colors.grey),
+      PersistentBottomNavBarItem(
+          icon: Icon(
+            Icons.add,
+          ),
+          activeColorPrimary: Colors.white,
+          inactiveColorPrimary: Colors.grey),
+      PersistentBottomNavBarItem(
+          icon: Icon(
+            Icons.favorite,
+          ),
+          activeColorPrimary: Colors.white,
+          inactiveColorPrimary: Colors.grey),
+      PersistentBottomNavBarItem(
+          icon: Icon(
+            Icons.person,
+          ),
+          activeColorPrimary: Colors.white,
+          inactiveColorPrimary: Colors.grey)
+    ];
   }
 }

@@ -172,7 +172,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           selectImage();
                         },
                       ),
-                      const SizedBox(height: 20.0),
                       Text(
                         errorText,
                         textAlign: TextAlign.center,
@@ -181,7 +180,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           fontSize: 18,
                         ),
                       ),
-                      const SizedBox(height: 20.0),
                       Material(
                         elevation: 5.0,
                         borderRadius: BorderRadius.circular(30.0),
@@ -244,7 +242,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               }
                               // Call API to attempt to register user
                               try {
-                                var response = await RemoteService().register(
+                                await RemoteService().register(
                                     firstNameInput,
                                     lastNameInput,
                                     usernameInput,
@@ -265,7 +263,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             child: const Text("Register",
                                 textAlign: TextAlign.center)),
                       ),
-                      const SizedBox(height: 40.0),
+                      const SizedBox(height: 20.0),
                       Material(
                         elevation: 5.0,
                         borderRadius: BorderRadius.circular(30.0),

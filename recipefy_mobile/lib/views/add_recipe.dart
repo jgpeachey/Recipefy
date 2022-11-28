@@ -32,6 +32,12 @@ class _AddRecipePageState extends State<AddRecipePage> {
       }
       final imageTemp = File(image.path);
       List<int> imageBytes = await image.readAsBytes();
+      final len = imageBytes.length;
+      final kb = len / 1024;
+      final mb = kb / 1024;
+      if (mb > 8) {
+        throw ("Image Too Big");
+      }
       String imageBase64Temp = base64Encode(imageBytes);
       setState(() {
         this.image = imageTemp;
@@ -47,6 +53,8 @@ class _AddRecipePageState extends State<AddRecipePage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        backgroundColor: Colors.black,
+        automaticallyImplyLeading: false,
         title: const Text("Add Recipe"),
         centerTitle: true,
       ),
@@ -210,7 +218,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
                   padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                   onPressed: () async {
                     try {
-                      var response = await RemoteService().addRecipe(
+                      await RemoteService().addRecipe(
                           titleInput,
                           ingredientsInput,
                           instructionsInput,

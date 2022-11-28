@@ -237,6 +237,7 @@ router.post("/login", async (req, res, next) => {
 
 // Update User
 router.post("/updateuser", verifyAccessToken, async (req, res, next) => {
+  console.log(req.body);
   const user = await User.findOne({ Email: req.body.Email }).exec();
   if (!user) {
     return res.status(409).json({
