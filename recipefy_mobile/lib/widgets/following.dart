@@ -36,7 +36,7 @@ class _FollowingPageState extends State<FollowingPage> {
                 child: Container(child: Row(
                   children: [
                     SizedBox(width: MediaQuery.of(context).size.width * 0.1,),
-                    Text("following user index: ${widget.user!.following[index]}"),
+                    // Text("following user index: ${widget.user!.following[index]}"),
                   ],
                 )),
               );

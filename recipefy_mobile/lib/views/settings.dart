@@ -160,14 +160,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 }),
 
             // THIS BUTTON MAKES A POPUP TO CONFIRM PASSWORD AND ENTER NEW PASSWORD
-            ElevatedButton(
-              onPressed: () {},
-              child: Text('Change password?'),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.red,
-                textStyle: TextStyle(fontSize: 20),
-              ),
-            ),
+            // ElevatedButton(
+            //   onPressed: () {},
+            //   child: Text('Change password?'),
+            //   style: ElevatedButton.styleFrom(
+            //     primary: Colors.red,
+            //     textStyle: TextStyle(fontSize: 20),
+            //   ),
+            // ),
 
             // SIGNS OUT OF APP
             ElevatedButton(
