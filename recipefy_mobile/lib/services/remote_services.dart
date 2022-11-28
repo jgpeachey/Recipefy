@@ -125,7 +125,6 @@ class RemoteService {
     var uri = Uri.parse(
       'https://recipefy-g1.herokuapp.com/user/updateuser',
     );
-
     Map parameters = {
       "Email": email,
       "Password": password,
@@ -135,7 +134,6 @@ class RemoteService {
         "Lastname": lastName,
       }
     };
-
     var response =
         await http.post(uri, body: json.encode(parameters), headers: header);
 
@@ -190,7 +188,7 @@ class RemoteService {
       'https://recipefy-g1.herokuapp.com/recipes/removerecipe',
     );
     Map parameters = {"_id": id};
-    var response = await http.post(uri, body: parameters, headers: header);
+    var response = await http.delete(uri, body: parameters, headers: header);
     if (response.statusCode == 200) {
       return;
     }
@@ -303,7 +301,7 @@ class RemoteService {
     throw Exception(err);
   }
 
-  getFollowing() async {
+  Future<List<UserResult>> getFollowing() async {
     var uri = Uri.parse(
       'https://recipefy-g1.herokuapp.com/recipe/getFollowing',
     );
