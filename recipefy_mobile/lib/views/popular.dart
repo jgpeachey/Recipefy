@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:recipefy_mobile/models/search_recipe_model.dart';
+import 'package:recipefy_mobile/services/remote_services.dart';
 import 'package:recipefy_mobile/widgets/app_column.dart';
 import 'package:recipefy_mobile/widgets/big_text.dart';
 import 'package:recipefy_mobile/widgets/expandable_text_widget.dart';
 
 class PopularFoodDetail extends StatefulWidget {
-  const PopularFoodDetail({super.key});
+  final RecipeResult recipe;
+
+  const PopularFoodDetail({super.key, required this.recipe});
 
   @override
   State<PopularFoodDetail> createState() => _PopularFoodDetailState();
@@ -45,15 +49,17 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            title: Text(widget.recipe.title),
+            backgroundColor: Colors.black,
             flexibleSpace: FlexibleSpaceBar(
-              // ADD API CONNECTION HERE
-              // ONCE THE TITLE DISAPPEARS AFTER SCROLLING DOWN
-              // CHANGE THE APP BAR TEXT TO THE RECIPE NAME
-              // DELETE THIS COMMENT
+                // ADD API CONNECTION HERE
+                // ONCE THE TITLE DISAPPEARS AFTER SCROLLING DOWN
+                // CHANGE THE APP BAR TEXT TO THE RECIPE NAME
+                // DELETE THIS COMMENT
 
-              // title: Text('Testing App Bar', style: TextStyle(fontSize: 15.0)),
-              background: Image.asset('assets/images/smoothie.jpg'),
-            ),
+                // title: Text('Testing App Bar', style: TextStyle(fontSize: 15.0)),
+                // background: Image.network(widget.recipe.pic),
+                ),
             actions: [
               // ADD CONNECTION TO API HERE
               // DELETE THIS COMMENT
@@ -61,46 +67,73 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     child: Text('Like'),
+                    onTap: () async {
+                      try {
+                        await RemoteService().likeRecipe(widget.recipe.id);
+                      } catch (error) {
+                        debugPrint(error.toString());
+                      }
+                    },
                   ),
                   PopupMenuItem(
                     child: Text('Unlike'),
+                    onTap: () async {
+                      try {
+                        await RemoteService().unlikeRecipe(widget.recipe.id);
+                      } catch (error) {
+                        debugPrint(error.toString());
+                      }
+                    },
                   ),
                   PopupMenuItem(
-                      child: Text('Delete'),
-                      onTap: () {
-                        Future.delayed(const Duration(), (() => _showDialog()));
-                      }),
+                    child: Text('Delete'),
+                    onTap: () {
+                      Future.delayed(const Duration(), (() => _showDialog()));
+                    },
+                  ),
                 ],
               ),
             ],
-            backgroundColor: Colors.black,
             stretch: true,
             pinned: true,
-            expandedHeight: MediaQuery.of(context).size.height * 0.275,
+            expandedHeight: MediaQuery.of(context).size.height * 0.06,
           ),
           SliverList(
             delegate: SliverChildListDelegate(
               [
                 Container(
+                    height: MediaQuery.of(context).size.height * 0.2,
+                    width: MediaQuery.of(context).size.height * 0.1,
+                    decoration: BoxDecoration(
+
+                        // API CONNECTION HERE
+                        // RECIPE IMAGE
+                        image: DecorationImage(
+                      image: NetworkImage(widget.recipe.pic),
+                      fit: BoxFit.fill,
+                    ))),
+                Container(
                   padding:
                       EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
                   margin: EdgeInsets.only(left: 0, right: 0, top: 0),
-                  child: AppColumn(text: "Strawberry Smoothie"),
+
+                  // API CONNECTION HERE
+                  // RECIPE TITLE
+                  child: AppColumn(recipe: widget.recipe),
                 ),
 
                 Divider(height: 5, color: Colors.grey),
 
                 // Ingredients section
                 Container(
-                    margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                    margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
                     child: BigText(text: "Ingredients")),
                 Container(
                   margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
                   child: Expanded(
                     child: SingleChildScrollView(
                       child: ExpandableTextWidget(
-                          text:
-                              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. "),
+                          string_array: widget.recipe.ingredients),
                     ),
                   ),
                 ),
@@ -109,15 +142,15 @@ class _PopularFoodDetailState extends State<PopularFoodDetail> {
 
                 // Instructions section
                 Container(
-                    margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                    margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: BigText(text: "Instructions")),
                 Container(
                   margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
                   child: Expanded(
                     child: SingleChildScrollView(
                       child: ExpandableTextWidget(
-                          text:
-                              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. "),
+                        string_array: widget.recipe.instructions,
+                      ),
                     ),
                   ),
                 ),

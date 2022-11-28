@@ -11,13 +11,13 @@ String loginToJson(Login data) => json.encode(data.toJson());
 class Login {
   Login({
     required this.error,
-    this.user,
-    this.auth,
+    required this.user,
+    required this.auth,
   });
 
   String error;
-  User? user;
-  Auth? auth;
+  User user;
+  Auth auth;
 
   factory Login.fromJson(Map<String, dynamic> json) => Login(
         error: json["error"],
@@ -27,8 +27,8 @@ class Login {
 
   Map<String, dynamic> toJson() => {
         "error": error,
-        "user": user?.toJson(),
-        "auth": auth?.toJson(),
+        "user": user.toJson(),
+        "auth": auth.toJson(),
       };
 }
 
@@ -94,8 +94,8 @@ class User {
         "email": email,
         "isVerified": isVerified,
         "pic": pic,
-        "followers": List<String>.from(followers.map((x) => x)),
-        "following": List<String>.from(following.map((x) => x)),
-        "likes": List<String>.from(likes.map((x) => x)),
+        "followers": jsonEncode(followers),
+        "following": jsonEncode(following),
+        "likes": jsonEncode(likes),
       };
 }

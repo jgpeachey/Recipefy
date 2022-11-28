@@ -11,11 +11,11 @@ String searchUserToJson(SearchUser data) => json.encode(data.toJson());
 
 class SearchUser {
   SearchUser({
-    required this.next,
+    this.next,
     required this.results,
   });
 
-  Next next;
+  Next? next;
   List<UserResult> results;
 
   factory SearchUser.fromJson(Map<String, dynamic> json) => SearchUser(
@@ -25,7 +25,7 @@ class SearchUser {
       );
 
   Map<String, dynamic> toJson() => {
-        "next": next.toJson(),
+        "next": next?.toJson(),
         "results": List<dynamic>.from(results.map((x) => x.toJson())),
       };
 }

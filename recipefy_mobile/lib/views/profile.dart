@@ -1,31 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:recipefy_mobile/models/login_model.dart';
 import 'package:recipefy_mobile/views/recipes.dart';
 import 'package:recipefy_mobile/views/settings.dart';
+import 'package:recipefy_mobile/widgets/following.dart';
 import 'package:recipefy_mobile/widgets/profile_widget.dart';
 
-void main() {
-  runApp(ProfilePage());
-}
-
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final User user;
+
+  const ProfilePage({super.key, required this.user});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final String imagePath = 'https://assets.vogue.com/photos/60ed85398ec46716d9a3ddff/master/pass/1288920.jpeg';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-
-            // ADD API CONNECTION HERE
+            // API CONNECTION HERE
             // USERS FIRST NAME ALWAYS AT THE TOP OF THE APP BAR
-            title: Text("User's name here"),
+            centerTitle: true,
+            title: Text(widget.user.firstName),
             backgroundColor: Colors.black,
             automaticallyImplyLeading: false,
             actions: [
@@ -34,31 +33,52 @@ class _ProfilePageState extends State<ProfilePage> {
               IconButton(
                 icon: Icon(Icons.settings),
                 onPressed: () {
-              Navigator.pushNamed(context, '/settings');
-            },
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SettingsPage(user: widget.user),
+                    ),
+                  );
+                },
               ),
             ],
             // backgroundColor: Colors.black,
             stretch: true,
             pinned: true,
             expandedHeight: MediaQuery.of(context).size.height * 0.06,
-            
-            
-            
           ),
-          SliverList(delegate: 
-          SliverChildListDelegate([
-            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-            ProfileWidget(imagePath: imagePath, onClicked:() async{}),
-            SizedBox(height: 10,),
-            Row(
-              children: [
-                SizedBox(width: MediaQuery.of(context).size.width * 0.05),
-                Text('My Recipes', style: TextStyle(fontSize: 20.0)),
-              ],
-            ),
-            MyRecipesBody(),
-          ]),)
+          SliverList(
+            delegate: SliverChildListDelegate([
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+              ProfileWidget(imagePath: widget.user.pic, onClicked: () async {}),
+              SizedBox(
+                height: 10,
+              ),
+
+              // FOLLOWING SECTION
+              // SUBTITLE
+
+              Row(
+                children: [
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.05),
+                  Text('Following', style: TextStyle(fontSize: 20.0)),
+                ],
+              ),
+              FollowingPage(user: widget.user),
+              const SizedBox(height: 20.0),
+              // MY RECIPES SECTION
+              // SUBTITLE
+              Row(
+                children: [
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.05),
+                  Text('My Recipes', style: TextStyle(fontSize: 20.0)),
+                ],
+              ),
+
+              // MY RECIPES BODY
+              MyRecipesBody(),
+            ]),
+          )
         ],
       ),
     );

@@ -1,16 +1,17 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+
 import 'package:recipefy_mobile/models/login_model.dart';
 import 'package:recipefy_mobile/models/search_user_model.dart';
 import 'package:recipefy_mobile/models/search_recipe_model.dart';
+import 'package:recipefy_mobile/models/following_model.dart';
 
 import 'package:http/http.dart' as http;
 
 class RemoteService {
   static Map<String, String> header = <String, String>{};
 
-  login(String email, String password) async {
+  Future<User> login(String email, String password) async {
     Map<String, String> parameters = {
       "Email": email,
       "Password": password,
@@ -22,9 +23,9 @@ class RemoteService {
 
     if (response.statusCode == 201) {
       Login loginResponse = loginFromJson(response.body);
-      header["authorization"] = loginResponse.auth!.accessToken;
+      header["authorization"] = loginResponse.auth.accessToken;
       // print(header);
-      return;
+      return loginResponse.user;
     }
     var body = jsonDecode(response.body);
     String err = body["error"];
@@ -53,15 +54,19 @@ class RemoteService {
     throw Exception(err);
   }
 
-  Future<dynamic> deleteUser(String email, String password) async {
+  deleteUser(String email, String password) async {
     Map<String, String> parameters = {
       "Email": email,
       "Password": password,
     };
     var uri = Uri.parse(
-      'https://recipefy-g1.herokuapp.com/user/delete',
+      'https://recipefy-g1.herokuapp.com/user/deleteuser',
     );
-    var response = await http.post(uri, body: parameters, headers: header);
+    // print("Code: ${response.statusCode}");
+
+    var response = await http.delete(uri, body: parameters, headers: header);
+    debugPrint("Code: ${response.statusCode}");
+
     if (response.statusCode == 200) {
       return;
     }
@@ -80,6 +85,7 @@ class RemoteService {
     var requestUrl = '$uri?$queryString';
     var response = await http.post(Uri.parse(requestUrl), headers: header);
 
+    debugPrint("Response code: ${response.statusCode}");
     if (response.statusCode == 200) {
       SearchUser searchUser = searchUserFromJson(response.body);
       return searchUser.results;
@@ -117,12 +123,25 @@ class RemoteService {
     throw Exception(err);
   }
 
-  Future<dynamic> updateUser(String email, String password, String pic) async {
+  updateUser(String firstName, String lastName, String email, String password,
+      String pic) async {
     var uri = Uri.parse(
       'https://recipefy-g1.herokuapp.com/user/updateuser',
     );
-    Map parameters = {"Email": email, "Password": password, "Pic": pic};
-    var response = await http.post(uri, body: parameters, headers: header);
+    Map parameters = {
+      "Email": email,
+      "Password": password,
+      "Pic": pic,
+      "Info": {
+        "Fistname": firstName,
+        "Lastname": lastName,
+      }
+    };
+    var response =
+        await http.post(uri, body: json.encode(parameters), headers: header);
+
+    debugPrint("Code: ${response.statusCode}");
+
     var body = jsonDecode(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
       return User.fromJson(jsonDecode(response.body));
@@ -172,7 +191,7 @@ class RemoteService {
       'https://recipefy-g1.herokuapp.com/recipes/removerecipe',
     );
     Map parameters = {"_id": id};
-    var response = await http.post(uri, body: parameters, headers: header);
+    var response = await http.delete(uri, body: parameters, headers: header);
     if (response.statusCode == 200) {
       return;
     }
@@ -180,12 +199,13 @@ class RemoteService {
   }
 
   Future<List<RecipeResult>> findRecipe(
-      String search, int count, int page, String id) async {
+      String search, int count, int page) async {
     Map<String, String> qParams = {
       "search": search,
       "count": count.toString(),
       "page": page.toString(),
     };
+    // print(id);
     var uri = Uri.parse('https://recipefy-g1.herokuapp.com/recipe/findRecipe');
     String queryString = Uri(queryParameters: qParams).query;
     var requestUrl = '$uri?$queryString';
@@ -245,8 +265,9 @@ class RemoteService {
       'https://recipefy-g1.herokuapp.com/recipe/getLikedRecipes',
     );
     var response = await http.post(uri, headers: header);
+    // print("Code: ${response.statusCode}");
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       SearchRecipe searchRecipe = searchRecipeFromJson(response.body);
       return searchRecipe.results;
     }
@@ -279,6 +300,20 @@ class RemoteService {
       return;
     }
 
+    String err = body['error'];
+    throw Exception(err);
+  }
+
+  Future<List<Follower>> getFollowing() async {
+    var uri = Uri.parse(
+      'https://recipefy-g1.herokuapp.com/user/getFollowing',
+    );
+    var response = await http.post(uri, headers: header);
+    var body = jsonDecode(response.body);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      FollowingModel searchUser = followingModelFromJson(response.body);
+      return searchUser.results;
+    }
     String err = body['error'];
     throw Exception(err);
   }
