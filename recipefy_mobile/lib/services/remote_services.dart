@@ -303,7 +303,7 @@ class RemoteService {
 
   Future<List<UserResult>> getFollowing() async {
     var uri = Uri.parse(
-      'https://recipefy-g1.herokuapp.com/recipe/getFollowing',
+      'https://recipefy-g1.herokuapp.com/user/getFollowing',
     );
     var response = await http.post(uri, headers: header);
     var body = jsonDecode(response.body);
