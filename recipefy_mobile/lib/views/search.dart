@@ -11,19 +11,26 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   static String inputSearch = "";
+  final count = 5;
+  int page = 1;
+  List<RecipeResult> recipes = [];
 
   // FUTURE CALCULATION FOR SEARCH RECIPE API
   final Future<List<RecipeResult>> _calculation =
       Future<List<RecipeResult>>.delayed(
     const Duration(seconds: 1),
-    () async => await RemoteService().findAllRecipe("", 0, 0),
+    () async => await RemoteService().findAllRecipe(inputSearch, 0, 0),
   );
 
-  final Future<List<RecipeResult>> _specificCalculation =
-      Future<List<RecipeResult>>.delayed(
-    const Duration(seconds: 1),
-    () async => await RemoteService().findRecipe(inputSearch, 0, 0),
-  );
+  getRecipes() async {
+    try {
+      var response =
+          await RemoteService().findAllRecipe(inputSearch, count, page);
+      recipes = response;
+    } catch (error) {
+      debugPrint(error.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +59,10 @@ class _SearchPageState extends State<SearchPage> {
                           IconButton(
                               icon: Icon(Icons.search),
                               onPressed: () {
+                                getRecipes();
                                 showSearch(
                                   context: context,
-                                  delegate: MySearchDelegate(),
+                                  delegate: MySearchDelegate(recipes),
                                 );
                               })
                         ],
@@ -97,6 +105,10 @@ class _SearchPageState extends State<SearchPage> {
 }
 
 class MySearchDelegate extends SearchDelegate {
+  List<RecipeResult> recipes;
+
+  MySearchDelegate(this.recipes);
+
   @override
   Widget? buildLeading(BuildContext context) {
     IconButton(icon: Icon(Icons.arrow_back), onPressed: () {});
@@ -118,24 +130,17 @@ class MySearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    // _SearchPageState.inputSearch = query;
-
-    // ITEM COUNT IS SUPPOSED TO BE THE # OF RECIPES IN RETURN FROM THE SEARCH
-    // recipes[index] is supposed to contain List<RecipeResult>
-
-    // return ListView.builder(
-    //   itemCount: 1,
-    //   itemBuilder: (context, index) {
-    //     final suggestion = recipes[index];
-
-    //     return ListTile(
-    //         title: Text(suggestion),
-    //         onTap: () {
-    //           query = suggestion;
-    //         });
-    //   },
-    // );
-    throw ("implement build results");
+    return ListView.builder(
+        itemCount: recipes.length,
+        itemBuilder: (context, index) {
+          RecipeResult item = recipes[index];
+          return ListTile(
+            title: Text(item.title),
+            onTap: () {
+              // PULLS UP RECIPE PAGE
+            },
+          );
+        });
   }
 
   @override
