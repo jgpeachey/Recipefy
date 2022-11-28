@@ -27,8 +27,8 @@ class Login {
 
   Map<String, dynamic> toJson() => {
         "error": error,
-        "user": user?.toJson(),
-        "auth": auth?.toJson(),
+        "user": user.toJson(),
+        "auth": auth.toJson(),
       };
 }
 
